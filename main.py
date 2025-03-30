@@ -2,7 +2,7 @@ import sys
 import pandas as pd
 from PyQt5.QtWidgets import (
     QApplication, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem,
-    QPushButton, QTabWidget, QFileDialog, QWidget, QLabel, QDialog, QLineEdit
+    QPushButton, QTabWidget, QFileDialog, QWidget, QLabel, QDialog, QLineEdit, QSizePolicy
 )
 
 
@@ -13,6 +13,7 @@ class TransportApp(QWidget):
                             "Bus" : "data/bus.csv",
                             "Metro" : "data/metro.csv"}
         self.data = {key: self.load_data(path) for key, path in self.file_paths.items()}
+        
         self.tables = {}  # Associe les onglets aux tableaux
         self.stats_tables = {}  # Associe les onglets aux tableaux de statistiques
         self.init_ui()
@@ -29,6 +30,7 @@ class TransportApp(QWidget):
         self.tabs.setMovable(True)
 
         for key in self.data.keys():
+            data = self.convert_to_number(self.data[key])
             self.add_tab(key, self.data[key])
 
         self.new_window_button = QPushButton("Ajouter des données")
@@ -47,6 +49,13 @@ class TransportApp(QWidget):
         self.layout.addWidget(self.tabs)
         self.layout.addLayout(button_layout)
         self.setLayout(self.layout)
+        
+    def convert_to_number(self, df):
+        df['Heures'] = pd.to_numeric(df['Heures'], errors='coerce').fillna(0).astype(int)
+        df['Minutes'] = pd.to_numeric(df['Minutes'], errors='coerce').fillna(0).astype(int)
+        df['Distance (km)'] = pd.to_numeric(df['Distance (km)'], errors='coerce').fillna(0).astype(int)
+        df['Prix (€)'] = pd.to_numeric(df['Prix (€)'], errors='coerce').fillna(0).astype(int)
+        df['CO2 (kg)'] = pd.to_numeric(df['CO2 (kg)'], errors='coerce').fillna(0).astype(int)
 
     def add_tab(self, key, df):
         """Ajoute un onglet avec un tableau associé."""
@@ -55,6 +64,10 @@ class TransportApp(QWidget):
         
         
         stats_table_widget = QTableWidget()
+        stats_table_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)  # Réduit la hauteur au minimum
+        stats_table_widget.resizeRowsToContents()
+        stats_table_widget.setMaximumHeight(25+30*4) # header + nombre de lignes
+        
         self.stats_tables[key] = stats_table_widget  # Associer tableau de statistiques à l'onglet
         tab.layout.addWidget(stats_table_widget)
 
@@ -71,6 +84,11 @@ class TransportApp(QWidget):
         self.update_statistics(key, df)
 
     def update_table(self, key, df):
+        
+        df["Prix horaire (€)"] = round(df["Prix (€)"] / (df["Heures"] + df["Minutes"] / 60), 2)
+        df["Prix au km (km)"] = round(df["Prix (€)"] / df["Distance (km)"], 2)
+        df["CO2 par km (g/km)"] = round(df["CO2 (kg)"] / df["Distance (km)"]*1000, 2)
+        
         """Met à jour un tableau pour un onglet spécifique."""
         table_widget = self.tables[key]
         table_widget.setRowCount(len(df))
@@ -84,12 +102,7 @@ class TransportApp(QWidget):
 
     def update_statistics(self, key, df):
         """Calculer et afficher les statistiques par année."""
-        #df['Heures'] = pd.to_numeric(df['Heures'], errors='coerce').fillna(0).astype(int)
-        #df['Minutes'] = pd.to_numeric(df['Minutes'], errors='coerce').fillna(0).astype(int)
-
-        #df['Heures'] += df['Minutes'] // 60
-        #df['Minutes'] = df['Minutes'] % 60
-
+        
         # Calcul des statistiques : somme et moyenne
         stats = df.groupby('Année').agg({
             'Distance (km)': ['sum'],
@@ -102,13 +115,16 @@ class TransportApp(QWidget):
         #stats.columns = ['Année', 'Distance (km)', 'Heures', 'Minutes', 'Prix (€)', 'CO2 (kg)']
         stats['Heures'] = stats['Heures'] + stats['Minutes'] // 60
         stats['Minutes'] = stats['Minutes'] % 60
-        print(stats)
+        stats['Prix horaire (€)'] = round(stats['Prix (€)'] / (stats['Heures'] + stats['Minutes'] / 60), 2)
+        stats['Prix au km (km)'] = round(stats['Prix (€)'] / stats['Distance (km)'], 2)
+        stats['CO2 par km (g/km)'] = round(stats['CO2 (kg)'] / stats['Distance (km)'] * 1000, 2)
 
         # Mettre à jour le tableau des statistiques
         stats_table_widget = self.stats_tables[key]
         stats_table_widget.setRowCount(len(stats))
         stats_table_widget.setColumnCount(len(stats.columns))
-        stats_table_widget.setHorizontalHeaderLabels([f"{col[0]} ({col[1]})" if col[1] else col[0] for col in stats.columns])
+        stats_table_widget.setHorizontalHeaderLabels(['Année', 'Distance (km)', 'Heures', 'Minutes', 'Prix (€)', 'CO2 (kg)', 
+                                                      'Prix horaire (€)', 'Prix au km (km)', 'CO2 par km (g/km)'])
 
         for i in range(len(stats)):
             for j in range(len(stats.columns)):
@@ -121,7 +137,7 @@ class TransportApp(QWidget):
         try:
             return pd.read_csv(file_path, delimiter=";")
         except FileNotFoundError:
-            return pd.DataFrame(columns=["Date", "Type", "Distance", "Durée (heures)", "Durée (minutes)", "Prix", "CO2"])
+            return pd.DataFrame(columns=["Date", "Type", "Distance", "Heures", "Minutes", "Prix", "CO2"])
 
     def save_to_file(self):
         """Sauvegarde les données pour chaque onglet."""
