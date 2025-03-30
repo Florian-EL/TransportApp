@@ -2,7 +2,7 @@ import sys
 import pandas as pd
 from PyQt5.QtWidgets import (
     QApplication, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem,
-    QPushButton, QTabWidget, QFileDialog, QWidget, QLabel, QDialog, QLineEdit, QSizePolicy
+    QPushButton, QTabWidget, QFileDialog, QWidget, QLabel, QDialog, QLineEdit, QSizePolicy, QHeaderView
 )
 
 
@@ -20,7 +20,6 @@ class TransportApp(QWidget):
 
     def init_ui(self):
         self.setWindowTitle("Transport App")
-        self.resize(800, 600)
 
         self.layout = QVBoxLayout()
         self.tabs = QTabWidget()
@@ -76,7 +75,6 @@ class TransportApp(QWidget):
         self.tables[key] = table_widget  # Associer tableau des données à l'onglet
         tab.layout.addWidget(table_widget)
         
-        
         tab.setLayout(tab.layout)
         self.tabs.addTab(tab, key)
 
@@ -94,6 +92,7 @@ class TransportApp(QWidget):
         table_widget.setRowCount(len(df))
         table_widget.setColumnCount(len(df.columns))
         table_widget.setHorizontalHeaderLabels(df.columns)
+        table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         
         for i in range(len(df)):
             for j in range(len(df.columns)):
@@ -119,12 +118,13 @@ class TransportApp(QWidget):
         stats['Prix au km (km)'] = round(stats['Prix (€)'] / stats['Distance (km)'], 2)
         stats['CO2 par km (g/km)'] = round(stats['CO2 (kg)'] / stats['Distance (km)'] * 1000, 2)
 
-        # Mettre à jour le tableau des statistiques
         stats_table_widget = self.stats_tables[key]
         stats_table_widget.setRowCount(len(stats))
         stats_table_widget.setColumnCount(len(stats.columns))
         stats_table_widget.setHorizontalHeaderLabels(['Année', 'Distance (km)', 'Heures', 'Minutes', 'Prix (€)', 'CO2 (kg)', 
                                                       'Prix horaire (€)', 'Prix au km (km)', 'CO2 par km (g/km)'])
+
+        stats_table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
         for i in range(len(stats)):
             for j in range(len(stats.columns)):
@@ -211,5 +211,6 @@ class AddDataDialog(QDialog):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = TransportApp()
+    window.showMaximized()
     window.show()
     sys.exit(app.exec_())
