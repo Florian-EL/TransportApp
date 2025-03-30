@@ -1,2 +1,79 @@
 Départ;Arrivé;Société;Date;Année;Heures;Minutes;Distance (km);CO2 (kg);Prix (€)
-Gare départ;Gare Arrivé;RATP;DD/MM/YYY;YYYY;0;41;10.0;1;49.0
+SQY;Puteau;RATP;21/09/2022;2022;0;32;30;1;4,00
+SQY;Puteau;RATP;22/09/2022;2022;0;32;30;1;4,00
+SQY;Puteau;RATP;23/09/2022;2022;0;32;30;1;4,00
+SQY;Puteau;RATP;03/10/2022;2022;0;32;30;1;4,00
+SQY;Puteau;RATP;04/10/2022;2022;0;32;30;1;4,00
+SQY;Orsay;RATP;05/10/2022;2022;0;40;35;1;4,00
+Montparnasse;SQY;RATP;06/10/2022;2022;0;30;40;1;4,00
+Paris gare de Lyon;SQY;RATP;19/11/2022;2022;1;0;44;1;4,00
+SQY;Paris gare de Lyon;RATP;10/12/2022;2022;1;0;44;1;4,00
+Paris gare de Lyon;Paris gare Montparnasse;RATP;24/12/2022;2022;0;20;4;0;2,90
+SQY;Paris gare de Lyon;RATP;12/01/2023;2023;1;0;44;1;4,00
+Paris gare de Lyon;SQY;RATP;28/01/2023;2023;1;0;44;1;4,00
+SQY;Paris gare du Nord;RATP;23/02/2023;2023;1;0;36;0;4,00
+Paris gare du Nord;SQY;RATP;23/02/2023;2023;1;0;36;0;4,00
+SQY;Paris gare de Lyon;RATP;25/02/2023;2023;1;0;44;1;4,00
+Paris gare de Lyon;SQY;RATP;11/03/2023;2023;1;0;44;1;4,00
+SQY;Paris gare de Lyon;RATP;25/03/2023;2023;1;0;44;1;4,00
+Paris gare de Lyon;SQY;RATP;08/04/2023;2023;1;0;44;1;4,00
+Paris gare de Lyon;Paris gare Montparnasse;RATP;18/05/2023;2023;0;20;4;0;2,90
+SQY;Paris gare de Lyon;RATP;10/06/2023;2023;1;0;44;1;4,00
+Paris gare de Lyon;SQY;RATP;24/06/2023;2023;1;0;44;1;4,00
+SQY;Paris gare de Lyon;RATP;01/07/2023;2023;1;0;44;1;4,00
+Paris gare de Lyon;Paris gare Montparnasse;RATP;27/07/2023;2023;0;20;4;0;2,90
+Paris gare Montparnasse;Paris gare de Lyon;RATP;30/07/2023;2023;0;20;4;0;2,10
+SQY;Saint Joseph;RATP;16/09/2023;2023;1;0;32;0;4,00
+Saint Joseph;SQY;RATP;16/09/2023;2023;1;0;32;0;4,00
+SQY;Paris gare de Lyon;RATP;20/09/2023;2023;1;0;44;1;4,00
+Paris gare de Lyon;SQY;RATP;30/09/2023;2023;1;0;44;1;4,00
+SQY;Chatelet;RATP;07/10/2023;2023;1;0;30;0;4,00
+Chaletet;Olympiades ;RATP;07/10/2023;2023;0;10;6;0;2,90
+Olympiades;SQY;RATP;07/10/2023;2023;1;17;38;0;4,00
+SQY;Versailles Chantiers;RATP;17/10/2023;2023;0;10;12;0;3,90
+Versailles Chantiers;SQY;RATP;17/10/2023;2023;0;10;12;0;3,90
+SQY;Versailles Chantiers;RATP;18/10/2023;2023;0;10;12;0;3,90
+Versailles Chantiers;Paris gare de Lyon;RATP;20/10/2023;2023;0;45;38;0;4,05
+Paris gare de Lyon;SQY;RATP;04/11/2023;2023;1;0;44;1;4,00
+Mairie de Montrouge;Paris gare de Lyon;RATP;18/11/2023;2023;0;45;9;0;2,10
+Paris gare de Lyon;Paris gare Montparnasse;RATP;22/12/2023;2023;0;20;4;0;2,10
+SQY;Bonne Nouvelle;RATP;05/01/2024;2024;0;54;38;0;4,00
+Bonne Nouvelle;Saint François Xavier;RATP;05/01/2024;2024;0;15;5;0;2,15
+Vaneau;Cluny-La Sorbonne;RATP;05/01/2024;2024;0;5;4;0;2,15
+Cité;SQY;RATP;05/01/2024;2024;0;51;51;0;4,00
+SQY;Paris gare de Lyon;RATP;20/01/2024;2024;1;0;44;1;4,00
+Paris gare de Lyon;Les Millons;RATP;10/02/2024;2024;0;30;18;0;4,30
+SQY;Paris gare Montparnasse;RATP;16/02/2024;2024;0;30;40;1;5,00
+Paris gare Montparnasse;Paris gare de Lyon;RATP;19/02/2024;2024;0;20;4;0;2,10
+Paris gare de Lyon;SQY;RATP;08/03/2024;2024;1;0;44;1;4,00
+Les Milons;La Défense;RATP;09/03/2024;2024;0;12;6;0;2,15
+La Défense;Les Millons;RATP;09/03/2024;2024;0;12;6;0;2,15
+SQY;Paris gare de Lyon;RATP;16/03/2024;2024;1;0;44;1;4,00
+Paris gare de Lyon;SQY;RATP;30/03/2024;2024;1;0;44;1;4,00
+SQY;Paris gare Montparnasse;RATP;06/04/2024;2024;0;30;40;1;4,00
+Paris gare Montparnasse;Odéon;RATP;06/04/2024;2024;0;5;1,5;0;1,75
+Chatelet;SQY;RATP;06/04/2024;2024;1;0;30;0;4,00
+SQY;Paris gare de Lyon;RATP;13/04/2024;2024;1;0;44;1;2,15
+Hendaye;Amara;EUSKOTREN;04/05/2024;2024;0;38;21;0;2,75
+Amara;Hendaye;EUSKOTREN;04/05/2024;2024;0;38;21;0;2,75
+Paris gare du Nord;SQY;RATP;12/05/2024;2024;1;0;36;0;4,00
+SQY;Paris gare Montparnasse;RATP;17/05/2024;2024;0;30;40;1;4,00
+Paris gare Montparnasse;SQY;RATP;20/05/2024;2024;0;30;40;1;4,00
+Paris gare Montparnasse;SQY;RATP;09/06/2024;2024;0;30;40;1;4,00
+SQY;Paris gare Saint Lazare;RATP;22/06/2024;2024;0;50;29;0;4,00
+Paris gare Saint Lazare;SQY;RATP;22/06/2024;2024;0;50;29;0;4,00
+SQY;Nationnale;RATP;28/06/2024;2024;0;52;40;0;4,00
+Hendaye;Lugaritz Donostia;EUSKOTREN;29/06/2024;2024;0;45;29;0;2,75
+Lugaritz Donostia;Hendaye;EUSKOTREN;14/09/2024;2024;0;45;29;0;2,75
+SQY;Paris gare de Lyon;RATP;01/11/2024;2024;1;0;44;1;4,00
+SQY;Paris gare du Nord;RATP;08/11/2024;2024;1;0;36;0;5,00
+Portes des Postes;Lilles Flandres;ILEVIA;09/11/2024;2024;0;6;3;0;0,90
+Paris gare du Nord;SQY;RATP;11/11/2024;2024;1;15;36;0;5,00
+SQY;Paris gare de Lyon;RATP;16/11/2024;2024;1;0;44;1;4,00
+SQY;Paris gare Saint Lazare;RATP;30/11/2024;2024;0;50;29;0;5,00
+Paris gare Saint Lazare;SQY;RATP;01/12/2024;2024;0;50;29;0;5,00
+SQY;Palais Royal - Musée du Louvre;RATP;10/01/2025;2025;0;54;30;0;2,50
+Musée du Louvre;Hotel de Ville;RATP;10/01/2025;2025;0;3;1,2;0;1,075
+Saint Michel;Champs de Mars;RATP;10/01/2025;2025;0;10;4,5;0;1,075
+Trocadero;Etoile;RATP;10/01/2025;2025;0;4;1,4;0;2,15
+Concorde;SQY;RATP;10/01/2025;2025;0;52;29;0;2,50
