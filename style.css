@@ -1,0 +1,100 @@
+/* Style général pour la fenêtre */
+QWidget {
+    background-color: #242424;
+}
+
+/* Style des onglets */
+QTabBar::tab {
+    background: #242424;
+    color: #FFF;
+    padding: 10px;
+    border: 1px solid #CCCCCC;
+}
+
+QTabBar::tab:selected {
+    background: #4bce3a;
+    color: #FFF;
+    font-weight: bold;
+}
+
+QTabBar::tab:hover {
+    background: #fffc4e;
+    color: #000;
+}
+
+/* Style des tableaux */
+QTableWidget {
+    background-color: #242424;
+    color: white;
+}
+
+QHeaderView::section {
+    background-color: #4CAF50;
+    color: white;
+    padding: 4px;
+    border: 1px solid #CCCCCC;
+}
+
+QTableWidget::item:selected {
+    background-color: #A5D6A7;
+    color: #000;
+}
+
+/* Style des boutons */
+QPushButton {
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+QPushButton:hover {
+    background-color: #81C784;
+}
+
+QPushButton:pressed {
+    background-color: #388E3C;
+}
+
+/* Style spécifique pour le bouton "Ajouter des données" */
+#AjoutDataButton {
+    background-color: #28aa0e;
+    color: white;
+    font-weight: bold;
+}
+
+#AjoutDataButton:hover {
+    background-color: #91ff65;
+}
+
+#AjoutDataButton:pressed {
+    background-color: #19e62a;
+}
+
+/* Style spécifique pour le bouton "Charger les données" */
+#loadButton {
+    background-color: #FFC107;
+    color: black;
+}
+
+#loadButton:hover {
+    background-color: #FFD54F;
+}
+
+#loadButton:pressed {
+    background-color: #FFA000;
+}
+
+/* Style spécifique pour le bouton "Sauvegarder les données" */
+#saveButton {
+    background-color: #2196F3;
+    color: white;
+}
+
+#saveButton:hover {
+    background-color: #64B5F6;
+}
+
+#saveButton:pressed {
+    background-color: #1976D2;
+}

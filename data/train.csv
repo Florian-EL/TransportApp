@@ -1,0 +1,68 @@
+Départ;Arrivé;Train;Société;Classe;Date;Année;Heures;Minutes;Distance (km);CO2 (kg);Prix (€);Prix horaire (€ / h);Prix au kilomètre (€ / km)
+Belfort-Monbéliard LGV;Paris gare de Lyon;TGV;INOUI;2;19/10/2022;2022;2;41;434.0;1;49.0;18.26;0.11
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;INOUI;2;10/12/2022;2022;2;30;434.0;1;49.0;19.6;0.11
+Belfort-Monbéliard LGV;Paris gare de Lyon;TGV;Lyria;2;24/12/2022;2022;2;21;434.0;1;129.0;54.89;0.3
+Paris gare Montparnasse;Vannes;TGV;OUIGO;2;24/12/2022;2022;2;2;456.0;1;79.0;38.85;0.17
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;INOUI;2;12/01/2023;2023;2;30;434.0;1;49.0;19.6;0.11
+Belfort-Monbéliard LGV;Paris gare de Lyon;TGV;INOUI;2;28/01/2023;2023;2;43;434.0;1;49.0;18.04;0.11
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;INOUI;2;25/02/2023;2023;2;30;434.0;1;104.0;41.6;0.24
+Belfort-Monbéliard LGV;Paris gare de Lyon;TGV;INOUI;2;11/03/2023;2023;2;30;434.0;1;49.0;19.6;0.11
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;INOUI;2;25/03/2023;2023;2;30;434.0;1;42.0;16.8;0.1
+Belfort-Monbéliard LGV;Paris gare de Lyon;TGV;INOUI;2;08/04/2023;2023;2;43;434.0;1;59.0;21.72;0.14
+Belfort-Monbéliard LGV;Paris gare de Lyon;TGV;INOUI;2;18/05/2023;2023;2;30;434.0;1;59.0;23.6;0.14
+Paris gare Montparnasse;Alençon;TER;SNCF;2;18/05/2023;2023;2;2;245.0;6;17.9;8.8;0.07
+Paris Montparnasse;Vannes;TGV;INOUI;2;02/06/2023;2023;2;34;456.0;1;58.0;22.6;0.13
+Le Mans;Paris Montparnasse;TGV;INOUI;2;04/06/2023;2023;0;59;204.0;0;39.0;39.66;0.19
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;INOUI;2;10/06/2023;2023;2;30;434.0;1;50.0;20.0;0.12
+Belfort-Monbéliard LGV;Paris gare de Lyon;TGV;INOUI;2;24/06/2023;2023;2;30;434.0;1;47.0;18.8;0.11
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;INOUI;2;01/07/2023;2023;2;28;434.0;1;47.0;19.05;0.11
+Belfort-Monbéliard LGV;Paris gare de Lyon;TGV;INOUI;2;27/07/2023;2023;2;37;434.0;1;39.0;14.9;0.09
+Paris Montparnasse;Surdon;TER;SNCF;2;27/07/2023;2023;1;54;277.0;7;7.7;4.05;0.03
+Alençon;Le Mans;TER;INOUI;2;30/07/2023;2023;0;33;55.0;1;7.7;14.0;0.14
+Le Mans;Paris Montparnasse;TGV;INOUI;2;30/07/2023;2023;0;59;204.0;0;20.5;20.85;0.1
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;INOUI;2;30/07/2023;2023;2;15;434.0;1;49.0;21.78;0.11
+Belfort-Monbéliard LGV;Marseilles Saint Charles;TGV;INOUI;1;06/08/2023;2023;5;31;653.0;1;69.0;12.51;0.11
+Marseilles Saint Charles;Nice Saint Roch;TER;SNCF;1;06/08/2023;2023;2;40;225.0;5;59.0;22.13;0.26
+Saint Louis;Mulhouse Ville;TER;SNCF;2;07/08/2023;2023;0;14;34.0;1;3.0;12.86;0.09
+Mulhouse Ville;Belfort Ville;TER;SNCF;2;07/08/2023;2023;0;34;44.0;1;3.0;5.29;0.07
+Belfort Ville;Montbéliard Ville;TER;SNCF;2;07/08/2023;2023;0;16;21.0;1;2.5;9.38;0.12
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;INOUI;2;20/09/2023;2023;2;30;434.0;1;59.0;23.6;0.14
+Belfort-Monbéliard LGV;Paris gare de Lyon;TGV;INOUI;2;30/09/2023;2023;2;30;434.0;1;69.0;27.6;0.16
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;INOUI;2;20/10/2023;2023;2;37;434.0;1;69.0;26.37;0.16
+Belfort-Monbéliard LGV;Paris gare de Lyon;TGV;INOUI;2;04/11/2023;2023;2;37;434.0;1;44.0;16.82;0.1
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;Lyria;2;18/11/2023;2023;2;15;434.0;1;36.0;16.0;0.08
+Montbéliard Ville;Belfort Ville;TER;SNCF;2;08/12/2023;2023;0;15;21.0;1;4.8;19.2;0.23
+Belfort Ville;Mulhouse Ville;TER;SNCF;2;08/12/2023;2023;0;33;44.0;1;4.8;8.73;0.11
+Mulhouse Ville;Strasbourg;TER;SNCF;2;08/12/2023;2023;0;53;114.0;3;4.8;5.43;0.04
+Strasbourg;Colmar;TER;SNCF;2;08/12/2023;2023;0;30;72.0;2;11.0;22.0;0.15
+Colmar;Mulhouse Ville;TER;SNCF;2;08/12/2023;2023;0;21;43.0;1;4.7;13.43;0.11
+Mulhouse Ville;Belfort Ville;TER;SNCF;2;08/12/2023;2023;0;38;44.0;1;4.8;7.58;0.11
+Belfort Ville;Montbéliard;TER;SNCF;2;08/12/2023;2023;0;13;21.0;1;4.8;22.15;0.23
+Belfort-Monbéliard LGV;Paris gare de Lyon;TGV;Lyria;2;22/12/2023;2023;2;17;434.0;1;33.0;14.45;0.08
+Paris gare Montparnasse;Surdon;TER;SNCF;2;22/12/2023;2023;1;39;277.0;7;10.5;6.36;0.04
+Surdon;Alençon;TER;SNCF;2;22/12/2023;2023;0;19;29.0;1;4.2;13.26;0.14
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;SNCF;2;20/01/2024;2024;2;28;434.0;1;36.0;14.59;0.08
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;SNCF;2;10/02/2024;2024;2;43;434.0;1;39.0;14.36;0.09
+Paris Montparnasse;Vannes;TGV;SNCF;2;16/02/2024;2024;2;34;456.0;1;58.0;22.6;0.13
+Vannes;Paris Montparnasse;TGV;SNCF;2;19/02/2024;2024;2;53;456.0;1;65.0;22.54;0.14
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;Lyria;2;19/02/2024;2024;2;16;434.0;1;50.0;22.06;0.12
+Belfort-Monbéliard LGV;Paris gare de Lyon;TGV;INOUI;2;08/03/2024;2024;2;52;434.0;1;50.0;17.44;0.12
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;INOUI;2;16/03/2024;2024;2;34;434.0;1;53.0;20.65;0.12
+Belfort-Monbéliard LGV;Paris gare de Lyon;TGV;Lyria;2;30/03/2024;2024;2;17;435.0;1;69.0;30.22;0.16
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;INOUI;2;13/04/2024;2024;2;33;434.0;1;69.0;27.06;0.16
+Vannes;Rennes;TGV;INOUI;2;08/05/2024;2024;1;3;115.0;0;14.0;13.33;0.12
+Rennes;Lille Europe;TGV;INOUI;2;08/05/2024;2024;3;50;565.0;1;63.0;16.43;0.11
+Valenciennes;Paris Gare du Nord;TGV;INOUI;2;12/05/2024;2024;1;53;203.0;0;30.0;15.93;0.15
+Paris gare Montparnasse;Surdon;TER;SNCF;2;17/05/2024;2024;2;1;186.0;5;18.3;9.07;0.1
+Surdon;Paris Montparnasse;TER;SNCF;2;20/05/2024;2024;1;41;186.0;5;18.3;10.87;0.1
+Paris Montparnasse;Vannes;TGV;INOUI;2;01/06/2024;2024;2;35;459.0;1;69.0;26.71;0.15
+Le Mans;Paris Montparnasse;TGV;INOUI;2;09/06/2024;2024;0;59;204.0;0;46.0;46.78;0.23
+Paris Austerlitz;Bayonne;Intercité Nuit;SNCF;2;28/06/2024;2024;9;1;767.0;4;53.0;5.88;0.07
+Bayonnes;Hendaye;TER;SNCF;2;29/06/2024;2024;0;39;40.0;1;4.5;6.92;0.11
+Belfort-Monbéliard LGV;Paris gare de Lyon;TGV;INOUI;1;01/11/2024;2024;2;43;434.0;1;65.0;23.93;0.15
+Paris Gare du Nord;Lille Europe;TGV;INOUI;2;08/11/2024;2024;1;12;224.0;0;42.0;35.0;0.19
+Lille Flandres;Valenciennes;TER;C60;2;09/11/2024;2024;0;46;51.0;1;7.7;10.04;0.15
+Valenciennes;Paris Gare du Nord;TGV;INOUI;2;11/11/2024;2024;1;52;203.0;0;25.0;13.39;0.12
+Paris gare de Lyon;Belfort-Monbéliard LGV;TGV;INOUI;1;16/11/2024;2024;2;28;434.0;1;49.0;19.86;0.11
+Paris gare Saint Lazarre;Caen;TER;SNCF;2;30/11/2024;2024;1;54;234.0;6;22.4;11.79;0.1
+Caen;Paris gare Saint Lazarre;TER;SNCF;2;01/12/2024;2024;1;55;234.0;6;22.4;11.69;0.1
