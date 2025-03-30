@@ -1,190 +1,190 @@
-Départ;Arrivé;Société;Energie;Date;Année;Heures;Minutes;Distance (km);CO2 (kg);Prix (€);Prix horaire (€ / h);Prix au kilomètre (€ / km)
-Acropole;Gare LGV;Évolity;Essence;19/11/2022;2022;0 h;30;18.0;2.0;0.9;1.8;0.05
-Gare LGV;Acropole;Évolity;Essence;10/12/2022;2022;0 h;30;18.0;2.0;0.9;1.8;0.05
-Acropole;Gare LGV;Évolity;Essence;24/12/2022;2022;0 h;30;18.0;2.0;0.9;1.8;0.05
-Gare LGV;Acropole;Évolity;Essence;12/01/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Acropole;Gare LGV;Évolity;Essence;28/01/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Gare LGV;Acropole;Évolity;Essence;25/02/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Acropole;Gare LGV;Évolity;Essence;11/03/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Gare LGV;Acropole;Évolity;Essence;25/03/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Acropole;Gare LGV;Évolity;Essence;08/04/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Acropole;Gare LGV;Évolity;Essence;18/05/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Gare LGV;Acropole;Évolity;Essence;10/06/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Acropole;Gare LGV;Évolity;Essence;24/06/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Acropole;Gare LGV;Évolity;Essence;24/06/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Gare LGV;Acropole;Évolity;Essence;01/07/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Gare LGV;Acropole;Évolity;Essence;01/07/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Donzelot;Hopital HNFC;Évolity;Essence;15/07/2023;2023;0 h;40;15.0;2.0;0.9;1.35;0.06
-Acropole;Gare LGV;Évolity;Essence;06/08/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Gare LGV;Acropole;Évolity;Essence;20/09/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Acropole;Gare LGV;Évolity;Essence;30/09/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Versailles Chantier;Base aerienne 107;RATP;Essence;17/10/2023;2023;0 h;20;9.0;1.0;2.9;8.7;0.32
-Base Aerienne 107;Versailles Chantier;RATP;Essence;17/10/2023;2023;0 h;20;9.0;1.0;2.9;8.7;0.32
-Versailles Chantier;Base aerienne 107;RATP;Essence;18/10/2023;2023;0 h;20;9.0;1.0;2.9;8.7;0.32
-Gare LGV;Acropole;Évolity;Essence;20/10/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Gare LGV;Acropole;Évolity;Essence;20/10/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Acropole;Gare LGV;Évolity;Essence;04/11/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-SQY;Mairie de Montrouge;RATP;Essence;18/11/2023;2023;0 h;45;32.0;3.2;2.1;2.8;0.07
-Gare LGV;Acropole;Évolity;Essence;18/11/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Acropole;Gare LGV;Évolity;Essence;22/12/2023;2023;0 h;30;18.0;2.0;0.9;1.8;0.05
-Acropole;Gare LGV;Évolity;Essence;20/01/2024;2024;0 h;30;18.0;2.0;0.0;0.0;0.0
-Gare LGV;Acropole;Évolity;Essence;10/02/2024;2024;0 h;30;18.0;2.0;0.9;1.8;0.05
-SQY;Caudron;RATP;Essence;14/02/2024;2024;0 h;17;10.0;1.0;2.9;10.24;0.29
-Caudron;SQY;RATP;Essence;14/02/2024;2024;0 h;17;10.0;1.0;2.9;10.24;0.29
-Gare LGV;Acropole;Évolity;Essence;19/02/2024;2024;0 h;30;18.0;2.0;0.0;0.0;0.0
-Acropole;Gare LGV;Évolity;Essence;08/03/2024;2024;0 h;30;18.0;2.0;0.9;1.8;0.05
-Gare LGV;Acropole;Évolity;Essence;16/03/2024;2024;0 h;30;18.0;2.0;0.9;1.8;0.05
-Acropole;Gare LGV;Évolity;Essence;30/03/2024;2024;0 h;30;18.0;2.0;0.9;1.8;0.05
-Gare LGV;Acropole;Évolity;Essence;13/04/2024;2024;0 h;30;18.0;2.0;0.0;0.0;0.0
-Hauts de Bayonnes;Place des Basques;TxikTxak;Essence;03/05/2024;2024;0 h;15;3.6;0.0;1.6;6.4;0.44
-Echauguette;Hauts de Bayonnes;TxikTxak;Essence;03/05/2024;2024;0 h;12;3.0;0.0;1.6;8.0;0.53
-Gare SNCF;Vauban;Kicéo;Essence;01/06/2024;2024;0 h;16;6.0;0.6;0.55;2.06;0.09
-Vauban;Le Brix;Kicéo;Essence;01/06/2024;2024;0 h;21;6.8;0.8;0.55;1.57;0.08
-Le Brix;Vauban;Kicéo;Essence;01/06/2024;2024;0 h;21;6.8;0.8;1.1;3.14;0.16
-Vauban;Le Brix;Kicéo;Essence;08/06/2024;2024;0 h;21;6.8;0.8;1.1;3.14;0.16
-Le Port;Vauban;Kicéo;Essence;08/06/2024;2024;0 h;28;7.7;0.8;1.1;2.36;0.14
-Urbieta 20;Majisteritza;Dbus;Hybride;30/06/2024;2024;0 h;10;2.7;0.2;0.63;3.78;0.23
-Majisteritza;Mikeletegi;Dbus;Hybride;01/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;01/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;02/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;02/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;03/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;03/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;04/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;04/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;05/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;05/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;08/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;08/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;09/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;09/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;10/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;10/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Askatasuna;Dbus;Hybride;10/07/2024;2024;0 h;10;2.6;0.2;0.63;3.78;0.24
-Askatasuna;Majisteritza;Dbus;Hybride;10/07/2024;2024;0 h;10;2.6;0.2;0.63;3.78;0.24
-Majisteritza;Mikeletegi;Dbus;Hybride;11/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;11/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;12/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;12/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Zumalakarregi;Zubieta Plaza;Dbus;Hybride;13/07/2024;2024;0 h;4;1.3;0.0;0.63;9.45;0.48
-Astakasuna;Majisteritza;Dbus;Hybride;13/07/2024;2024;0 h;12;2.6;0.0;0.63;3.15;0.24
-Majisteritza;Mikeletegi;Dbus;Hybride;15/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;15/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;16/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;16/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;17/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;17/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;18/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;18/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Madrid;Dbus;Hybride;18/07/2024;2024;0 h;14;3.3;0.2;0.63;2.7;0.19
-Madrid;Majisteritza;Dbus;Hybride;18/07/2024;2024;0 h;14;3.3;0.2;0.63;2.7;0.19
-Majisteritza;Mikeletegi;Dbus;Hybride;19/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;19/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;22/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;22/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;23/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;23/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;24/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;24/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Garbera;Dbus;Hybride;25/07/2024;2024;0 h;29;6.9;0.2;0.63;1.3;0.09
-Garbera;Majisteritza;Dbus;Hybride;25/07/2024;2024;0 h;45;11.6;0.4;0.63;0.84;0.05
-Majisteritza;Zubieta Plaza;Dbus;Hybride;26/07/2024;2024;0 h;7;2.0;0.0;0.63;5.4;0.32
-Geltokiak;S.Sabio;Dbus;Hybride;26/07/2024;2024;0 h;7;1.3;0.0;0.63;5.4;0.48
-Ehunurteurrena;Majisteritza;Dbus;Hybride;26/07/2024;2024;0 h;13;4.5;0.2;0.63;2.91;0.14
-Ehunurteurrena;Majisteritza;Dbus;Hybride;26/07/2024;2024;0 h;13;4.5;0.2;0.63;2.91;0.14
-Surdon;Alençon;SNCF;Essence;27/07/2024;2024;0 h;33;29.0;2.0;4.2;7.64;0.14
-Majisteritza;Mikeletegi;Dbus;Hybride;28/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;28/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;29/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;29/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Garbera;Dbus;Hybride;29/07/2024;2024;0 h;29;6.9;0.2;0.63;1.3;0.09
-Garbera;Majisteritza;Dbus;Hybride;29/07/2024;2024;0 h;45;11.6;0.4;0.63;0.84;0.05
-Majisteritza;Mikeletegi;Dbus;Hybride;30/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;30/07/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;01/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;01/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;02/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;02/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;05/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;05/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;06/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;06/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;07/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;07/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;08/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;08/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;09/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;09/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Garbera;Dbus;Hybride;14/08/2024;2024;0 h;29;6.9;0.2;0.63;1.3;0.09
-Garbera;Majisteritza;Dbus;Hybride;14/08/2024;2024;0 h;45;11.6;0.4;0.63;0.84;0.05
-Majisteritza;Askatasuna;Dbus;Hybride;17/08/2024;2024;0 h;10;2.6;0.2;0.63;3.78;0.24
-Askatasuna;Majisteritza;Dbus;Hybride;17/08/2024;2024;0 h;10;2.6;0.2;0.63;3.78;0.24
-Majisteritza;Mikeletegi;Dbus;Hybride;19/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;19/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;20/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;20/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;21/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;21/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Boulevard;Dbus;Hybride;21/08/2024;2024;0 h;15;3.0;0.2;0.63;2.52;0.21
-Boulevard;Majisteritza;Dbus;Hybride;21/08/2024;2024;0 h;15;3.5;0.2;0.63;2.52;0.18
-Majisteritza;Mikeletegi;Dbus;Hybride;22/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;22/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;23/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;23/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Askatasuna;Dbus;Hybride;24/08/2024;2024;0 h;10;2.6;0.2;0.63;3.78;0.24
-Boulevard;Majisteritza;Dbus;Hybride;24/08/2024;2024;0 h;15;3.5;0.2;0.63;2.52;0.18
-Majisteritza;Mikeletegi;Dbus;Hybride;26/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;26/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;27/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;27/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;28/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;28/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;29/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;29/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;30/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;30/08/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Collado;Dbus;Hybride;31/08/2024;2024;0 h;20;2.7;0.2;0.63;1.89;0.23
-Askatasuna;Groseko Ambulatorioa;Dbus;Hybride;31/08/2024;2024;0 h;10;1.6;0.2;0.63;3.78;0.39
-Kolon;Majisteritza;Dbus;Hybride;31/08/2024;2024;0 h;15;3.2;0.2;0.63;2.52;0.2
-Majisteritza;Mikeletegi;Dbus;Hybride;02/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;02/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;03/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;03/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;04/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;04/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;05/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;05/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;06/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;06/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Boulevard;Dbus;Hybride;07/09/2024;2024;0 h;15;3.0;0.2;0.63;2.52;0.21
-Boulevard;Majisteritza;Dbus;Hybride;07/09/2024;2024;0 h;15;3.5;0.2;0.63;2.52;0.18
-Majisteritza;Mikeletegi;Dbus;Hybride;09/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;09/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;10/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;10/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;11/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;11/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;12/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Mikeletegi;Majisteritza;Dbus;Hybride;12/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Majisteritza;Mikeletegi;Dbus;Hybride;13/09/2024;2024;0 h;20;4.0;0.2;0.63;1.89;0.16
-Miramon;Boulevard;Dbus;Hybride;13/09/2024;2024;0 h;30;6.5;0.2;0.63;1.26;0.1
-Azkue;Hiribidea;Dbus;Hybride;14/09/2024;2024;0 h;13;1.2;0.2;0.63;2.91;0.53
-Kerozer;Le Brix;Kicéo;Essence;18/09/2024;2024;0 h;17;5.2;0.6;0.0;0.0;0.0
-Le Brix;Kerozer;Kicéo;Essence;18/09/2024;2024;0 h;17;5.2;0.6;0.0;0.0;0.0
-Vauban;Radieuse;Kicéo;Essence;19/09/2024;2024;0 h;30;10.0;1.0;0.0;0.0;0.0
-Radieuse;Le Brix;Kicéo;Electrique;19/09/2024;2024;0 h;9;2.6;0.0;0.0;0.0;0.0
-Le Brix;Vauban;Kicéo;Essence;19/09/2024;2024;0 h;21;7.4;0.8;0.0;0.0;0.0
-Vauban;Le Brix;Kicéo;Essence;24/09/2024;2024;0 h;21;7.4;0.8;1.1;3.14;0.15
-Le Port;Vauban;Kicéo;Essence;24/09/2024;2024;0 h;28;7.7;0.8;1.1;2.36;0.14
-Parissot;Le Brix;Kicéo;Electrique;28/09/2024;2024;0 h;22;5.3;0.0;1.1;3.0;0.21
-Victor Hugo;Parissot;Kicéo;Essence;28/09/2024;2024;0 h;16;5.0;0.6;1.1;4.13;0.22
-Foilet;Gare LGV;Évolity;Essence;01/11/2024;2024;0 h;37;25.0;2.6;0.0;0.0;0.0
-Rue de Londre;Portes des Postes;ILEVIA;Essence;09/11/2024;2024;0 h;6;2.0;0.2;0.9;9.0;0.45
-Gare LGV;Champ du cerf;Évolity;Essence;16/11/2024;2024;0 h;37;24.0;2.6;0.9;1.46;0.04
-Vauban;République;Kicéo;Essence;26/12/2024;2024;0 h;25;8.0;0.8;1.1;2.64;0.14
-Le Brix;Vauban;Kicéo;Essence;26/12/2024;2024;0 h;21;7.4;0.8;1.1;3.14;0.15
-Kerozer;République;Kicéo;Essence;27/12/2024;2024;0 h;17;6.0;0.6;0.55;1.94;0.09
-République;Kerozer;Kicéo;Essence;27/12/2024;2024;0 h;17;6.0;0.6;0.55;1.94;0.09
-Charles de Gaulle - Etoiles - Grande Armé;Champs Elysée - Clémenceau;RATP;Hybride;10/01/2025;2025;0 h;11;1.7;0.0;2.15;11.73;1.26
-Saint Quentin - Gare routière Delouvrier;Santos Dumont;RATP;Hybride;11/01/2025;2025;0 h;33;7.4;0.4;2.15;3.91;0.29
-Santos Dumont;Saint Quentin - Gare routière Delouvrier;RATP;Hybride;11/01/2025;2025;0 h;33;7.4;0.4;2.15;3.91;0.29
+Départ;Arrivé;Société;Energie;Date;Année;Heures;Minutes;Distance (km);CO2 (kg);Prix (€);Prix horaire (€ /);Prix au kilomètre (€ / km)
+Acropole;Gare LGV;Évolity;Essence;19/11/2022;2022;0;30;18.0;2.0;0.9;1.8;0.05
+Gare LGV;Acropole;Évolity;Essence;10/12/2022;2022;0;30;18.0;2.0;0.9;1.8;0.05
+Acropole;Gare LGV;Évolity;Essence;24/12/2022;2022;0;30;18.0;2.0;0.9;1.8;0.05
+Gare LGV;Acropole;Évolity;Essence;12/01/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Acropole;Gare LGV;Évolity;Essence;28/01/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Gare LGV;Acropole;Évolity;Essence;25/02/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Acropole;Gare LGV;Évolity;Essence;11/03/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Gare LGV;Acropole;Évolity;Essence;25/03/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Acropole;Gare LGV;Évolity;Essence;08/04/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Acropole;Gare LGV;Évolity;Essence;18/05/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Gare LGV;Acropole;Évolity;Essence;10/06/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Acropole;Gare LGV;Évolity;Essence;24/06/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Acropole;Gare LGV;Évolity;Essence;24/06/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Gare LGV;Acropole;Évolity;Essence;01/07/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Gare LGV;Acropole;Évolity;Essence;01/07/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Donzelot;Hopital HNFC;Évolity;Essence;15/07/2023;2023;0;40;15.0;2.0;0.9;1.35;0.06
+Acropole;Gare LGV;Évolity;Essence;06/08/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Gare LGV;Acropole;Évolity;Essence;20/09/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Acropole;Gare LGV;Évolity;Essence;30/09/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Versailles Chantier;Base aerienne 107;RATP;Essence;17/10/2023;2023;0;20;9.0;1.0;2.9;8.7;0.32
+Base Aerienne 107;Versailles Chantier;RATP;Essence;17/10/2023;2023;0;20;9.0;1.0;2.9;8.7;0.32
+Versailles Chantier;Base aerienne 107;RATP;Essence;18/10/2023;2023;0;20;9.0;1.0;2.9;8.7;0.32
+Gare LGV;Acropole;Évolity;Essence;20/10/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Gare LGV;Acropole;Évolity;Essence;20/10/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Acropole;Gare LGV;Évolity;Essence;04/11/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+SQY;Mairie de Montrouge;RATP;Essence;18/11/2023;2023;0;45;32.0;3.2;2.1;2.8;0.07
+Gare LGV;Acropole;Évolity;Essence;18/11/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Acropole;Gare LGV;Évolity;Essence;22/12/2023;2023;0;30;18.0;2.0;0.9;1.8;0.05
+Acropole;Gare LGV;Évolity;Essence;20/01/2024;2024;0;30;18.0;2.0;0.0;0.0;0.0
+Gare LGV;Acropole;Évolity;Essence;10/02/2024;2024;0;30;18.0;2.0;0.9;1.8;0.05
+SQY;Caudron;RATP;Essence;14/02/2024;2024;0;17;10.0;1.0;2.9;10.24;0.29
+Caudron;SQY;RATP;Essence;14/02/2024;2024;0;17;10.0;1.0;2.9;10.24;0.29
+Gare LGV;Acropole;Évolity;Essence;19/02/2024;2024;0;30;18.0;2.0;0.0;0.0;0.0
+Acropole;Gare LGV;Évolity;Essence;08/03/2024;2024;0;30;18.0;2.0;0.9;1.8;0.05
+Gare LGV;Acropole;Évolity;Essence;16/03/2024;2024;0;30;18.0;2.0;0.9;1.8;0.05
+Acropole;Gare LGV;Évolity;Essence;30/03/2024;2024;0;30;18.0;2.0;0.9;1.8;0.05
+Gare LGV;Acropole;Évolity;Essence;13/04/2024;2024;0;30;18.0;2.0;0.0;0.0;0.0
+Hauts de Bayonnes;Place des Basques;TxikTxak;Essence;03/05/2024;2024;0;15;3.6;0.0;1.6;6.4;0.44
+Echauguette;Hauts de Bayonnes;TxikTxak;Essence;03/05/2024;2024;0;12;3.0;0.0;1.6;8.0;0.53
+Gare SNCF;Vauban;Kicéo;Essence;01/06/2024;2024;0;16;6.0;0.6;0.55;2.06;0.09
+Vauban;Le Brix;Kicéo;Essence;01/06/2024;2024;0;21;6.8;0.8;0.55;1.57;0.08
+Le Brix;Vauban;Kicéo;Essence;01/06/2024;2024;0;21;6.8;0.8;1.1;3.14;0.16
+Vauban;Le Brix;Kicéo;Essence;08/06/2024;2024;0;21;6.8;0.8;1.1;3.14;0.16
+Le Port;Vauban;Kicéo;Essence;08/06/2024;2024;0;28;7.7;0.8;1.1;2.36;0.14
+Urbieta 20;Majisteritza;Dbus;Hybride;30/06/2024;2024;0;10;2.7;0.2;0.63;3.78;0.23
+Majisteritza;Mikeletegi;Dbus;Hybride;01/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;01/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;02/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;02/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;03/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;03/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;04/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;04/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;05/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;05/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;08/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;08/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;09/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;09/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;10/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;10/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Askatasuna;Dbus;Hybride;10/07/2024;2024;0;10;2.6;0.2;0.63;3.78;0.24
+Askatasuna;Majisteritza;Dbus;Hybride;10/07/2024;2024;0;10;2.6;0.2;0.63;3.78;0.24
+Majisteritza;Mikeletegi;Dbus;Hybride;11/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;11/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;12/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;12/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Zumalakarregi;Zubieta Plaza;Dbus;Hybride;13/07/2024;2024;0;4;1.3;0.0;0.63;9.45;0.48
+Astakasuna;Majisteritza;Dbus;Hybride;13/07/2024;2024;0;12;2.6;0.0;0.63;3.15;0.24
+Majisteritza;Mikeletegi;Dbus;Hybride;15/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;15/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;16/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;16/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;17/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;17/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;18/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;18/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Madrid;Dbus;Hybride;18/07/2024;2024;0;14;3.3;0.2;0.63;2.7;0.19
+Madrid;Majisteritza;Dbus;Hybride;18/07/2024;2024;0;14;3.3;0.2;0.63;2.7;0.19
+Majisteritza;Mikeletegi;Dbus;Hybride;19/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;19/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;22/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;22/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;23/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;23/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;24/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;24/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Garbera;Dbus;Hybride;25/07/2024;2024;0;29;6.9;0.2;0.63;1.3;0.09
+Garbera;Majisteritza;Dbus;Hybride;25/07/2024;2024;0;45;11.6;0.4;0.63;0.84;0.05
+Majisteritza;Zubieta Plaza;Dbus;Hybride;26/07/2024;2024;0;7;2.0;0.0;0.63;5.4;0.32
+Geltokiak;S.Sabio;Dbus;Hybride;26/07/2024;2024;0;7;1.3;0.0;0.63;5.4;0.48
+Ehunurteurrena;Majisteritza;Dbus;Hybride;26/07/2024;2024;0;13;4.5;0.2;0.63;2.91;0.14
+Ehunurteurrena;Majisteritza;Dbus;Hybride;26/07/2024;2024;0;13;4.5;0.2;0.63;2.91;0.14
+Surdon;Alençon;SNCF;Essence;27/07/2024;2024;0;33;29.0;2.0;4.2;7.64;0.14
+Majisteritza;Mikeletegi;Dbus;Hybride;28/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;28/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;29/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;29/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Garbera;Dbus;Hybride;29/07/2024;2024;0;29;6.9;0.2;0.63;1.3;0.09
+Garbera;Majisteritza;Dbus;Hybride;29/07/2024;2024;0;45;11.6;0.4;0.63;0.84;0.05
+Majisteritza;Mikeletegi;Dbus;Hybride;30/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;30/07/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;01/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;01/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;02/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;02/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;05/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;05/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;06/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;06/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;07/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;07/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;08/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;08/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;09/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;09/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Garbera;Dbus;Hybride;14/08/2024;2024;0;29;6.9;0.2;0.63;1.3;0.09
+Garbera;Majisteritza;Dbus;Hybride;14/08/2024;2024;0;45;11.6;0.4;0.63;0.84;0.05
+Majisteritza;Askatasuna;Dbus;Hybride;17/08/2024;2024;0;10;2.6;0.2;0.63;3.78;0.24
+Askatasuna;Majisteritza;Dbus;Hybride;17/08/2024;2024;0;10;2.6;0.2;0.63;3.78;0.24
+Majisteritza;Mikeletegi;Dbus;Hybride;19/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;19/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;20/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;20/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;21/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;21/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Boulevard;Dbus;Hybride;21/08/2024;2024;0;15;3.0;0.2;0.63;2.52;0.21
+Boulevard;Majisteritza;Dbus;Hybride;21/08/2024;2024;0;15;3.5;0.2;0.63;2.52;0.18
+Majisteritza;Mikeletegi;Dbus;Hybride;22/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;22/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;23/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;23/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Askatasuna;Dbus;Hybride;24/08/2024;2024;0;10;2.6;0.2;0.63;3.78;0.24
+Boulevard;Majisteritza;Dbus;Hybride;24/08/2024;2024;0;15;3.5;0.2;0.63;2.52;0.18
+Majisteritza;Mikeletegi;Dbus;Hybride;26/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;26/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;27/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;27/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;28/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;28/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;29/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;29/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;30/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;30/08/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Collado;Dbus;Hybride;31/08/2024;2024;0;20;2.7;0.2;0.63;1.89;0.23
+Askatasuna;Groseko Ambulatorioa;Dbus;Hybride;31/08/2024;2024;0;10;1.6;0.2;0.63;3.78;0.39
+Kolon;Majisteritza;Dbus;Hybride;31/08/2024;2024;0;15;3.2;0.2;0.63;2.52;0.2
+Majisteritza;Mikeletegi;Dbus;Hybride;02/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;02/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;03/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;03/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;04/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;04/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;05/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;05/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;06/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;06/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Boulevard;Dbus;Hybride;07/09/2024;2024;0;15;3.0;0.2;0.63;2.52;0.21
+Boulevard;Majisteritza;Dbus;Hybride;07/09/2024;2024;0;15;3.5;0.2;0.63;2.52;0.18
+Majisteritza;Mikeletegi;Dbus;Hybride;09/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;09/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;10/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;10/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;11/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;11/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;12/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Mikeletegi;Majisteritza;Dbus;Hybride;12/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Majisteritza;Mikeletegi;Dbus;Hybride;13/09/2024;2024;0;20;4.0;0.2;0.63;1.89;0.16
+Miramon;Boulevard;Dbus;Hybride;13/09/2024;2024;0;30;6.5;0.2;0.63;1.26;0.1
+Azkue;Hiribidea;Dbus;Hybride;14/09/2024;2024;0;13;1.2;0.2;0.63;2.91;0.53
+Kerozer;Le Brix;Kicéo;Essence;18/09/2024;2024;0;17;5.2;0.6;0.0;0.0;0.0
+Le Brix;Kerozer;Kicéo;Essence;18/09/2024;2024;0;17;5.2;0.6;0.0;0.0;0.0
+Vauban;Radieuse;Kicéo;Essence;19/09/2024;2024;0;30;10.0;1.0;0.0;0.0;0.0
+Radieuse;Le Brix;Kicéo;Electrique;19/09/2024;2024;0;9;2.6;0.0;0.0;0.0;0.0
+Le Brix;Vauban;Kicéo;Essence;19/09/2024;2024;0;21;7.4;0.8;0.0;0.0;0.0
+Vauban;Le Brix;Kicéo;Essence;24/09/2024;2024;0;21;7.4;0.8;1.1;3.14;0.15
+Le Port;Vauban;Kicéo;Essence;24/09/2024;2024;0;28;7.7;0.8;1.1;2.36;0.14
+Parissot;Le Brix;Kicéo;Electrique;28/09/2024;2024;0;22;5.3;0.0;1.1;3.0;0.21
+Victor Hugo;Parissot;Kicéo;Essence;28/09/2024;2024;0;16;5.0;0.6;1.1;4.13;0.22
+Foilet;Gare LGV;Évolity;Essence;01/11/2024;2024;0;37;25.0;2.6;0.0;0.0;0.0
+Rue de Londre;Portes des Postes;ILEVIA;Essence;09/11/2024;2024;0;6;2.0;0.2;0.9;9.0;0.45
+Gare LGV;Champ du cerf;Évolity;Essence;16/11/2024;2024;0;37;24.0;2.6;0.9;1.46;0.04
+Vauban;République;Kicéo;Essence;26/12/2024;2024;0;25;8.0;0.8;1.1;2.64;0.14
+Le Brix;Vauban;Kicéo;Essence;26/12/2024;2024;0;21;7.4;0.8;1.1;3.14;0.15
+Kerozer;République;Kicéo;Essence;27/12/2024;2024;0;17;6.0;0.6;0.55;1.94;0.09
+République;Kerozer;Kicéo;Essence;27/12/2024;2024;0;17;6.0;0.6;0.55;1.94;0.09
+Charles de Gaulle - Etoiles - Grande Armé;Champs Elysée - Clémenceau;RATP;Hybride;10/01/2025;2025;0;11;1.7;0.0;2.15;11.73;1.26
+Saint Quentin - Gare routière Delouvrier;Santos Dumont;RATP;Hybride;11/01/2025;2025;0;33;7.4;0.4;2.15;3.91;0.29
+Santos Dumont;Saint Quentin - Gare routière Delouvrier;RATP;Hybride;11/01/2025;2025;0;33;7.4;0.4;2.15;3.91;0.29

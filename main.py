@@ -14,6 +14,7 @@ class TransportApp(QWidget):
                             "Metro" : "data/metro.csv"}
         self.data = {key: self.load_data(path) for key, path in self.file_paths.items()}
         self.tables = {}  # Associe les onglets aux tableaux
+        self.stats_tables = {}  # Associe les onglets aux tableaux de statistiques
         self.init_ui()
 
     def init_ui(self):
@@ -51,14 +52,23 @@ class TransportApp(QWidget):
         """Ajoute un onglet avec un tableau associé."""
         tab = QWidget()
         tab.layout = QVBoxLayout()
+        
+        
+        stats_table_widget = QTableWidget()
+        self.stats_tables[key] = stats_table_widget  # Associer tableau de statistiques à l'onglet
+        tab.layout.addWidget(stats_table_widget)
 
+        # Ajouter le tableau des données
         table_widget = QTableWidget()
-        self.tables[key] = table_widget  # Associer tableau à l'onglet
+        self.tables[key] = table_widget  # Associer tableau des données à l'onglet
         tab.layout.addWidget(table_widget)
+        
+        
         tab.setLayout(tab.layout)
         self.tabs.addTab(tab, key)
 
         self.update_table(key, df)
+        self.update_statistics(key, df)
 
     def update_table(self, key, df):
         """Met à jour un tableau pour un onglet spécifique."""
@@ -66,11 +76,45 @@ class TransportApp(QWidget):
         table_widget.setRowCount(len(df))
         table_widget.setColumnCount(len(df.columns))
         table_widget.setHorizontalHeaderLabels(df.columns)
-
+        
         for i in range(len(df)):
             for j in range(len(df.columns)):
                 value = str(df.iloc[i, j])
                 table_widget.setItem(i, j, QTableWidgetItem(value))
+
+    def update_statistics(self, key, df):
+        """Calculer et afficher les statistiques par année."""
+        #df['Heures'] = pd.to_numeric(df['Heures'], errors='coerce').fillna(0).astype(int)
+        #df['Minutes'] = pd.to_numeric(df['Minutes'], errors='coerce').fillna(0).astype(int)
+
+        #df['Heures'] += df['Minutes'] // 60
+        #df['Minutes'] = df['Minutes'] % 60
+
+        # Calcul des statistiques : somme et moyenne
+        stats = df.groupby('Année').agg({
+            'Distance (km)': ['sum'],
+            'Heures': ['sum'],
+            'Minutes': ['sum'],
+            'Prix (€)': ['sum'],
+            'CO2 (kg)': ['sum']
+        }).reset_index()
+        
+        #stats.columns = ['Année', 'Distance (km)', 'Heures', 'Minutes', 'Prix (€)', 'CO2 (kg)']
+        stats['Heures'] = stats['Heures'] + stats['Minutes'] // 60
+        stats['Minutes'] = stats['Minutes'] % 60
+        print(stats)
+
+        # Mettre à jour le tableau des statistiques
+        stats_table_widget = self.stats_tables[key]
+        stats_table_widget.setRowCount(len(stats))
+        stats_table_widget.setColumnCount(len(stats.columns))
+        stats_table_widget.setHorizontalHeaderLabels([f"{col[0]} ({col[1]})" if col[1] else col[0] for col in stats.columns])
+
+        for i in range(len(stats)):
+            for j in range(len(stats.columns)):
+                value = str(stats.iloc[i, j])
+                stats_table_widget.setItem(i, j, QTableWidgetItem(value))
+
 
     def load_data(self, file_path):
         """Charge les données depuis un fichier CSV."""
