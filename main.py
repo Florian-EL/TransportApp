@@ -2,9 +2,10 @@ import sys
 import pandas as pd
 from PyQt5.QtWidgets import (
     QApplication, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem,
-    QPushButton, QTabWidget, QFileDialog, QWidget, QLabel, QDialog, QLineEdit, QSizePolicy, QHeaderView
+    QPushButton, QTabWidget, QFileDialog, QWidget, QLabel, QDialog, QLineEdit, QSizePolicy, QHeaderView, QTableView
 )
-
+from PyQt5.QtCore import Qt, QSortFilterProxyModel, Qt
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 class TransportApp(QWidget):
     def __init__(self):
@@ -13,9 +14,11 @@ class TransportApp(QWidget):
                             "Bus" : "data/bus.csv",
                             "Metro" : "data/metro.csv"}
         self.data = {key: self.load_data(path) for key, path in self.file_paths.items()}
-        
+        self.models = {}
         self.tables = {}  # Associe les onglets aux tableaux
         self.stats_tables = {}  # Associe les onglets aux tableaux de statistiques
+        self.proxy_models = {}
+        self.filters = {}
         self.init_ui()
 
     def init_ui(self):
@@ -29,7 +32,7 @@ class TransportApp(QWidget):
         self.tabs.setMovable(True)
 
         for key in self.data.keys():
-            data = self.convert_to_number(self.data[key])
+            self.convert_to_number(self.data[key])
             self.add_tab(key, self.data[key])
 
         self.new_window_button = QPushButton("Ajouter des données")
@@ -44,7 +47,6 @@ class TransportApp(QWidget):
         button_layout.addWidget(self.load_button)
         button_layout.addWidget(self.save_button)
 
-
         self.layout.addWidget(self.tabs)
         self.layout.addLayout(button_layout)
         self.setLayout(self.layout)
@@ -57,29 +59,71 @@ class TransportApp(QWidget):
         df['CO2 (kg)'] = pd.to_numeric(df['CO2 (kg)'], errors='coerce').fillna(0).astype(int)
 
     def add_tab(self, key, df):
-        """Ajoute un onglet avec un tableau associé."""
+        def apply_filter(col, text):
+            proxy_model.setFilterKeyColumn(col)
+            proxy_model.setFilterRegularExpression(text)
+        
         tab = QWidget()
         tab.layout = QVBoxLayout()
         
-        
+        # Tableur de statistiques (QTableWidget)
         stats_table_widget = QTableWidget()
-        stats_table_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)  # Réduit la hauteur au minimum
+        stats_table_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)  
         stats_table_widget.resizeRowsToContents()
-        stats_table_widget.setMaximumHeight(25+30*4) # header + nombre de lignes
-        
-        self.stats_tables[key] = stats_table_widget  # Associer tableau de statistiques à l'onglet
-        tab.layout.addWidget(stats_table_widget)
+        stats_table_widget.setMaximumHeight(stats_table_widget.verticalHeader().height() + stats_table_widget.horizontalHeader().height())
+        self.stats_tables[key] = stats_table_widget
 
-        # Ajouter le tableau des données
-        table_widget = QTableWidget()
-        self.tables[key] = table_widget  # Associer tableau des données à l'onglet
-        tab.layout.addWidget(table_widget)
+        # Tableau principal (QTableView)
+        model = QStandardItemModel()
+        proxy_model = QSortFilterProxyModel(self)
+        proxy_model.setSourceModel(model)
+        proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
+        proxy_model.setFilterKeyColumn(-1)  # Appliquer à toutes les colonnes
+        proxy_model.setDynamicSortFilter(True)
+        proxy_model.sort(df.columns.get_loc("Date"), Qt.DescendingOrder)
+
+        self.models[key] = model
+        self.proxy_models[key] = proxy_model
+
+        table_view = QTableView()
+        table_view.setModel(proxy_model)
+        table_view.setSortingEnabled(True)
+        
+        # Gestion filtre et header
+        header = FilterHeaderView(table_view)
+        table_view.setHorizontalHeader(header)
+        table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        header.set_filter_callback(apply_filter)
+
+        # Charger les données
+        self.load_data_to_model(model, df)
+
+        tab.layout.addWidget(stats_table_widget)
+        self.update_statistics(key, df)
+
+        tab.layout.addWidget(table_view)
+        self.update_table(key, df)
         
         tab.setLayout(tab.layout)
         self.tabs.addTab(tab, key)
 
-        self.update_table(key, df)
-        self.update_statistics(key, df)
+    def load_data_to_model(self, model, df):
+        model.setColumnCount(len(df.columns))
+        model.setHorizontalHeaderLabels(df.columns)
+
+        for row in df.itertuples(index=False):
+            items = []
+            for cell in row:
+                item = QStandardItem(str(cell))
+                item.setTextAlignment(Qt.AlignLeft | Qt.AlignTop)  # Aligner en haut et à gauche
+                items.append(item)
+            model.appendRow(items)
+
+    def create_filter(self, proxy_model, column_index):
+        def filter_function(text):
+            proxy_model.setFilterKeyColumn(column_index)
+            proxy_model.setFilterFixedString(text)
+        return filter_function
 
     def update_table(self, key, df):
         
@@ -87,17 +131,16 @@ class TransportApp(QWidget):
         df["Prix au km (km)"] = round(df["Prix (€)"] / df["Distance (km)"], 2)
         df["CO2 par km (g/km)"] = round(df["CO2 (kg)"] / df["Distance (km)"]*1000, 2)
         
-        """Met à jour un tableau pour un onglet spécifique."""
-        table_widget = self.tables[key]
-        table_widget.setRowCount(len(df))
-        table_widget.setColumnCount(len(df.columns))
-        table_widget.setHorizontalHeaderLabels(df.columns)
-        table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        
-        for i in range(len(df)):
-            for j in range(len(df.columns)):
-                value = str(df.iloc[i, j])
-                table_widget.setItem(i, j, QTableWidgetItem(value))
+        model = self.models[key]
+        model.clear()
+        model.setColumnCount(len(df.columns))
+        model.setHorizontalHeaderLabels(df.columns)
+
+        for row in df.itertuples(index=False):
+            items = [QStandardItem(str(cell)) for cell in row]
+            model.appendRow(items)
+
+        self.proxy_models[key].invalidateFilter()
 
     def update_statistics(self, key, df):
         """Calculer et afficher les statistiques par année."""
@@ -123,14 +166,12 @@ class TransportApp(QWidget):
         stats_table_widget.setColumnCount(len(stats.columns))
         stats_table_widget.setHorizontalHeaderLabels(['Année', 'Distance (km)', 'Heures', 'Minutes', 'Prix (€)', 'CO2 (kg)', 
                                                       'Prix horaire (€)', 'Prix au km (km)', 'CO2 par km (g/km)'])
-
         stats_table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
         for i in range(len(stats)):
             for j in range(len(stats.columns)):
                 value = str(stats.iloc[i, j])
                 stats_table_widget.setItem(i, j, QTableWidgetItem(value))
-
 
     def load_data(self, file_path):
         """Charge les données depuis un fichier CSV."""
@@ -170,7 +211,6 @@ class TransportApp(QWidget):
         self.layout.addWidget(msg)
         QApplication.processEvents()
 
-
 class AddDataDialog(QDialog):
     """Fenêtre pour ajouter des données."""
     def __init__(self, key, df, parent=None):
@@ -206,6 +246,46 @@ class AddDataDialog(QDialog):
         except Exception as e:
             error_msg = QLabel(f"Erreur: {str(e)}")
             self.layout.addWidget(error_msg)
+
+class FilterHeaderView(QHeaderView):
+    def __init__(self, parent=None):
+        super().__init__(Qt.Horizontal, parent)
+        self.setSectionsClickable(True)
+        self.filters = {}
+
+    def set_filter_callback(self, filter_callback):
+        """Définit le callback pour appliquer le filtre."""
+        self.filter_callback = filter_callback
+
+    def create_filter(self, col):
+        """Crée un QLineEdit pour filtrer une colonne spécifique."""
+        if col not in self.filters:
+            filter_input = QLineEdit(self.parent())
+            filter_input.setPlaceholderText("🔍")
+            filter_input.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
+            filter_input.setStyleSheet("border: none; background: transparent; font-size: 12px;")
+            filter_input.textChanged.connect(lambda text: self.filter_callback(col, text))
+            self.setFixedHeight(60)  # Ajuste la hauteur de l'en-tête
+
+            self.filters[col] = filter_input
+
+    def resizeEvent(self, event):
+        """Redéfinit la taille des champs de filtre en fonction de la taille des colonnes."""
+        super().resizeEvent(event)
+        for col, filter_input in self.filters.items():
+            rect = self.sectionViewportPosition(col)
+            filter_input.setGeometry(rect, self.height() // 2, self.sectionSize(col), self.height() // 2)
+
+    def paintSection(self, painter, rect, logicalIndex):
+        """Dessine le titre + la boîte de filtre dans l'en-tête."""
+        super().paintSection(painter, rect, logicalIndex)
+
+        if logicalIndex in self.filters:
+            filter_input = self.filters[logicalIndex]
+            filter_input.setGeometry(rect.x(), rect.y() + rect.height() // 2, rect.width(), rect.height() // 2)
+            filter_input.setVisible(True)
+        else:
+            self.create_filter(logicalIndex)
 
 
 if __name__ == "__main__":
