@@ -2,17 +2,20 @@ import sys
 import pandas as pd
 from PyQt5.QtWidgets import (
     QApplication, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem,
-    QPushButton, QTabWidget, QFileDialog, QWidget, QLabel, QDialog, QLineEdit, QSizePolicy, QHeaderView, QTableView
-)
-from PyQt5.QtCore import Qt, QSortFilterProxyModel, Qt
+    QPushButton, QTabWidget, QFileDialog, QWidget, QLabel, QSizePolicy, QHeaderView, QTableView)
+
+from PyQt5.QtCore import Qt, QSortFilterProxyModel
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
+
+from classe.FilterHeaderView import FilterHeaderView
+from classe.AddDataDialog import AddDataDialog
 
 class TransportApp(QWidget):
     def __init__(self):
         super().__init__()
-        self.file_paths = {"Train" : "data/train.csv",
-                            "Bus" : "data/bus.csv",
-                            "Metro" : "data/metro.csv"}
+        self.file_paths = {"Train" : "src/data/train.csv",
+                            "Bus" : "src/data/bus.csv",
+                            "Metro" : "src/data/metro.csv"}
         self.data = {key: self.load_data(path) for key, path in self.file_paths.items()}
         self.models = {}
         self.tables = {}  # Associe les onglets aux tableaux
@@ -57,6 +60,7 @@ class TransportApp(QWidget):
         df['Distance (km)'] = pd.to_numeric(df['Distance (km)'], errors='coerce').fillna(0).astype(int)
         df['Prix (€)'] = pd.to_numeric(df['Prix (€)'], errors='coerce').fillna(0).astype(int)
         df['CO2 (kg)'] = pd.to_numeric(df['CO2 (kg)'], errors='coerce').fillna(0).astype(int)
+        df['Date'] = pd.to_datetime(df['Date'], errors='coerce', format='%d/%m/%Y').dt.strftime('%d/%m/%Y')
 
     def add_tab(self, key, df):
         def apply_filter(col, text):
@@ -80,6 +84,7 @@ class TransportApp(QWidget):
         proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
         proxy_model.setFilterKeyColumn(-1)  # Appliquer à toutes les colonnes
         proxy_model.setDynamicSortFilter(True)
+        #df['Timestamp'] = df['Date'].astype(int)
         proxy_model.sort(df.columns.get_loc("Date"), Qt.DescendingOrder)
 
         self.models[key] = model
@@ -210,82 +215,6 @@ class TransportApp(QWidget):
         msg.setStyleSheet("color: green;")
         self.layout.addWidget(msg)
         QApplication.processEvents()
-
-class AddDataDialog(QDialog):
-    """Fenêtre pour ajouter des données."""
-    def __init__(self, key, df, parent=None):
-        super().__init__(parent)
-        self.key = key
-        self.df = df
-        self.setWindowTitle(f"Ajouter des données ({key})")
-        self.layout = QVBoxLayout()
-
-        # Champs pour chaque colonne
-        self.inputs = {}
-        for col in self.df.columns:
-            input_field = QLineEdit()
-            input_field.setPlaceholderText(col)
-            self.inputs[col] = input_field
-            self.layout.addWidget(input_field)
-
-        # Bouton pour valider
-        self.add_button = QPushButton("Ajouter")
-        self.add_button.clicked.connect(self.add_data)
-        self.layout.addWidget(self.add_button)
-
-        self.setLayout(self.layout)
-
-    def add_data(self):
-        """Ajoute une nouvelle ligne au DataFrame."""
-        try:
-            new_data = {col: self.inputs[col].text() for col in self.df.columns}
-            self.df = pd.concat([self.df, pd.DataFrame([new_data])], ignore_index=True)
-            self.parent().data[self.key] = self.df
-            self.parent().update_table(self.key, self.df)
-            self.close()
-        except Exception as e:
-            error_msg = QLabel(f"Erreur: {str(e)}")
-            self.layout.addWidget(error_msg)
-
-class FilterHeaderView(QHeaderView):
-    def __init__(self, parent=None):
-        super().__init__(Qt.Horizontal, parent)
-        self.setSectionsClickable(True)
-        self.filters = {}
-
-    def set_filter_callback(self, filter_callback):
-        """Définit le callback pour appliquer le filtre."""
-        self.filter_callback = filter_callback
-
-    def create_filter(self, col):
-        """Crée un QLineEdit pour filtrer une colonne spécifique."""
-        if col not in self.filters:
-            filter_input = QLineEdit(self.parent())
-            filter_input.setPlaceholderText("🔍")
-            filter_input.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
-            filter_input.setStyleSheet("border: none; background: transparent; font-size: 12px;")
-            filter_input.textChanged.connect(lambda text: self.filter_callback(col, text))
-            self.setFixedHeight(60)  # Ajuste la hauteur de l'en-tête
-
-            self.filters[col] = filter_input
-
-    def resizeEvent(self, event):
-        """Redéfinit la taille des champs de filtre en fonction de la taille des colonnes."""
-        super().resizeEvent(event)
-        for col, filter_input in self.filters.items():
-            rect = self.sectionViewportPosition(col)
-            filter_input.setGeometry(rect, self.height() // 2, self.sectionSize(col), self.height() // 2)
-
-    def paintSection(self, painter, rect, logicalIndex):
-        """Dessine le titre + la boîte de filtre dans l'en-tête."""
-        super().paintSection(painter, rect, logicalIndex)
-
-        if logicalIndex in self.filters:
-            filter_input = self.filters[logicalIndex]
-            filter_input.setGeometry(rect.x(), rect.y() + rect.height() // 2, rect.width(), rect.height() // 2)
-            filter_input.setVisible(True)
-        else:
-            self.create_filter(logicalIndex)
 
 
 if __name__ == "__main__":
