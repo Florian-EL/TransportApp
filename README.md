@@ -11,6 +11,7 @@ L'application propose une interface graphique basée sur **PyQt5**.
 - **Affichage sous forme de tableau** : Visualiser les données dans des onglets.
 - **Filtrage et triage dynamique** : Rechercher des valeurs spécifiques par colonne.
 - **Statistiques par type de transport** : Génération d'un tableur récapitutif des statistiques annuelles
+- **Grpahique de statistique sur onglet en cours (en cours)** : Affichage de graphiques qui résume les stats par transport
 
 ## Fonctionnalités à venir :
 - **Multilangue (anglais et français)** : Adapter l'application pour plusieurs langues
@@ -37,6 +38,7 @@ TransportApp/
 │   ── main.py
 │   ── AddDataDialog.py
 │   ── FilterHeaderView.py
+|   ── StatsWidget.py
 │── data/
 │── setup.py #may work one day
 │── style.css #for the future
