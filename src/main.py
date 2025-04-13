@@ -18,8 +18,8 @@ class TransportApp(QWidget):
                             "Metro" : "src/data/metro.csv"}
         self.data = {key: self.load_data(path) for key, path in self.file_paths.items()}
         self.models = {}
-        self.tables = {}  # Associe les onglets aux tableaux
-        self.stats_tables = {}  # Associe les onglets aux tableaux de statistiques
+        self.tables = {}
+        self.stats_tables = {}
         self.proxy_models = {}
         self.filters = {}
         self.init_ui()
