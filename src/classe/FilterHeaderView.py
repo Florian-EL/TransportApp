@@ -1,42 +1,34 @@
-from PyQt5.QtWidgets import (QLineEdit, QHeaderView)
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QHeaderView, QLineEdit
+from PyQt5.QtCore import Qt, QSize
 
 class FilterHeaderView(QHeaderView):
     def __init__(self, parent=None):
         super().__init__(Qt.Horizontal, parent)
         self.setSectionsClickable(True)
-        self.filters = {}
+        self.filter_widgets = {}
+        self.filter_height = 20
 
-    def set_filter_callback(self, filter_callback):
-        """Définit le callback pour appliquer le filtre."""
-        self.filter_callback = filter_callback
+    def set_filter_callback(self, callback):
+        """Configure un callback pour appliquer les filtres."""
+        self.filter_callback = callback
 
-    def create_filter(self, col):
-        """Crée un QLineEdit pour filtrer une colonne spécifique."""
-        if col not in self.filters:
-            filter_input = QLineEdit(self.parent())
-            filter_input.setPlaceholderText("🔍")
-            filter_input.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
-            filter_input.setStyleSheet("border: none; background: transparent; font-size: 12px;")
-            filter_input.textChanged.connect(lambda text: self.filter_callback(col, text))
-            self.setFixedHeight(60)  # Ajuste la hauteur de l'en-tête
-
-            self.filters[col] = filter_input
+    def create_filter_widgets(self, column_count):
+        """Crée une zone de filtre pour chaque colonne."""
+        for col in range(column_count):
+            filter_widget = QLineEdit(self.parent())
+            filter_widget.setPlaceholderText(f"Filtrer colonne {col}")
+            filter_widget.textChanged.connect(lambda text, col=col: self.filter_callback(col, text))
+            self.filter_widgets[col] = filter_widget
 
     def resizeEvent(self, event):
-        """Redéfinit la taille des champs de filtre en fonction de la taille des colonnes."""
+        """Redimensionne les zones de filtre pour correspondre aux colonnes."""
         super().resizeEvent(event)
-        for col, filter_input in self.filters.items():
-            rect = self.sectionViewportPosition(col)
-            filter_input.setGeometry(rect, self.height() // 2, self.sectionSize(col), self.height() // 2)
+        offset = self.parent().verticalHeader().width()  # Largeur de l'index (numéros de lignes)
+        for col, widget in self.filter_widgets.items():
+            rect = self.sectionViewportPosition(col) + offset
+            widget.setGeometry(rect, self.height() - self.filter_height, self.sectionSize(col), self.filter_height)
 
-    def paintSection(self, painter, rect, logicalIndex):
-        """Dessine le titre + la boîte de filtre dans l'en-tête."""
-        super().paintSection(painter, rect, logicalIndex)
-
-        if logicalIndex in self.filters:
-            filter_input = self.filters[logicalIndex]
-            filter_input.setGeometry(rect.x(), rect.y() + rect.height() // 2, rect.width(), rect.height() // 2)
-            filter_input.setVisible(True)
-        else:
-            self.create_filter(logicalIndex)
+    def sizeHint(self):
+        """Augmente la hauteur du header pour inclure les filtres."""
+        base_size = super().sizeHint()
+        return QSize(base_size.width(), base_size.height() + self.filter_height)

@@ -2,13 +2,19 @@ import sys
 import pandas as pd
 from PyQt5.QtWidgets import (
     QApplication, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem,
-    QPushButton, QTabWidget, QFileDialog, QWidget, QLabel, QSizePolicy, QHeaderView, QTableView)
+    QPushButton, QTabWidget, QFileDialog, QWidget, QLabel, QSizePolicy, QHeaderView, QTableView, QSplitter)
+
+from PIL import Image, ImageQt
 
 from PyQt5.QtCore import Qt, QSortFilterProxyModel
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 from classe.FilterHeaderView import FilterHeaderView
 from classe.AddDataDialog import AddDataDialog
+from classe.StatsWidget import StatsWidget
+
+import warnings
+warnings.filterwarnings("ignore")
 
 class TransportApp(QWidget):
     def __init__(self):
@@ -60,15 +66,28 @@ class TransportApp(QWidget):
         df['Distance (km)'] = pd.to_numeric(df['Distance (km)'], errors='coerce').fillna(0).astype(int)
         df['Prix (€)'] = pd.to_numeric(df['Prix (€)'], errors='coerce').fillna(0).astype(int)
         df['CO2 (kg)'] = pd.to_numeric(df['CO2 (kg)'], errors='coerce').fillna(0).astype(int)
-        df['Date'] = pd.to_datetime(df['Date'], errors='coerce', format='%d/%m/%Y').dt.strftime('%d/%m/%Y')
+        df['Date'] = pd.to_datetime(df['Date'], errors='coerce', format='%d/%m/%Y')
+        df.sort_values(by='Date', ascending=False, inplace=True)
+        df['Date'] = df['Date'].dt.strftime('%d/%m/%Y')
 
     def add_tab(self, key, df):
         def apply_filter(col, text):
             proxy_model.setFilterKeyColumn(col)
             proxy_model.setFilterRegularExpression(text)
         
-        tab = QWidget()
-        tab.layout = QVBoxLayout()
+        def load_data_to_model(model, df):
+            model.setColumnCount(len(df.columns))
+            model.setHorizontalHeaderLabels(df.columns)
+
+            for row in df.itertuples(index=False):
+                items = []
+                for cell in row:
+                    item = QStandardItem(str(cell))
+                    item.setTextAlignment(Qt.AlignCenter | Qt.AlignTop)  # Aligner en haut et à gauche
+                    items.append(item)
+                model.appendRow(items)
+            return model
+        
         
         # Tableur de statistiques (QTableWidget)
         stats_table_widget = QTableWidget()
@@ -76,7 +95,7 @@ class TransportApp(QWidget):
         stats_table_widget.resizeRowsToContents()
         stats_table_widget.setMaximumHeight(stats_table_widget.verticalHeader().height() + stats_table_widget.horizontalHeader().height())
         self.stats_tables[key] = stats_table_widget
-
+        
         # Tableau principal (QTableView)
         model = QStandardItemModel()
         proxy_model = QSortFilterProxyModel(self)
@@ -84,51 +103,49 @@ class TransportApp(QWidget):
         proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
         proxy_model.setFilterKeyColumn(-1)  # Appliquer à toutes les colonnes
         proxy_model.setDynamicSortFilter(True)
-        #df['Timestamp'] = df['Date'].astype(int)
-        proxy_model.sort(df.columns.get_loc("Date"), Qt.DescendingOrder)
-
-        self.models[key] = model
+        
+        self.models[key] = load_data_to_model(model, df)
         self.proxy_models[key] = proxy_model
-
+        
         table_view = QTableView()
         table_view.setModel(proxy_model)
-        table_view.setSortingEnabled(True)
+        
+        self.chart_canvas = QLabel("Graphiques")
+        
+        self.update_statistics(key, df)
+        self.update_table(key, df)
+        
         
         # Gestion filtre et header
         header = FilterHeaderView(table_view)
+        header.set_filter_callback(apply_filter)
+        header.create_filter_widgets(len(df.columns))
         table_view.setHorizontalHeader(header)
         table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        header.set_filter_callback(apply_filter)
-
-        # Charger les données
-        self.load_data_to_model(model, df)
-
-        tab.layout.addWidget(stats_table_widget)
-        self.update_statistics(key, df)
-
-        tab.layout.addWidget(table_view)
-        self.update_table(key, df)
+        table_view.horizontalHeader().setDefaultAlignment(Qt.AlignCenter | Qt.AlignTop)
         
-        tab.setLayout(tab.layout)
+        
+        splitter = QSplitter(Qt.Horizontal)
+        splitter.addWidget(stats_table_widget)
+        splitter.addWidget(self.chart_canvas)
+
+        layou_split = QSplitter(Qt.Vertical)
+        layou_split.addWidget(splitter)
+        layou_split.addWidget(table_view)
+        
+        layout_split = QVBoxLayout()
+        layout_split.addWidget(layou_split)
+        
+        widget = QWidget()
+        widget.setLayout(layout_split)
+        
+        tab_layout = QVBoxLayout()
+        tab_layout.addWidget(widget)
+        
+        tab = QWidget()
+        tab.setLayout(tab_layout)
+        
         self.tabs.addTab(tab, key)
-
-    def load_data_to_model(self, model, df):
-        model.setColumnCount(len(df.columns))
-        model.setHorizontalHeaderLabels(df.columns)
-
-        for row in df.itertuples(index=False):
-            items = []
-            for cell in row:
-                item = QStandardItem(str(cell))
-                item.setTextAlignment(Qt.AlignLeft | Qt.AlignTop)  # Aligner en haut et à gauche
-                items.append(item)
-            model.appendRow(items)
-
-    def create_filter(self, proxy_model, column_index):
-        def filter_function(text):
-            proxy_model.setFilterKeyColumn(column_index)
-            proxy_model.setFilterFixedString(text)
-        return filter_function
 
     def update_table(self, key, df):
         
@@ -147,9 +164,7 @@ class TransportApp(QWidget):
 
         self.proxy_models[key].invalidateFilter()
 
-    def update_statistics(self, key, df):
-        """Calculer et afficher les statistiques par année."""
-        
+    def update_statistics(self, key, df):       
         # Calcul des statistiques : somme et moyenne
         stats = df.groupby('Année').agg({
             'Distance (km)': ['sum'],
@@ -177,6 +192,9 @@ class TransportApp(QWidget):
             for j in range(len(stats.columns)):
                 value = str(stats.iloc[i, j])
                 stats_table_widget.setItem(i, j, QTableWidgetItem(value))
+        
+        pixmap = StatsWidget.update_stats(self.data)
+        self.chart_canvas.setPixmap(pixmap)
 
     def load_data(self, file_path):
         """Charge les données depuis un fichier CSV."""
