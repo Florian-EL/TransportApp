@@ -31,4 +31,4 @@ class FilterHeaderView(QHeaderView):
     def sizeHint(self):
         """Augmente la hauteur du header pour inclure les filtres."""
         base_size = super().sizeHint()
-        return QSize(base_size.width(), base_size.height() + self.filter_height)
+        return QSize(base_size.width(), base_size.height() + self.filter_height*2)

@@ -122,30 +122,28 @@ class TransportApp(QWidget):
         header.create_filter_widgets(len(df.columns))
         table_view.setHorizontalHeader(header)
         table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        table_view.horizontalHeader().setDefaultAlignment(Qt.AlignCenter | Qt.AlignTop)
+        #table_view.horizontalHeader().setDefaultAlignment(Qt.AlignCenter | Qt.AlignTop)
         
         
         splitter = QSplitter(Qt.Horizontal)
         splitter.addWidget(stats_table_widget)
         splitter.addWidget(self.chart_canvas)
 
-        layou_split = QSplitter(Qt.Vertical)
+        layou_split = QVBoxLayout()
         layou_split.addWidget(splitter)
         layou_split.addWidget(table_view)
-        
-        layout_split = QVBoxLayout()
-        layout_split.addWidget(layou_split)
+
         
         widget = QWidget()
-        widget.setLayout(layout_split)
+        widget.setLayout(layou_split)
         
-        tab_layout = QVBoxLayout()
-        tab_layout.addWidget(widget)
+        #tab_layout = QVBoxLayout()
+        #tab_layout.addWidget(widget)
+        #
+        #tab = QWidget()
+        #tab.setLayout(tab_layout)
         
-        tab = QWidget()
-        tab.setLayout(tab_layout)
-        
-        self.tabs.addTab(tab, key)
+        self.tabs.addTab(widget, key)
 
     def update_table(self, key, df):
         
@@ -174,6 +172,8 @@ class TransportApp(QWidget):
             'CO2 (kg)': ['sum']
         }).reset_index()
         
+        
+        
         #stats.columns = ['Année', 'Distance (km)', 'Heures', 'Minutes', 'Prix (€)', 'CO2 (kg)']
         stats['Heures'] = stats['Heures'] + stats['Minutes'] // 60
         stats['Minutes'] = stats['Minutes'] % 60
@@ -193,7 +193,7 @@ class TransportApp(QWidget):
                 value = str(stats.iloc[i, j])
                 stats_table_widget.setItem(i, j, QTableWidgetItem(value))
         
-        pixmap = StatsWidget.update_stats(self.data)
+        pixmap = StatsWidget.update_stats(df)
         self.chart_canvas.setPixmap(pixmap)
 
     def load_data(self, file_path):
