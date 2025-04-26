@@ -6,16 +6,18 @@ from matplotlib.ticker import FuncFormatter
 
 class StatsWidget:
     @staticmethod
-    def update_stats(data):
+    def update_stats(data, key):
         fig, ax1 = plt.subplots(figsize=(3, 2)) #largeur x hauteur
         
         data = data.copy()
         data['Heures_tot'] = data['Heures'] + data['Minutes'] / 60
         
+        data['count'] = 1
+        
         grouped = data.groupby('Année').agg({
             'Distance (km)': 'sum',
             'Heures_tot': 'sum',
-            'Société': 'count',
+            'count': 'count',
             'Prix (€)': 'sum',
             'CO2 (kg)': 'sum'
         }).reset_index()
@@ -34,15 +36,16 @@ class StatsWidget:
         # Heures
         ax2.bar(x, grouped['Heures_tot'], width=width, label='Heures', color='tab:orange')
         # Trajets
-        ax2.bar(x + width, grouped['Société'], width=width, label='Trajets', color='tab:green')
+        ax2.bar(x + width, grouped['count'], width=width, label='Trajets', color='tab:green')
         # CO2
         ax2.bar(x + width*2, grouped['CO2 (kg)'], width=width, label='CO2', color='tab:cyan')
         
-        formatter = FuncFormatter(lambda x, _: f'{x/1000:.0f}')
+        ax1.set_yscale('log')
+        formatter = FuncFormatter(lambda x, _: f'{int(x)}')
         ax1.yaxis.set_major_formatter(formatter)
         handles1, labels1 = ax1.get_legend_handles_labels()
         handles2, labels2 = ax2.get_legend_handles_labels()
-        ax1.legend(handles1 + handles2, labels1 + labels2, loc='upper left', bbox_to_anchor=(1.01, 1))
+        ax1.legend(handles1 + handles2, labels1 + labels2, loc='upper left', bbox_to_anchor=(1.15, 0.9))
         
         plt.xticks(x)
         

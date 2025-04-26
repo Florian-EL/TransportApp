@@ -1,27 +1,25 @@
-import sys
 import pandas as pd
-from PyQt5.QtWidgets import (
-    QApplication, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem,
-    QPushButton, QTabWidget, QFileDialog, QWidget, QLabel, QSizePolicy, QHeaderView, QTableView, QSplitter)
-
-from PIL import Image, ImageQt
+from PyQt5.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem,\
+                            QPushButton, QTabWidget, QFileDialog, QWidget, QLabel, QSizePolicy, QHeaderView, QTableView
 
 from PyQt5.QtCore import Qt, QSortFilterProxyModel
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
-from classe.FilterHeaderView import FilterHeaderView
-from classe.AddDataDialog import AddDataDialog
-from classe.StatsWidget import StatsWidget
-
-import warnings
-warnings.filterwarnings("ignore")
+from src.classe.FilterHeaderView import FilterHeaderView
+from src.classe.AddDataDialog import AddDataDialog
+from src.classe.StatsWidget import StatsWidget
 
 class TransportApp(QWidget):
     def __init__(self):
         super().__init__()
-        self.file_paths = {"Train" : "src/data/train.csv",
-                            "Bus" : "src/data/bus.csv",
-                            "Metro" : "src/data/metro.csv"}
+        self.file_paths = {
+            "Train" : "data/train.csv",
+            "Metro" : "data/metro.csv",
+            "Bus" :   "data/bus.csv",
+            "Fiesta" :"data/fiesta.csv",
+            "Avion" : "data/avion.csv",
+            "Taxi" :  "data/taxi.csv",
+        }
         self.data = {key: self.load_data(path) for key, path in self.file_paths.items()}
         self.models = {}
         self.tables = {}
@@ -41,6 +39,8 @@ class TransportApp(QWidget):
         self.tabs.setMovable(True)
 
         for key in self.data.keys():
+            if key == "Fiesta" :
+                self.calculate_fiesta(self.data[key])
             self.convert_to_number(self.data[key])
             self.add_tab(key, self.data[key])
 
@@ -59,16 +59,39 @@ class TransportApp(QWidget):
         self.layout.addWidget(self.tabs)
         self.layout.addLayout(button_layout)
         self.setLayout(self.layout)
+    
+    def calculate_fiesta(self, df) :
+        v_moy = 35 #km/h
+        nb_h_tot = 23280 #h
+        temps_th_volant = 445 #h
+        temps_vol_pourcent = 1.912 #%
+        co2 = 0.105 #kg/km
         
+        df['Date'] = pd.to_datetime(df['Date'], errors='coerce', format='%d/%m/%Y')
+        df.sort_values(by='Date', ascending=False)
+        df['Kilométrage (km)'].astype(int)
+
+        df['Distance (km)'] = df['Kilométrage (km)'].shift(-1) - df['Kilométrage (km)']
+        
+        df['Litre par 100km'] =  round(pd.to_numeric(df['Quantité (L)'] / df['Distance (km)']*100).fillna(0).astype(float), 2)
+        df['Prix au litre'] = round(pd.to_numeric(df['Prix (€)'] / df['Quantité (L)']).fillna(0).astype(float), 4)
+
+        df['km journalier moy'] = round(pd.to_numeric(df['Distance (km)'] / (pd.to_datetime(df['Date']).shift(-1) - pd.to_datetime(df['Date'])).dt.days), 2)
+        
+        df['Heures'] = df['Distance (km)'] / v_moy
+        df['Minutes'] = 0
+        df['CO2 (kg)'] = co2 * df['Distance (km)']
+    
     def convert_to_number(self, df):
         df['Heures'] = pd.to_numeric(df['Heures'], errors='coerce').fillna(0).astype(int)
         df['Minutes'] = pd.to_numeric(df['Minutes'], errors='coerce').fillna(0).astype(int)
-        df['Distance (km)'] = pd.to_numeric(df['Distance (km)'], errors='coerce').fillna(0).astype(int)
-        df['Prix (€)'] = pd.to_numeric(df['Prix (€)'], errors='coerce').fillna(0).astype(int)
-        df['CO2 (kg)'] = pd.to_numeric(df['CO2 (kg)'], errors='coerce').fillna(0).astype(int)
+        df['Distance (km)'] = pd.to_numeric(df['Distance (km)'], errors='coerce').fillna(0).astype(float)
+        df['Prix (€)'] = pd.to_numeric(df['Prix (€)'], errors='coerce').fillna(0).astype(float)
+        df['CO2 (kg)'] = pd.to_numeric(df['CO2 (kg)'], errors='coerce').fillna(0).astype(float)
         df['Date'] = pd.to_datetime(df['Date'], errors='coerce', format='%d/%m/%Y')
         df.sort_values(by='Date', ascending=False, inplace=True)
         df['Date'] = df['Date'].dt.strftime('%d/%m/%Y')
+        df['Année'] = pd.to_datetime(df['Date'], format='%d/%m/%Y').dt.year
 
     def add_tab(self, key, df):
         def apply_filter(col, text):
@@ -115,41 +138,31 @@ class TransportApp(QWidget):
         self.update_statistics(key, df)
         self.update_table(key, df)
         
-        
         # Gestion filtre et header
         header = FilterHeaderView(table_view)
         header.set_filter_callback(apply_filter)
         header.create_filter_widgets(len(df.columns))
         table_view.setHorizontalHeader(header)
         table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        #table_view.horizontalHeader().setDefaultAlignment(Qt.AlignCenter | Qt.AlignTop)
         
-        
-        splitter = QSplitter(Qt.Horizontal)
+        splitter = QHBoxLayout()
         splitter.addWidget(stats_table_widget)
         splitter.addWidget(self.chart_canvas)
 
         layou_split = QVBoxLayout()
-        layou_split.addWidget(splitter)
+        layou_split.addLayout(splitter)
         layou_split.addWidget(table_view)
-
         
         widget = QWidget()
         widget.setLayout(layou_split)
-        
-        #tab_layout = QVBoxLayout()
-        #tab_layout.addWidget(widget)
-        #
-        #tab = QWidget()
-        #tab.setLayout(tab_layout)
         
         self.tabs.addTab(widget, key)
 
     def update_table(self, key, df):
         
-        df["Prix horaire (€)"] = round(df["Prix (€)"] / (df["Heures"] + df["Minutes"] / 60), 2)
-        df["Prix au km (km)"] = round(df["Prix (€)"] / df["Distance (km)"], 2)
-        df["CO2 par km (g/km)"] = round(df["CO2 (kg)"] / df["Distance (km)"]*1000, 2)
+        df["Prix horaire (€)"] =  round(pd.to_numeric(df["Prix (€)"] / (df["Heures"] + df["Minutes"] / 60)).fillna(0).astype(float), 2)
+        df["Prix au km (km)"] =   round(pd.to_numeric(df["Prix (€)"] / df["Distance (km)"]).fillna(0).astype(float), 2)
+        df["CO2 par km (g/km)"] = round(pd.to_numeric(df["CO2 (kg)"] / df["Distance (km)"]*1000).fillna(0).astype(float), 2)
         
         model = self.models[key]
         model.clear()
@@ -193,7 +206,7 @@ class TransportApp(QWidget):
                 value = str(stats.iloc[i, j])
                 stats_table_widget.setItem(i, j, QTableWidgetItem(value))
         
-        pixmap = StatsWidget.update_stats(df)
+        pixmap = StatsWidget.update_stats(df, key)
         self.chart_canvas.setPixmap(pixmap)
 
     def load_data(self, file_path):
@@ -233,11 +246,3 @@ class TransportApp(QWidget):
         msg.setStyleSheet("color: green;")
         self.layout.addWidget(msg)
         QApplication.processEvents()
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = TransportApp()
-    window.showMaximized()
-    window.show()
-    sys.exit(app.exec_())

@@ -1,5 +1,5 @@
 import pandas as pd
-from PyQt5.QtWidgets import (QVBoxLayout, QPushButton, QLabel, QDialog, QLineEdit)
+from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QLabel, QDialog, QLineEdit
 
 class AddDataDialog(QDialog):
     """Fenêtre pour ajouter des données."""
