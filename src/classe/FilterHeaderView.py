@@ -16,7 +16,7 @@ class FilterHeaderView(QHeaderView):
         """Crée une zone de filtre pour chaque colonne."""
         for col in range(column_count):
             filter_widget = QLineEdit(self.parent())
-            filter_widget.setPlaceholderText(f"Filtrer colonne {col}")
+            filter_widget.setPlaceholderText("Filtrer colonne")
             filter_widget.textChanged.connect(lambda text, col=col: self.filter_callback(col, text))
             self.filter_widgets[col] = filter_widget
 

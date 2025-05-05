@@ -3,16 +3,17 @@ from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QLabel, QDialog, QLineEdit
 
 class AddDataDialog(QDialog):
     """Fenêtre pour ajouter des données."""
-    def __init__(self, key, df, parent=None):
+    def __init__(self, key, df, donneebrut, parent=None):
         super().__init__(parent)
         self.key = key
         self.df = df
+        self.donneebrut = donneebrut[key]
         self.setWindowTitle(f"Ajouter des données ({key})")
         self.layout = QVBoxLayout()
-
+        
         # Champs pour chaque colonne
         self.inputs = {}
-        for col in self.df.columns:
+        for col in self.donneebrut.columns:
             input_field = QLineEdit()
             input_field.setPlaceholderText(col)
             self.inputs[col] = input_field
@@ -28,10 +29,12 @@ class AddDataDialog(QDialog):
     def add_data(self):
         """Ajoute une nouvelle ligne au DataFrame."""
         try:
-            new_data = {col: self.inputs[col].text() for col in self.df.columns}
+            new_data = {col: self.inputs[col].text() for col in self.donneebrut.columns}
+            self.parent().update_table(self.key, new_data)
             self.df = pd.concat([self.df, pd.DataFrame([new_data])], ignore_index=True)
             self.parent().data[self.key] = self.df
-            self.parent().update_table(self.key, self.df)
+            
+            self.parent().save_to_file()
             self.close()
         except Exception as e:
             error_msg = QLabel(f"Erreur: {str(e)}")
