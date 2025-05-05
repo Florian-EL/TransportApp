@@ -90,24 +90,23 @@ class TransportApp(QWidget):
         nb_pas_par_min = 100
         nb_trajet_quotidien = 4
         
-        df['Pas par semaine'] = pd.to_numeric(df['Moyenne de pas par jour']*7).fillna(0).astype(int)
-        df['Distance (km)'] = round(pd.to_numeric(df['Distance moyenne par jour (km / jour)']*7, errors='coerce').fillna(0).astype(float), 2)
-        df['Calories'] = pd.to_numeric(df['Calorie moyenne par jour']*7, errors='coerce').fillna(0).astype(float)
+        df['Pas par semaine'] = pd.to_numeric(df['Pas par jour']*7).fillna(0).astype(int)
+        df['Distance (km)'] = round(pd.to_numeric(df['Distance par jour (km / jour)']*7, errors='coerce').fillna(0).astype(float), 2)
+        df['Calories'] = pd.to_numeric(df['Calorie par jour']*7, errors='coerce').fillna(0).astype(float)
         
         df['Heures'] = pd.to_numeric(df['Pas par semaine']/nb_pas_par_min//60, errors='coerce').fillna(0).astype(int)
         df['Minutes'] = pd.to_numeric(df['Pas par semaine']/nb_pas_par_min%60, errors='coerce').fillna(0).astype(int)
         
         df['Date'] = df['Année'].astype(str) + " - " + df['Numéro semaine'].astype(str).str.zfill(2)
         
-        df['Nombre de pas par kilomètre'] = pd.to_numeric(df['Pas par semaine']/df['Distance (km)'], errors='coerce').fillna(0).astype(int)
+        df['Pas par kilomètre'] = pd.to_numeric(df['Pas par semaine']/df['Distance (km)'], errors='coerce').fillna(0).astype(int)
         df['Distance par trajet'] = round(pd.to_numeric(df['Distance (km)']/nb_trajet_quotidien, errors='coerce').fillna(0).astype(float), 2)
-        df['Taille de pas'] = round(pd.to_numeric(100000/df['Nombre de pas par kilomètre'], errors='coerce').fillna(0).astype(float), 2)
+        df['Taille de pas'] = round(pd.to_numeric(100000/df['Pas par kilomètre'], errors='coerce').fillna(0).astype(float), 2)
         
         df['CO2 (kg)'] = 0
         df["Prix (€)"] = 0
         df.sort_values(by='Date', ascending=False, inplace=True)
         
-    
     def convert_to_number(self, df):
         df['Heures'] = pd.to_numeric(df['Heures'], errors='coerce').fillna(0).astype(int)
         df['Minutes'] = pd.to_numeric(df['Minutes'], errors='coerce').fillna(0).astype(int)
@@ -188,9 +187,10 @@ class TransportApp(QWidget):
 
     def update_table(self, key, df):
         
-        df["Prix horaire (€)"] =  round(pd.to_numeric(df["Prix (€)"] / (df["Heures"] + df["Minutes"] / 60)).fillna(0).astype(float), 2)
-        df["Prix au km (km)"] =   round(pd.to_numeric(df["Prix (€)"] / df["Distance (km)"]).fillna(0).astype(float), 2)
-        df["CO2 par km (g/km)"] = round(pd.to_numeric(df["CO2 (kg)"] / df["Distance (km)"]*1000).fillna(0).astype(float), 2)
+        if key != 'Marche' :
+            df["Prix horaire (€)"] =  round(pd.to_numeric(df["Prix (€)"] / (df["Heures"] + df["Minutes"] / 60)).fillna(0).astype(float), 2)
+            df["Prix au km (km)"] =   round(pd.to_numeric(df["Prix (€)"] / df["Distance (km)"]).fillna(0).astype(float), 2)
+            df["CO2 par km (g/km)"] = round(pd.to_numeric(df["CO2 (kg)"] / df["Distance (km)"]*1000).fillna(0).astype(float), 2)
         
         model = self.models[key]
         model.clear()
