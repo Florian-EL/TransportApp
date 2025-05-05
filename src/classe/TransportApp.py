@@ -232,6 +232,18 @@ class TransportApp(QWidget):
             self.new_window = DelDataDialog(key, self.donneebrut[key], self)
             self.new_window.exec_()
 
+    def apply_transformations(self, key):
+        """Applique les transformations nécessaires en fonction de la clé."""
+        if key == "Fiesta":
+            self.calculate_fiesta(self.data[key])
+            self.convert_to_number(self.data[key])
+        elif key == "Marche":
+            self.calculate_marche(self.data[key])
+        else:
+            self.convert_to_number(self.data[key])
+
+        # Mettre à jour le tableau après les transformations
+        self.update_table(key, self.data[key])
 
     def show_message(self, message):
         """Affiche un message temporaire."""

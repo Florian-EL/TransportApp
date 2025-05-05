@@ -47,28 +47,22 @@ class DelDataDialog(QDialog):
             elif len(matching_rows) > 1:
                 raise ValueError("Plusieurs lignes correspondent aux critères. Veuillez préciser davantage.")
 
-            # Supprimer la ligne correspondante
             self.df = self.df.drop(index=matching_rows.index[0]).reset_index(drop=True)
-            
-            
-            
+
             # Mettre à jour le DataFrame dans le parent
             self.parent().data[self.key] = self.df
             
-            if key == "Fiesta" :
-                self.parent().calculate_fiesta(self.df[key])
-            if key == 'Marche' :
-                self.parent().calculate_marche(self.df[key])
-                #═self.parent().add_tab(key, self.data[key])
-
-            self.parent().convert_to_number(self.df[key])
-            self.parent().update_table(self.key, self.df)
-
+            self.parent().apply_transformations(self.key)
+            
             # Sauvegarder les modifications
             self.parent().save_to_file()
 
             # Fermer la fenêtre
             self.close()
+            
+            
+            
+            
         except ValueError as ve:
             self.error_label.setText(f"Erreur : {str(ve)}")
         except Exception as e:
