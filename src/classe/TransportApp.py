@@ -7,6 +7,7 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 from src.classe.FilterHeaderView import FilterHeaderView
 from src.classe.AddDataDialog import AddDataDialog
+from src.classe.DelDataDialog import DelDataDialog
 from src.classe.StatsWidget import StatsWidget
 
 class TransportApp(QWidget):
@@ -51,14 +52,14 @@ class TransportApp(QWidget):
             self.convert_to_number(self.data[key])
             self.add_tab(key, self.data[key])
 
-        self.new_window_button = QPushButton("Ajouter des données")
-        #self.save_button = QPushButton("Sauvegarder les données")
+        self.add_windows = QPushButton("Ajouter des données")
+        self.del_windows = QPushButton("Supprimer les données")
 
-        self.new_window_button.clicked.connect(self.open_new_window)
-        #self.save_button.clicked.connect(self.save_to_file)
+        self.add_windows.clicked.connect(self.add_window)
+        self.del_windows.clicked.connect(self.del_window)
 
-        button_layout.addWidget(self.new_window_button)
-        #button_layout.addWidget(self.save_button)
+        button_layout.addWidget(self.add_windows)
+        button_layout.addWidget(self.del_windows)
         
         self.layout.addWidget(self.tabs)
         self.layout.addLayout(button_layout)
@@ -217,12 +218,20 @@ class TransportApp(QWidget):
             df.to_csv(file_path, index=False, sep=";")
         #self.show_message("Données sauvegardées avec succès.")
 
-    def open_new_window(self):
+    def add_window(self):
         """Ouvre une fenêtre pour ajouter des données."""
         key = self.tabs.tabText(self.tabs.currentIndex())
         if key in self.data:
             self.new_window = AddDataDialog(key, self.data[key], self.donneebrut, self)
             self.new_window.exec_()
+            
+    def del_window(self):
+        """Ouvre une fenêtre pour ajouter des données."""
+        key = self.tabs.tabText(self.tabs.currentIndex())
+        if key in self.data:
+            self.new_window = DelDataDialog(key, self.donneebrut[key], self)
+            self.new_window.exec_()
+
 
     def show_message(self, message):
         """Affiche un message temporaire."""
