@@ -1,6 +1,7 @@
 import pandas as pd
-from PyQt5.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QTableWidget,\
+from PyQt5.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem,\
                             QPushButton, QTabWidget, QFileDialog, QWidget, QLabel, QSizePolicy, QHeaderView, QTableView
+
 
 from PyQt5.QtCore import Qt, QSortFilterProxyModel
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
@@ -9,6 +10,19 @@ from src.classe.FilterHeaderView import FilterHeaderView
 from src.classe.AddDataDialog import AddDataDialog
 from src.classe.DelDataDialog import DelDataDialog
 from src.classe.StatsWidget import StatsWidget
+
+class DateSortFilterProxyModel(QSortFilterProxyModel):
+    def lessThan(self, left, right):
+        left_data = left.data(Qt.DisplayRole)
+        right_data = right.data(Qt.DisplayRole)
+
+        try:
+            left_date = pd.to_datetime(left_data, format='%d/%m/%Y', errors='coerce')
+            right_date = pd.to_datetime(right_data, format='%d/%m/%Y', errors='coerce')
+            return left_date < right_date
+        except Exception:
+            return super().lessThan(left, right)
+
 
 class TransportApp(QWidget):
     def __init__(self):
@@ -40,17 +54,18 @@ class TransportApp(QWidget):
         self.tabs.setTabPosition(QTabWidget.North)
         self.tabs.setMovable(True)
         
-        self.donneebrut = {key: df.copy(deep=True) for key, df in self.data.items()}
+        
+        data = self.data.copy()
 
         for key in self.data.keys():
             if key == "Fiesta" :
-                self.calculate_fiesta(self.data[key])
+                self.calculate_fiesta(data[key])
             if key == 'Marche' :
-                self.calculate_marche(self.data[key])
-                self.add_tab(key, self.data[key])
+                self.calculate_marche(data[key])
+                self.add_tab(key, data[key])
                 continue
-            self.convert_to_number(self.data[key])
-            self.add_tab(key, self.data[key])
+            self.convert_to_number(key, data[key])
+            self.add_tab(key, data[key])
 
         self.add_windows = QPushButton("Ajouter des données")
         self.del_windows = QPushButton("Supprimer les données")
@@ -106,18 +121,25 @@ class TransportApp(QWidget):
         
         df['CO2 (kg)'] = 0
         df["Prix (€)"] = 0
-        df.sort_values(by='Date', ascending=False, inplace=True)
         
-    def convert_to_number(self, df):
+    def convert_to_number(self, key, df):
         df['Heures'] = pd.to_numeric(df['Heures'], errors='coerce').fillna(0).astype(int)
         df['Minutes'] = pd.to_numeric(df['Minutes'], errors='coerce').fillna(0).astype(int)
         df['Distance (km)'] = pd.to_numeric(df['Distance (km)'], errors='coerce').fillna(0).astype(float)
         df['Prix (€)'] = round(pd.to_numeric(df['Prix (€)'], errors='coerce').fillna(0).astype(float), 2)
         df['CO2 (kg)'] = round(pd.to_numeric(df['CO2 (kg)'], errors='coerce').fillna(0).astype(float), 2)
         df['Date'] = pd.to_datetime(df['Date'], errors='coerce', format='%d/%m/%Y')
-        df.sort_values(by='Date', ascending=False, inplace=True)
-        df['Date'] = df['Date'].dt.strftime('%d/%m/%Y')
-        df['Année'] = pd.to_datetime(df['Date'], format='%d/%m/%Y').dt.year
+        df['Date'] = df['Date'].dt.strftime('%d/%m/%Y')        
+        if key != 'Marche' :
+            df['Année'] = pd.to_datetime(df['Date'], format='%d/%m/%Y').dt.year
+            df["Prix horaire (€)"] =  round(pd.to_numeric(df["Prix (€)"] / (df["Heures"] + df["Minutes"] / 60)).fillna(0).astype(float), 2)
+            df["Prix au km (km)"] =   round(pd.to_numeric(df["Prix (€)"] / df["Distance (km)"]).fillna(0).astype(float), 2)
+            df["CO2 par km (g/km)"] = round(pd.to_numeric(df["CO2 (kg)"] / df["Distance (km)"]*1000).fillna(0).astype(float), 2)
+        
+        try :
+            df['Classe'] = df["Classe"].astype(int)
+        except Exception :
+            pass
 
     def add_tab(self, key, df):
         def apply_filter(col, text):
@@ -130,7 +152,9 @@ class TransportApp(QWidget):
 
             for row in df.itertuples(index=False):
                 items = []
-                for cell in row:
+                for col, cell in enumerate(row):
+                    if df.columns[col] == 'Date' and type(cell) is not str :
+                        cell = cell.strftime('%d/%m/%Y')
                     item = QStandardItem(str(cell))
                     item.setTextAlignment(Qt.AlignCenter | Qt.AlignTop)  # Aligner en haut et à gauche
                     items.append(item)
@@ -146,7 +170,7 @@ class TransportApp(QWidget):
         
         # Tableau principal (QTableView)
         model = QStandardItemModel()
-        proxy_model = QSortFilterProxyModel(self)
+        proxy_model = DateSortFilterProxyModel(self)
         proxy_model.setSourceModel(model)
         proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
         proxy_model.setFilterKeyColumn(-1)  # Appliquer à toutes les colonnes
@@ -157,14 +181,13 @@ class TransportApp(QWidget):
         
         table_view = QTableView()
         table_view.setModel(proxy_model)
+        table_view.setSortingEnabled(True)
         
         self.chart_canvas = QLabel("Graphiques")
         
         stats_table_widget = StatsWidget.update_statistics(self, key, df)
         pixmap = StatsWidget.update_stats(self, df)
         self.chart_canvas.setPixmap(pixmap)
-        
-        self.update_table(key, df)
         
         # Gestion filtre et header
         header = FilterHeaderView(table_view)
@@ -173,12 +196,13 @@ class TransportApp(QWidget):
         table_view.setHorizontalHeader(header)
         table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         
-        splitter = QHBoxLayout()
-        splitter.addWidget(stats_table_widget)
-        splitter.addWidget(self.chart_canvas)
+        self.splitter = QHBoxLayout()
+        self.splitter.addWidget(stats_table_widget)
+        self.splitter.addWidget(self.chart_canvas)
+        
 
         layou_split = QVBoxLayout()
-        layou_split.addLayout(splitter)
+        layou_split.addLayout(self.splitter)
         layou_split.addWidget(table_view)
         
         widget = QWidget()
@@ -187,22 +211,53 @@ class TransportApp(QWidget):
         self.tabs.addTab(widget, key)
 
     def update_table(self, key, df):
-        
-        if key != 'Marche' :
-            df["Prix horaire (€)"] =  round(pd.to_numeric(df["Prix (€)"] / (df["Heures"] + df["Minutes"] / 60)).fillna(0).astype(float), 2)
-            df["Prix au km (km)"] =   round(pd.to_numeric(df["Prix (€)"] / df["Distance (km)"]).fillna(0).astype(float), 2)
-            df["CO2 par km (g/km)"] = round(pd.to_numeric(df["CO2 (kg)"] / df["Distance (km)"]*1000).fillna(0).astype(float), 2)
-        
+        """Met à jour le tableau pour refléter les modifications dans le DataFrame."""
         model = self.models[key]
-        model.clear()
+        model.clear()  # Efface les données existantes dans le modèle
+
+        # Réinitialiser les indices du DataFrame
+        df = df.reset_index(drop=True)
+
+        # Recharger les données dans le modèle
         model.setColumnCount(len(df.columns))
         model.setHorizontalHeaderLabels(df.columns)
 
         for row in df.itertuples(index=False):
-            items = [QStandardItem(str(cell)) for cell in row]
+            items = []
+            for cell in row:
+                item = QStandardItem(str(cell))
+                item.setTextAlignment(Qt.AlignCenter | Qt.AlignTop)  # Aligner le texte
+                items.append(item)
             model.appendRow(items)
-
         self.proxy_models[key].invalidateFilter()
+
+    def update_stats_table(self, key, df):
+        """Met à jour le tableur de statistiques pour refléter les modifications dans le DataFrame."""
+        stats_table_widget = self.stats_tables[key]
+        stats_table_widget.clearContents()  # Efface les données existantes
+        stats_table_widget.setRowCount(0)  # Réinitialise le nombre de lignes
+
+        # Recalculer les statistiques
+        stats_table_widget = StatsWidget.update_statistics(self, key, df)
+        stats_table_widget.resizeRowsToContents()
+        
+        
+        self.splitter.removeWidget(self.chart_canvas)
+        self.chart_canvas.deleteLater()
+        
+        chart_canvas = QLabel("Graphiques")
+        
+        pixmap = StatsWidget.update_stats(self, df)
+        chart_canvas.setPixmap(pixmap)
+        
+        self.splitter.addWidget(chart_canvas)
+
+        #self.chart_canvas.update()
+        #self.chart_canvas.repaint()
+        
+        print(self.splitter.count())  # Doit augmenter
+        print(chart_canvas.isVisible())  # Devrait être True
+        
 
     def load_data(self, file_path):
         """Charge les données depuis un fichier CSV."""
@@ -211,39 +266,21 @@ class TransportApp(QWidget):
         except FileNotFoundError:
             return pd.DataFrame(columns=["Date", "Type", "Distance", "Heures", "Minutes", "Prix", "CO2"])
 
-    def save_to_file(self):
-        """Sauvegarde les données pour chaque onglet."""
-        for key, file_path in self.file_paths.items():
-            df = self.data[key]
-            df.to_csv(file_path, index=False, sep=";")
-        #self.show_message("Données sauvegardées avec succès.")
-
     def add_window(self):
         """Ouvre une fenêtre pour ajouter des données."""
         key = self.tabs.tabText(self.tabs.currentIndex())
+        donneebrut = {key: df.copy(deep=True) for key, df in {key: self.load_data(path) for key, path in self.file_paths.items()}.items()}
         if key in self.data:
-            self.new_window = AddDataDialog(key, self.data[key], self.donneebrut, self)
+            self.new_window = AddDataDialog(key, donneebrut, self)
             self.new_window.exec_()
             
     def del_window(self):
         """Ouvre une fenêtre pour ajouter des données."""
         key = self.tabs.tabText(self.tabs.currentIndex())
+        donneebrut = {key: df.copy(deep=True) for key, df in {key: self.load_data(path) for key, path in self.file_paths.items()}.items()}
         if key in self.data:
-            self.new_window = DelDataDialog(key, self.donneebrut[key], self)
+            self.new_window = DelDataDialog(key, donneebrut[key], self)
             self.new_window.exec_()
-
-    def apply_transformations(self, key):
-        """Applique les transformations nécessaires en fonction de la clé."""
-        if key == "Fiesta":
-            self.calculate_fiesta(self.data[key])
-            self.convert_to_number(self.data[key])
-        elif key == "Marche":
-            self.calculate_marche(self.data[key])
-        else:
-            self.convert_to_number(self.data[key])
-
-        # Mettre à jour le tableau après les transformations
-        self.update_table(key, self.data[key])
 
     def show_message(self, message):
         """Affiche un message temporaire."""
