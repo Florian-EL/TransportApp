@@ -1,3 +1,4 @@
 src/data/
 build/
 venv/
+src/classe/__pycache__/
