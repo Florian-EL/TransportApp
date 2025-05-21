@@ -42,7 +42,7 @@ class StatsWidget:
         
         return stats_table_widget
     
-    @staticmethod
+    #@staticmethod
     def update_stats(self, data):
         fig, ax1 = plt.subplots(figsize=(3, 2)) #largeur x hauteur
         

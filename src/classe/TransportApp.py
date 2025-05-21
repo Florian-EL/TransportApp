@@ -1,9 +1,9 @@
 import pandas as pd
-from PyQt5.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem,\
-                            QPushButton, QTabWidget, QFileDialog, QWidget, QLabel, QSizePolicy, QHeaderView, QTableView
+from PyQt5.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QTableWidget, QGraphicsView, QGraphicsScene, \
+                            QWidget, QPushButton, QTabWidget, QSizePolicy, QHeaderView, QTableView, QLabel
 
 
-from PyQt5.QtCore import Qt, QSortFilterProxyModel
+from PyQt5.QtCore import Qt, QSortFilterProxyModel, QRectF
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 from src.classe.FilterHeaderView import FilterHeaderView
@@ -54,6 +54,8 @@ class TransportApp(QWidget):
         self.tabs.setTabPosition(QTabWidget.North)
         self.tabs.setMovable(True)
         
+        self.scene = {}
+        self.view = {}
         
         data = self.data.copy()
 
@@ -114,6 +116,7 @@ class TransportApp(QWidget):
         df['Minutes'] = pd.to_numeric(df['Pas par semaine']/nb_pas_par_min%60, errors='coerce').fillna(0).astype(int)
         
         df['Date'] = df['Année'].astype(str) + " - " + df['Numéro semaine'].astype(str).str.zfill(2)
+        df.sort_values(by='Date', ascending=False, inplace=True)
         
         df['Pas par kilomètre'] = pd.to_numeric(df['Pas par semaine']/df['Distance (km)'], errors='coerce').fillna(0).astype(int)
         df['Distance par trajet'] = round(pd.to_numeric(df['Distance (km)']/nb_trajet_quotidien, errors='coerce').fillna(0).astype(float), 2)
@@ -183,11 +186,17 @@ class TransportApp(QWidget):
         table_view.setModel(proxy_model)
         table_view.setSortingEnabled(True)
         
-        self.chart_canvas = QLabel("Graphiques")
+        self.scene[key] = QGraphicsScene()
+        self.view[key] = QGraphicsView(self.scene[key])
         
         stats_table_widget = StatsWidget.update_statistics(self, key, df)
         pixmap = StatsWidget.update_stats(self, df)
-        self.chart_canvas.setPixmap(pixmap)
+        self.scene[key].addPixmap(pixmap)
+        self.scene[key].setSceneRect(QRectF(pixmap.rect()))
+
+        self.view[key].setFixedSize(pixmap.width(), pixmap.height())
+        self.view[key].setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.view[key].setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         
         # Gestion filtre et header
         header = FilterHeaderView(table_view)
@@ -198,9 +207,8 @@ class TransportApp(QWidget):
         
         self.splitter = QHBoxLayout()
         self.splitter.addWidget(stats_table_widget)
-        self.splitter.addWidget(self.chart_canvas)
+        self.splitter.addWidget(self.view[key])
         
-
         layou_split = QVBoxLayout()
         layou_split.addLayout(self.splitter)
         layou_split.addWidget(table_view)
@@ -241,23 +249,14 @@ class TransportApp(QWidget):
         stats_table_widget = StatsWidget.update_statistics(self, key, df)
         stats_table_widget.resizeRowsToContents()
         
-        
-        self.splitter.removeWidget(self.chart_canvas)
-        self.chart_canvas.deleteLater()
-        
-        chart_canvas = QLabel("Graphiques")
-        
+        self.scene[key].clear()
         pixmap = StatsWidget.update_stats(self, df)
-        chart_canvas.setPixmap(pixmap)
+        self.scene[key].addPixmap(pixmap)
+        self.scene[key].setSceneRect(QRectF(pixmap.rect()))
         
-        self.splitter.addWidget(chart_canvas)
-
-        #self.chart_canvas.update()
-        #self.chart_canvas.repaint()
-        
-        print(self.splitter.count())  # Doit augmenter
-        print(chart_canvas.isVisible())  # Devrait être True
-        
+        self.view[key].setFixedSize(pixmap.width(), pixmap.height())
+        self.view[key].setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.view[key].setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
     def load_data(self, file_path):
         """Charge les données depuis un fichier CSV."""
