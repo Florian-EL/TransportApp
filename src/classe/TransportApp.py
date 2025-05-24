@@ -63,7 +63,6 @@ class TransportApp(QWidget):
 
         self.layout = QVBoxLayout()
         self.tabs = QTabWidget()
-        button_layout = QHBoxLayout()
 
         self.tabs.setTabPosition(QTabWidget.North)
         self.tabs.setMovable(False)
@@ -72,6 +71,8 @@ class TransportApp(QWidget):
         self.view = {}
         
         data = self.data.copy()
+        
+
 
         for key in self.data.keys():
             if key == "Fiesta" :
@@ -82,22 +83,10 @@ class TransportApp(QWidget):
             else :
                 self.convert_to_number(key, data[key])
             self.add_tab(key, data[key])
-
-        self.add_windows = QPushButton("Ajouter des données")
-        self.del_windows = QPushButton("Supprimer les données")
-        self.add_windows.setObjectName("addButton")
-        self.del_windows.setObjectName("delButton")
-
-        self.add_windows.clicked.connect(self.add_window)
-        self.del_windows.clicked.connect(self.del_window)
-
-        button_layout.addWidget(self.add_windows)
-        button_layout.addWidget(self.del_windows)
         
         self.add_stats_tab()
         
         self.layout.addWidget(self.tabs)
-        self.layout.addLayout(button_layout)
         self.setLayout(self.layout)
     
     def calculate_fiesta(self, df) :
@@ -376,8 +365,25 @@ class TransportApp(QWidget):
         layou_split.addLayout(self.splitter)
         layou_split.addWidget(table_view)
         
+        
+        add_windows = QPushButton("Ajouter des données")
+        del_windows = QPushButton("Supprimer les données")
+        add_windows.setObjectName("addButton")
+        del_windows.setObjectName("delButton")
+
+        add_windows.clicked.connect(self.add_window)
+        del_windows.clicked.connect(self.del_window)
+        
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(add_windows)
+        button_layout.addWidget(del_windows)
+        
+        layout_bouton = QVBoxLayout()
+        layout_bouton.addLayout(layou_split)
+        layout_bouton.addLayout(button_layout)
+        
         widget = QWidget()
-        widget.setLayout(layou_split)
+        widget.setLayout(layout_bouton)
         
         self.tabs.addTab(widget, key)
         
