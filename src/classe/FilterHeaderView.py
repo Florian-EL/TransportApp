@@ -32,3 +32,15 @@ class FilterHeaderView(QHeaderView):
         """Augmente la hauteur du header pour inclure les filtres."""
         base_size = super().sizeHint()
         return QSize(base_size.width(), base_size.height() + self.filter_height*2)
+
+    def handle_header_click(self, column, proxy_model):
+        current = self.sortIndicatorSection()
+        order = self.sortIndicatorOrder()
+
+        if column == current:
+            order = Qt.DescendingOrder if order == 1 else Qt.AscendingOrder
+        else:
+            order = Qt.AscendingOrder
+
+        proxy_model.sort(column, order)
+        self.setSortIndicator(column, order)

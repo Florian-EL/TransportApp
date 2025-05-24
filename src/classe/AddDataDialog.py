@@ -39,13 +39,20 @@ class AddDataDialog(QDialog):
             new_data = pd.DataFrame([{col: self.inputs[col].text() for col in self.donneebrut.columns}])
             
             self.data = pd.concat([self.donneebrut, new_data], ignore_index=True)
-            self.data['Date'] = pd.to_datetime(self.data['Date'], format='%d/%m/%Y')
-            self.data.sort_values(by='Date', ascending=False, inplace=True)
-            self.data['Date'] = self.data['Date'].dt.strftime('%d/%m/%Y')
+            if self.key != 'Marche' :
+                self.data['Date'] = pd.to_datetime(self.data['Date'], format='%d/%m/%Y')
+                self.data.sort_values(by='Date', ascending=False, inplace=True)
+                self.data['Date'] = self.data['Date'].dt.strftime('%d/%m/%Y')
             
             self.save_to_file()
             
-            self.parent().convert_to_number(self.key, self.data)
+            if self.key == "Fiesta" :
+                self.parent().calculate_fiesta(self.data)
+                self.parent().convert_to_number(self.key, self.data)
+            elif self.key == 'Marche' :
+                self.parent().calculate_marche(self.data)
+            else :
+                self.parent().convert_to_number(self.key, self.data)
             
             self.parent().data[self.key] = self.data
             

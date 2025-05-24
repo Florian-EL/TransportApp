@@ -16,7 +16,8 @@ build_exe_options = {
         ("src", "src"),
         ("data", "data"),
         (plugin_path, "platform"),
-        ("src/assets/app_icon.ico", "src/assets/app_icon.ico")
+        ("src/assets/app_icon.ico", "src/assets/app_icon.ico"),
+        ("style.css", "style.css")
     ],
     "include_msvcr": True
 }

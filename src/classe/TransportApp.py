@@ -12,16 +12,26 @@ from src.classe.DelDataDialog import DelDataDialog
 from src.classe.StatsWidget import StatsWidget
 
 class DateSortFilterProxyModel(QSortFilterProxyModel):
-    def lessThan(self, left, right):
-        left_data = left.data(Qt.DisplayRole)
-        right_data = right.data(Qt.DisplayRole)
+    def __init__(self, parent=None, date_column=0):
+        super().__init__(parent)
+        self.date_column = date_column  # index de la colonne date
 
-        try:
-            left_date = pd.to_datetime(left_data, format='%d/%m/%Y', errors='coerce')
-            right_date = pd.to_datetime(right_data, format='%d/%m/%Y', errors='coerce')
-            return left_date < right_date
-        except Exception:
-            return super().lessThan(left, right)
+    def lessThan(self, left, right):
+        if left.column() == self.date_column:
+            left_data = left.data(Qt.DisplayRole)
+            right_data = right.data(Qt.DisplayRole)
+            try:
+                if self.key != 'Marche' :
+                    left_date = pd.to_datetime(left_data, format='%d/%m/%Y', errors='coerce')
+                    right_date = pd.to_datetime(right_data, format='%d/%m/%Y', errors='coerce')
+                else :
+                    left_date = pd.to_datetime(left_data, format='%Y - %W', errors='coerce')
+                    right_date = pd.to_datetime(right_data, format='%Y - %W', errors='coerce')
+                return left_date < right_date
+            except Exception:
+                pass
+        # Pour les autres colonnes, comportement par défaut (texte ou nombre)
+        return super().lessThan(left, right)
 
 
 class TransportApp(QWidget):
@@ -45,6 +55,8 @@ class TransportApp(QWidget):
         self.init_ui()
 
     def init_ui(self):
+        with open("style.css", "r") as f:
+            self.setStyleSheet(f.read())
         self.setWindowTitle("Transport App")
 
         self.layout = QVBoxLayout()
@@ -62,15 +74,17 @@ class TransportApp(QWidget):
         for key in self.data.keys():
             if key == "Fiesta" :
                 self.calculate_fiesta(data[key])
-            if key == 'Marche' :
+                self.convert_to_number(key, data[key])
+            elif key == 'Marche' :
                 self.calculate_marche(data[key])
-                self.add_tab(key, data[key])
-                continue
-            self.convert_to_number(key, data[key])
+            else :
+                self.convert_to_number(key, data[key])
             self.add_tab(key, data[key])
 
         self.add_windows = QPushButton("Ajouter des données")
         self.del_windows = QPushButton("Supprimer les données")
+        self.add_windows.setObjectName("addButton")
+        self.del_windows.setObjectName("delButton")
 
         self.add_windows.clicked.connect(self.add_window)
         self.del_windows.clicked.connect(self.del_window)
@@ -93,6 +107,10 @@ class TransportApp(QWidget):
         df.sort_values(by='Date', ascending=False)
         df['Kilométrage (km)'].astype(float)
 
+        df['Quantité (L)'] = pd.to_numeric(df['Quantité (L)'], errors='coerce').fillna(0).astype(float)
+        df['Prix (€)'] = pd.to_numeric(df['Prix (€)'], errors='coerce').fillna(0).astype(float)
+        df['Kilométrage (km)'] = pd.to_numeric(df['Kilométrage (km)'], errors='coerce').fillna(0).astype(float)
+
         df['Distance (km)'] = (df['Kilométrage (km)'] - df['Kilométrage (km)'].shift(-1)).shift(1)
         
         df['Litre par 100km'] =  round(pd.to_numeric(df['Quantité (L)'] / df['Distance (km)']*100).fillna(0).astype(float), 2)
@@ -108,6 +126,10 @@ class TransportApp(QWidget):
         nb_pas_par_min = 100
         nb_trajet_quotidien = 4
         
+        df['Pas par jour'] = pd.to_numeric(df['Pas par jour'], errors='coerce').fillna(0).astype(int)
+        df['Calorie par jour'] = pd.to_numeric(df['Calorie par jour'], errors='coerce').fillna(0).astype(float)
+        df['Distance par jour (km / jour)'] = pd.to_numeric(df['Distance par jour (km / jour)'], errors='coerce').fillna(0).astype(float)
+        
         df['Pas par semaine'] = pd.to_numeric(df['Pas par jour']*7).fillna(0).astype(int)
         df['Distance (km)'] = round(pd.to_numeric(df['Distance par jour (km / jour)']*7, errors='coerce').fillna(0).astype(float), 2)
         df['Calories'] = pd.to_numeric(df['Calorie par jour']*7, errors='coerce').fillna(0).astype(float)
@@ -117,6 +139,8 @@ class TransportApp(QWidget):
         
         df['Date'] = df['Année'].astype(str) + " - " + df['Numéro semaine'].astype(str).str.zfill(2)
         df.sort_values(by='Date', ascending=False, inplace=True)
+        
+        df['Année'] = pd.to_numeric(df['Année'], errors='coerce').fillna(0).astype(int)
         
         df['Pas par kilomètre'] = pd.to_numeric(df['Pas par semaine']/df['Distance (km)'], errors='coerce').fillna(0).astype(int)
         df['Distance par trajet'] = round(pd.to_numeric(df['Distance (km)']/nb_trajet_quotidien, errors='coerce').fillna(0).astype(float), 2)
@@ -173,11 +197,13 @@ class TransportApp(QWidget):
         
         # Tableau principal (QTableView)
         model = QStandardItemModel()
-        proxy_model = DateSortFilterProxyModel(self)
+        proxy_model = DateSortFilterProxyModel(self, date_column=df.columns.get_loc('Date'))
         proxy_model.setSourceModel(model)
+        proxy_model.setSortRole(Qt.DisplayRole)
         proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
         proxy_model.setFilterKeyColumn(-1)  # Appliquer à toutes les colonnes
         proxy_model.setDynamicSortFilter(True)
+        
         
         self.models[key] = load_data_to_model(model, df)
         self.proxy_models[key] = proxy_model
@@ -186,10 +212,13 @@ class TransportApp(QWidget):
         table_view.setModel(proxy_model)
         table_view.setSortingEnabled(True)
         
+        
+        
         self.scene[key] = QGraphicsScene()
         self.view[key] = QGraphicsView(self.scene[key])
         
         stats_table_widget = StatsWidget.update_statistics(self, key, df)
+        stats_table_widget.setObjectName("statsTable")
         pixmap = StatsWidget.update_stats(self, df)
         self.scene[key].addPixmap(pixmap)
         self.scene[key].setSceneRect(QRectF(pixmap.rect()))
@@ -202,7 +231,9 @@ class TransportApp(QWidget):
         header = FilterHeaderView(table_view)
         header.set_filter_callback(apply_filter)
         header.create_filter_widgets(len(df.columns))
+        header.sectionClicked.connect(lambda index: header.handle_header_click(index, proxy_model))
         table_view.setHorizontalHeader(header)
+        
         table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         
         self.splitter = QHBoxLayout()
@@ -217,6 +248,9 @@ class TransportApp(QWidget):
         widget.setLayout(layou_split)
         
         self.tabs.addTab(widget, key)
+        
+        table_view.sortByColumn(df.columns.get_loc('Date'), Qt.DescendingOrder)
+
 
     def update_table(self, key, df):
         """Met à jour le tableau pour refléter les modifications dans le DataFrame."""

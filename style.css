@@ -1,20 +1,28 @@
-/* Style général pour la fenêtre */
+
 QWidget {
-    background-color: #242424;
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: Arial;
+    font-size: 12px;
 }
 
-/* Style des onglets */
+QTabWidget::pane {
+    border: 1px solid #333;
+    padding: 5px;
+}
+
 QTabBar::tab {
-    background: #242424;
-    color: #FFF;
-    padding: 10px;
-    border: 1px solid #CCCCCC;
+    background: #1f1f1f;
+    padding: 6px;
+    margin: 1px;
+    border: 1px solid #333;
+    border-radius: 4px;
 }
 
 QTabBar::tab:selected {
-    background: #4bce3a;
-    color: #FFF;
+    background: #00ff40;
     font-weight: bold;
+    color: #ffffff;
 }
 
 QTabBar::tab:hover {
@@ -22,79 +30,83 @@ QTabBar::tab:hover {
     color: #000;
 }
 
-/* Style des tableaux */
-QTableWidget {
-    background-color: #242424;
-    color: white;
-}
-
 QHeaderView::section {
-    background-color: #4CAF50;
-    color: white;
+    background-color: #2d2d2d;
+    color: #dcdcdc;
     padding: 4px;
-    border: 1px solid #CCCCCC;
+    border: 1px solid #444;
 }
 
-QTableWidget::item:selected {
-    background-color: #A5D6A7;
-    color: #000;
+QTableView, QTableWidget {
+    background-color: #1e1e1e;
+    alternate-background-color: #2a2a2a;
+    color: #f0f0f0;
+    selection-background-color: #0a91ff; 
+    selection-color: white;
+    gridline-color: #444;
 }
 
-/* Style des boutons */
-QPushButton {
-    background-color: #4CAF50;
-    color: white;
+
+#statsTable {
+    color: #000000;
+}
+
+/* barre de défilement */
+QScrollBar:vertical, QScrollBar:horizontal {
+    background: #1e1e1e;
+    width: 10px;
+}
+
+QScrollBar::handle {
+    background: #5c5c5c;
     border-radius: 5px;
-    padding: 10px;
 }
 
-QPushButton:hover {
-    background-color: #81C784;
+QScrollBar::handle:hover {
+    background: #787878;
 }
 
-QPushButton:pressed {
-    background-color: #388E3C;
+/* taille bouton */
+QPushButton {
+    border: 1px solid #444;
+    padding: 6px;
+    border-radius: 4px;
 }
 
-/* Style spécifique pour le bouton "Ajouter des données" */
-#AjoutDataButton {
+/* add bouton */
+#addButton {
     background-color: #28aa0e;
     color: white;
     font-weight: bold;
 }
 
-#AjoutDataButton:hover {
+#addButton:hover {
     background-color: #91ff65;
 }
 
-#AjoutDataButton:pressed {
+#addButton:pressed {
     background-color: #19e62a;
 }
 
-/* Style spécifique pour le bouton "Charger les données" */
-#loadButton {
-    background-color: #FFC107;
-    color: black;
-}
-
-#loadButton:hover {
-    background-color: #FFD54F;
-}
-
-#loadButton:pressed {
-    background-color: #FFA000;
-}
-
-/* Style spécifique pour le bouton "Sauvegarder les données" */
-#saveButton {
-    background-color: #2196F3;
+/* del bouton */
+#delButton {
+    background-color: #aa0e0e;
     color: white;
+    font-weight: bold;
 }
 
-#saveButton:hover {
-    background-color: #64B5F6;
+#delButton:hover {
+    background-color: #ff6565;
 }
 
-#saveButton:pressed {
-    background-color: #1976D2;
+#delButton:pressed {
+    background-color: #e61919;
 }
+
+
+/* pour message*/
+QLabel {
+    color: #ffffff;
+}
+
+
