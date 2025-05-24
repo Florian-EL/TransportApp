@@ -11,12 +11,12 @@ L'application propose une interface graphique basée sur **PyQt5**.
 - **Affichage sous forme de tableau** : Visualiser les données dans des onglets.
 - **Filtrage et triage dynamique** : Rechercher des valeurs spécifiques par colonne.
 - **Statistiques par type de transport** : Génération d'un tableur récapitutif des statistiques annuelles
-- **Grpahique de statistique sur onglet en cours (en cours)** : Affichage de graphiques qui résume les stats par transport
+- **Grpahique de statistique sur onglet en cours** : Affichage de graphiques qui résume les stats par transport
+- **Lancement par fichier executable** : Propreté de l'application
+- **Personalisation de l'interface** : Beauté de l'application
 
 ## Fonctionnalités à venir :
 - **Multilangue (anglais et français)** : Adapter l'application pour plusieurs langues
-- **Lancement par fichier executable** : Propreté de l'application (fondamentalement pas le plus important)
-- **Ajout de graphique de statistiques sur chaque onglet** : Permettre une première étape de statistiques par type de transport
 - **Ajout d'un onglet statistiques** : Permettre des statistiques plus générale entre transports et années
 D'autres fonctionnalités seront à venir
 
@@ -24,33 +24,40 @@ D'autres fonctionnalités seront à venir
 ### Prérequis
 - Python 3.10
 - `pip` installé
+- librairies du requirements.txt
 
 ## Utilisation
 Lancez l'application avec :
 ```bash
 python main.py
 ```
+Ou construisez un executable windows :
+'''bash
+python build.exe build
+'''
 
 ## Structure du projet
 ```
 TransportApp/
 │── src/
-│   ── main.py
+│   ── TransportApp.py
 │   ── AddDataDialog.py
+│   ── DelDataDialog.py
 │   ── FilterHeaderView.py
 |   ── StatsWidget.py
 │── data/
-│── setup.py #may work one day
-│── style.css #for the future
+│── main.py
+│── build.py
+│── style.css
 │── README.md
-│── requirement.txt #to be modified
+│── requirements.txt
 ```
 
 ## Licence
 Ce projet est sous licence **MIT**. Voir le fichier `LICENSE` pour plus d’informations.
 
 ## Auteur
-**Florian** - Développement & Conception
+**Florian** - Idée, Développement & Conception
 
 ---
 *Ce projet est en cours de développement !*
