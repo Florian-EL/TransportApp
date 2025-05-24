@@ -12,10 +12,11 @@ from src.classe.DelDataDialog import DelDataDialog
 from src.classe.StatsWidget import StatsWidget
 
 class DateSortFilterProxyModel(QSortFilterProxyModel):
-    def __init__(self, parent=None, date_column=0):
+    def __init__(self, parent=None, date_column=0, key=''):
         super().__init__(parent)
         self.date_column = date_column  # index de la colonne date
-
+        self.key = key
+        
     def lessThan(self, left, right):
         if left.column() == self.date_column:
             left_data = left.data(Qt.DisplayRole)
@@ -28,7 +29,7 @@ class DateSortFilterProxyModel(QSortFilterProxyModel):
                     left_date = pd.to_datetime(left_data, format='%Y - %W', errors='coerce')
                     right_date = pd.to_datetime(right_data, format='%Y - %W', errors='coerce')
                 return left_date < right_date
-            except Exception:
+            except Exception :
                 pass
         # Pour les autres colonnes, comportement par défaut (texte ou nombre)
         return super().lessThan(left, right)
@@ -197,7 +198,7 @@ class TransportApp(QWidget):
         
         # Tableau principal (QTableView)
         model = QStandardItemModel()
-        proxy_model = DateSortFilterProxyModel(self, date_column=df.columns.get_loc('Date'))
+        proxy_model = DateSortFilterProxyModel(self, date_column=df.columns.get_loc('Date'), key=key)
         proxy_model.setSourceModel(model)
         proxy_model.setSortRole(Qt.DisplayRole)
         proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
