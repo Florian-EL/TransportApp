@@ -1,6 +1,7 @@
 import pandas as pd
-from PyQt5.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QTableWidget, QGraphicsView, QGraphicsScene, \
-                            QWidget, QPushButton, QTabWidget, QSizePolicy, QHeaderView, QTableView, QLabel
+from PyQt5.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QTableWidget, QGraphicsView,\
+                            QGraphicsScene, QWidget, QPushButton, QTabWidget, QSizePolicy, QHeaderView,\
+                            QTableView, QLabel, QTableWidgetItem, QScrollArea
 
 
 from PyQt5.QtCore import Qt, QSortFilterProxyModel, QRectF
@@ -65,7 +66,7 @@ class TransportApp(QWidget):
         button_layout = QHBoxLayout()
 
         self.tabs.setTabPosition(QTabWidget.North)
-        self.tabs.setMovable(True)
+        self.tabs.setMovable(False)
         
         self.scene = {}
         self.view = {}
@@ -92,6 +93,8 @@ class TransportApp(QWidget):
 
         button_layout.addWidget(self.add_windows)
         button_layout.addWidget(self.del_windows)
+        
+        self.add_stats_tab()
         
         self.layout.addWidget(self.tabs)
         self.layout.addLayout(button_layout)
@@ -169,6 +172,136 @@ class TransportApp(QWidget):
         except Exception :
             pass
 
+    def add_stats_tab(self):
+        # Colonnes à afficher
+        columns = [
+            'Année', 'Distance (km)', 'Prix (€)', 'Prix horaire (€)', 'Prix au km (km)', 'parcours %', 'CO2 (kg)', 'CO2 par km (g/km)', 'CO2 par heures (kg/h)', 'Equivalent jours', 'Equivalent vitesse (km/h)',  'Heures', 'Minutes', 
+        ]
+        # Fusionner toutes les données dans un seul DataFrame
+        all_data = pd.concat(self.data.values(), ignore_index=True)
+        all_data['Année'] = all_data['Année'].astype(int)
+
+        # Calcul des stats par année
+        stats = all_data.groupby('Année').agg({
+            'Distance (km)': 'sum',
+            'Heures': 'sum',
+            'Minutes': 'sum',
+            'Prix (€)': 'sum',
+            'CO2 (kg)': 'sum'
+        }).reset_index()
+        
+        stats['Année'] = stats['Année'].astype(int)
+        stats['Prix horaire (€)'] = round(stats['Prix (€)'] / (stats['Heures'] + stats['Minutes'] / 60), 2)
+        stats['Prix au km (km)'] = round(stats['Prix (€)'] / stats['Distance (km)'], 2)
+        stats['CO2 par km (g/km)'] = round(stats['CO2 (kg)'] / stats['Distance (km)'] * 1000, 2)
+        stats['Distance (km)'] = round(stats['Distance (km)'], 2)
+        stats['Prix (€)'] = round(stats['Prix (€)'], 2)
+        stats['CO2 (kg)'] = round(stats['CO2 (kg)'], 2)
+        stats['Heures'] = stats['Heures'] + stats['Minutes'] // 60
+        stats['Minutes'] = stats['Minutes'] % 60
+        stats['Equivalent jours'] = round((stats['Heures'] + stats['Minutes']/60) / 24, 2)
+        stats['Equivalent vitesse (km/h)'] = round(stats['Distance (km)'] / (stats['Heures'] + stats['Minutes']/60), 2)
+        stats['parcours %'] = round(stats['Distance (km)'] / stats['Distance (km)'].sum() * 100, 2)
+        stats['CO2 par heures (kg/h)'] = round(stats['CO2 (kg)'] / (stats['Heures'] + stats['Minutes']/60), 2)
+        
+        # Créer la table unique
+        stats_table_widget = QTableWidget()
+        stats_table_widget.setColumnCount(len(columns))
+        stats_table_widget.setRowCount(len(stats))
+        stats_table_widget.setHorizontalHeaderLabels(columns)
+        stats_table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        
+        for i, row in stats.iterrows():
+            for j, col in enumerate(columns):
+                value = row[col]
+                if col == "Année" :
+                    value = int(value)
+                stats_table_widget.setItem(i, j, QTableWidgetItem(str(value)))
+        stats_table_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        row_height = sum(stats_table_widget.rowHeight(i) for i in range(stats_table_widget.rowCount()))
+        header_height = stats_table_widget.horizontalHeader().height()
+        table_height = row_height + header_height + 12
+        stats_table_widget.setMaximumHeight(table_height)
+        
+        
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel("Statistiques générales"))
+        layout.addWidget(stats_table_widget)
+
+        # Pour chaque année, ajouter un tableau détaillé par mode de transport
+        all_data['Année'] = all_data['Année'].astype(int)
+        annees = sorted(stats['Année'].unique(), reverse=True)
+
+        detail_columns = [
+            'Transport', 'Distance (km)', 'Prix (€)', 'Prix horaire (€)', 'Prix au km (km)', 'parcours %', 'CO2 (kg)', 'CO2 par km (g/km)', 'CO2 par heures (kg/h)', 'Equivalent jours', 'Equivalent vitesse (km/h)',  'Heures', 'Minutes', 
+        ]
+
+        layout_mini = QVBoxLayout()
+        for annee in annees:
+            layout_mini.addWidget(QLabel(f"Détail {annee}"))
+            detail_stats = []
+            for mode, df_mode in self.data.items():
+                # On filtre les données du mode pour l'année courante
+                df_annee_mode = df_mode[df_mode['Année'] == annee]
+                if not df_annee_mode.empty:
+                    d = {
+                        'Transport': mode,
+                        'Distance (km)': round(df_annee_mode['Distance (km)'].sum(), 2),
+                        'Heures': int(df_annee_mode['Heures'].sum() + df_annee_mode['Minutes'].sum() // 60),
+                        'Minutes': int(df_annee_mode['Minutes'].sum() % 60),
+                        'Prix (€)': round(df_annee_mode['Prix (€)'].sum(), 2),
+                        'CO2 (kg)': round(df_annee_mode['CO2 (kg)'].sum(), 2),
+                    }
+                    total_heures = d['Heures'] + d['Minutes'] / 60
+                    d['Prix horaire (€)'] = round(d['Prix (€)'] / total_heures, 2)
+                    d['Prix au km (km)'] = round(d['Prix (€)'] / d['Distance (km)'], 2)
+                    d['CO2 par km (g/km)'] = round(d['CO2 (kg)'] / d['Distance (km)'] * 1000, 2)
+                    d['Equivalent jours'] = round((d['Heures'] + d['Minutes']/60) / 24, 2)
+                    d['Equivalent vitesse (km/h)'] = round(d['Distance (km)'] / (d['Heures'] + d['Minutes']/60), 2)
+                    d['parcours %'] = round(d['Distance (km)'] / all_data[all_data['Année'] == annee]['Distance (km)'].sum() * 100, 2)
+                    d['CO2 par heures (kg/h)'] = round(d['CO2 (kg)'] / (d['Heures'] + d['Minutes']/60), 2)
+                    detail_stats.append(d)
+            # Créer la table détaillée pour l'année
+            detail_table = QTableWidget()
+            detail_table.setColumnCount(len(detail_columns))
+            detail_table.setRowCount(len(detail_stats))
+            detail_table.setHorizontalHeaderLabels(detail_columns)
+            detail_table.resizeRowsToContents()
+            for i, row in enumerate(detail_stats):
+                for j, col in enumerate(detail_columns):
+                    item = QTableWidgetItem(str(row[col]))
+                    item.setTextAlignment(Qt.AlignCenter | Qt.AlignTop)  # Aligner en haut et à gauche
+                    detail_table.setItem(i, j, item)
+            detail_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+            detail_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+            
+            # Ajuste la hauteur pour afficher toutes les lignes sans scroll interne
+            row_height = sum(detail_table.rowHeight(i) for i in range(detail_table.rowCount()))
+            header_height = detail_table.horizontalHeader().height()
+            table_height = row_height + header_height + 12
+            detail_table.setMinimumHeight(table_height)
+            #detail_table.setMaximumHeight(table_height)
+            detail_table.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            layout_mini.addWidget(detail_table)
+
+        # 1. Mettre layout_mini dans un widget
+        mini_widget = QWidget()
+        mini_widget.setLayout(layout_mini)
+
+        # 2. Créer la scroll area pour layout_mini
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(mini_widget)
+
+        # 3. Ajouter la partie statique (layout) et la scroll area dans le layout principal
+        main_layout = QVBoxLayout()
+        main_layout.addLayout(layout)      # partie statique (statistiques générales)
+        main_layout.addWidget(scroll)      # partie scrollable (détails par année)
+
+        widget = QWidget()
+        widget.setLayout(main_layout)
+        self.tabs.insertTab(0, widget, "Statistiques")
+
     def add_tab(self, key, df):
         def apply_filter(col, text):
             proxy_model.setFilterKeyColumn(col)
@@ -213,8 +346,6 @@ class TransportApp(QWidget):
         table_view.setModel(proxy_model)
         table_view.setSortingEnabled(True)
         
-        
-        
         self.scene[key] = QGraphicsScene()
         self.view[key] = QGraphicsView(self.scene[key])
         
@@ -234,8 +365,8 @@ class TransportApp(QWidget):
         header.create_filter_widgets(len(df.columns))
         header.sectionClicked.connect(lambda index: header.handle_header_click(index, proxy_model))
         table_view.setHorizontalHeader(header)
+        table_view.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         
-        table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         
         self.splitter = QHBoxLayout()
         self.splitter.addWidget(stats_table_widget)
