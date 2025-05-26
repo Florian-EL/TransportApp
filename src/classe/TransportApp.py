@@ -12,6 +12,8 @@ from src.classe.AddDataDialog import AddDataDialog
 from src.classe.DelDataDialog import DelDataDialog
 from src.classe.StatsWidget import StatsWidget
 
+from src.classe.Graph import update_stats, graph_stats
+
 class DateSortFilterProxyModel(QSortFilterProxyModel):
     def __init__(self, parent=None, date_column=0, key=''):
         super().__init__(parent)
@@ -227,6 +229,7 @@ class TransportApp(QWidget):
 
         layout_mini = QVBoxLayout()
         for annee in annees:
+            
             layout_mini.addWidget(QLabel(f"Détail {annee}"))
             detail_stats = []
             for mode, df_mode in self.data.items():
@@ -271,26 +274,45 @@ class TransportApp(QWidget):
             detail_table.setMinimumHeight(table_height)
             #detail_table.setMaximumHeight(table_height)
             detail_table.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            layout_mini.addWidget(detail_table)
-
+            
+            
+            pixmap = graph_stats(detail_stats)
+            
+            pix_scene = QGraphicsScene()
+            pix_view = QGraphicsView(pix_scene)
+            
+            pix_scene.addPixmap(pixmap)
+            pix_scene.setSceneRect(QRectF(pixmap.rect()))
+            
+            pix_view.setFixedSize(550, pixmap.height()+10)
+        
+            pix_view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            pix_view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            
+            laout = QHBoxLayout()
+            laout.addWidget(detail_table)
+            laout.addWidget(pix_view)
+            
+            layout_mini.addLayout(laout)
+        
         # 1. Mettre layout_mini dans un widget
         mini_widget = QWidget()
         mini_widget.setLayout(layout_mini)
-
+        
         # 2. Créer la scroll area pour layout_mini
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setWidget(mini_widget)
-
+        
         # 3. Ajouter la partie statique (layout) et la scroll area dans le layout principal
         main_layout = QVBoxLayout()
         main_layout.addLayout(layout)      # partie statique (statistiques générales)
         main_layout.addWidget(scroll)      # partie scrollable (détails par année)
-
+        
         widget = QWidget()
         widget.setLayout(main_layout)
         self.tabs.insertTab(0, widget, "Statistiques")
-
+    
     def add_tab(self, key, df):
         def apply_filter(col, text):
             proxy_model.setFilterKeyColumn(col)
@@ -340,7 +362,7 @@ class TransportApp(QWidget):
         
         stats_table_widget = StatsWidget.update_statistics(self, key, df)
         stats_table_widget.setObjectName("statsTable")
-        pixmap = StatsWidget.update_stats(self, df)
+        pixmap = update_stats(df)
         self.scene[key].addPixmap(pixmap)
         self.scene[key].setSceneRect(QRectF(pixmap.rect()))
 
