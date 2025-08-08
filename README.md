@@ -53,11 +53,9 @@ TransportApp/
 │── requirements.txt
 ```
 
-## Licence
-Ce projet est sous licence **MIT**. Voir le fichier `LICENSE` pour plus d’informations.
-
 ## Auteur
-**Florian** - Idée, Développement & Conception
+**Florian EYMER LEPROVOST** - Idée, Développement & Conception
+florian.eymerleprovost@gmail.com
 
 ---
 *Ce projet est en cours de développement !*
