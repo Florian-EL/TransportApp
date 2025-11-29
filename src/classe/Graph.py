@@ -91,7 +91,7 @@ def graph_stats(data):
     
     data = pd.DataFrame(data.copy())
     
-    transport_order = ["Train", "Metro", "Bus", "Fiesta", "Marche", "Avion", "Taxi"]
+    transport_order = ["Train", "Métro", "Bus", "Fiesta", "Marche", "Avion", "Taxi"]
 
     # Regrouper et réindexer selon l'ordre
     grouped = data.groupby('Transport')['Distance (km)'].sum()

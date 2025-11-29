@@ -1,4 +1,6 @@
 src/data/
+src/data copy/
 build/
 venv/
 src/classe/__pycache__/
+*.csv

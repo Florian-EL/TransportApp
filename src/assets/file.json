@@ -1,0 +1,11 @@
+{
+  "data_files": [
+    "/home/florian/Nextcloud/Data/train.csv",
+    "/home/florian/Nextcloud/Data/metro.csv",
+    "/home/florian/Nextcloud/Data/bus.csv",
+    "/home/florian/Nextcloud/Data/fiesta.csv",
+    "/home/florian/Nextcloud/Data/avion.csv",
+    "/home/florian/Nextcloud/Data/taxi.csv",
+    "/home/florian/Nextcloud/Data/marche.csv"
+  ]
+}

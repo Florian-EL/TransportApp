@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QHeaderView, QLineEdit
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt, QSize, QSortFilterProxyModel
 
 class FilterHeaderView(QHeaderView):
     def __init__(self, parent=None):
@@ -44,3 +44,27 @@ class FilterHeaderView(QHeaderView):
 
         proxy_model.sort(column, order)
         self.setSortIndicator(column, order)
+
+
+class DateSortFilterProxyModel(QSortFilterProxyModel):
+    def __init__(self, parent=None, date_column=0, key=''):
+        super().__init__(parent)
+        self.date_column = date_column  # index de la colonne date
+        self.key = key
+        
+    def lessThan(self, left, right):
+        if left.column() == self.date_column:
+            left_data = left.data(Qt.DisplayRole)
+            right_data = right.data(Qt.DisplayRole)
+            try:
+                if self.key != 'Marche' :
+                    left_date = pd.to_datetime(left_data, format='%d/%m/%Y', errors='coerce')
+                    right_date = pd.to_datetime(right_data, format='%d/%m/%Y', errors='coerce')
+                else :
+                    left_date = pd.to_datetime(left_data, format='%Y - %W', errors='coerce')
+                    right_date = pd.to_datetime(right_data, format='%Y - %W', errors='coerce')
+                return left_date < right_date
+            except Exception :
+                pass
+        # Pour les autres colonnes, comportement par défaut (texte ou nombre)
+        return super().lessThan(left, right)

@@ -67,16 +67,14 @@ class DelDataDialog(QDialog):
 
             self.data = self.df.drop(index=matching_rows.index[0]).reset_index(drop=True)
             
+            self.save_to_file()            
+            self.apply_transformations(self.key, self.data)            
             self.parent().data[self.key] = self.data
-            
-            self.save_to_file()
-            
-            self.apply_transformations(self.key, self.data)
             
             self.parent().update_table(self.key, self.data)
             self.parent().update_stats_table(self.key, self.parent().data[self.key])
+            self.parent().update_stats_table(self.key, self.parent().data[self.key])
             
-            # Fermer la fenêtre
             self.close()
             
         except ValueError as ve:

@@ -14,9 +14,10 @@ build_exe_options = {
     "packages": ["matplotlib", "pandas", "PyQt5"],
     "include_files": [
         ("src", "src"),
-        ("data", "data"),
+        #("data", "data"),
         (plugin_path, "platform"),
         ("src/assets/app_icon.ico", "src/assets/app_icon.ico"),
+        ("src/assets/file.json", "src/assets/file.json"),
         ("style.css", "style.css")
     ],
     "include_msvcr": True

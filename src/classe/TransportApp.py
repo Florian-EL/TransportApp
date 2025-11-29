@@ -1,10 +1,13 @@
 import pandas as pd
+import json
+import os
+import sys
 from PyQt5.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QTableWidget, QGraphicsView,\
                             QGraphicsScene, QWidget, QPushButton, QTabWidget, QSizePolicy, QHeaderView,\
                             QTableView, QLabel, QTableWidgetItem, QScrollArea
 
 
-from PyQt5.QtCore import Qt, QSortFilterProxyModel, QRectF
+from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 from src.classe.FilterHeaderView import FilterHeaderView
@@ -14,42 +17,31 @@ from src.classe.StatsWidget import StatsWidget
 
 from src.classe.Graph import update_stats, graph_stats
 
-class DateSortFilterProxyModel(QSortFilterProxyModel):
-    def __init__(self, parent=None, date_column=0, key=''):
-        super().__init__(parent)
-        self.date_column = date_column  # index de la colonne date
-        self.key = key
-        
-    def lessThan(self, left, right):
-        if left.column() == self.date_column:
-            left_data = left.data(Qt.DisplayRole)
-            right_data = right.data(Qt.DisplayRole)
-            try:
-                if self.key != 'Marche' :
-                    left_date = pd.to_datetime(left_data, format='%d/%m/%Y', errors='coerce')
-                    right_date = pd.to_datetime(right_data, format='%d/%m/%Y', errors='coerce')
-                else :
-                    left_date = pd.to_datetime(left_data, format='%Y - %W', errors='coerce')
-                    right_date = pd.to_datetime(right_data, format='%Y - %W', errors='coerce')
-                return left_date < right_date
-            except Exception :
-                pass
-        # Pour les autres colonnes, comportement par défaut (texte ou nombre)
-        return super().lessThan(left, right)
+from src.classe.FilterHeaderView import DateSortFilterProxyModel
 
 
 class TransportApp(QWidget):
     def __init__(self):
         super().__init__()
-        self.file_paths = {
-            "Train" : "data/train.csv",
-            "Metro" : "data/metro.csv",
-            "Bus" :   "data/bus.csv",
-            "Fiesta" :"data/fiesta.csv",
-            "Avion" : "data/avion.csv",
-            "Taxi" :  "data/taxi.csv",
-            "Marche" : "data/marche.csv",
-        }
+        #os.path.join(os.path.dirname(sys.executable), 
+        with open("src/assets/file.json", "r", encoding="utf-8") as f:
+            resources = json.load(f)
+        
+        self.file_paths = resources["data_files"]
+        noms = ["Train", "Métro", "Bus", "Fiesta", "Avion", "Taxi", "Marche"]
+        self.file_paths = {nom: chemin for nom, chemin in zip(noms, self.file_paths)}
+        
+        
+        #self.file_paths = {
+        #    "Train" : "data/train.csv",
+        #    "Metro" : "data/metro.csv",
+        #    "Bus" :   "data/bus.csv",
+        #    "Fiesta" :"data/fiesta.csv",
+        #    "Avion" : "data/avion.csv",
+        #    "Taxi" :  "data/taxi.csv",
+        #    "Marche" : "data/marche.csv",
+        #}
+        
         self.data = {key: self.load_data(path) for key, path in self.file_paths.items()}
         self.models = {}
         self.tables = {}
@@ -59,7 +51,8 @@ class TransportApp(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        with open("style.css", "r") as f:
+        #os.path.join(os.path.dirname(sys.executable), 
+        with open("src/assets/style.css", "r") as f:
             self.setStyleSheet(f.read())
         self.setWindowTitle("Transport App")
 
@@ -74,8 +67,6 @@ class TransportApp(QWidget):
         
         data = self.data.copy()
         
-
-
         for key in self.data.keys():
             if key == "Fiesta" :
                 self.calculate_fiesta(data[key])
@@ -166,7 +157,9 @@ class TransportApp(QWidget):
     def add_stats_tab(self):
         # Colonnes à afficher
         columns = [
-            'Année', 'Distance (km)', 'Prix (€)', 'Prix horaire (€)', 'Prix au km (km)', 'parcours %', 'CO2 (kg)', 'CO2 par km (g/km)', 'CO2 par heures (kg/h)', 'Equivalent jours', 'Equivalent vitesse (km/h)',  'Heures', 'Minutes', 
+            'Année', 'Distance (km)', 'Prix (€)', 'Prix horaire (€)', 'Prix au km (km)', \
+            'parcours %', 'CO2 (kg)', 'CO2 par km (g/km)', 'CO2 par heures (kg/h)', \
+            'Equivalent jours', 'Equivalent vitesse (km/h)',  'Heures', 'Minutes', 
         ]
         # Fusionner toutes les données dans un seul DataFrame
         all_data = pd.concat(self.data.values(), ignore_index=True)
@@ -224,7 +217,9 @@ class TransportApp(QWidget):
         annees = sorted(stats['Année'].unique(), reverse=True)
 
         detail_columns = [
-            'Transport', 'Distance (km)', 'Prix (€)', 'Prix horaire (€)', 'Prix au km (km)', 'parcours %', 'CO2 (kg)', 'CO2 par km (g/km)', 'CO2 par heures (kg/h)', 'Equivalent jours', 'Equivalent vitesse (km/h)',  'Heures', 'Minutes', 
+            'Transport', 'Distance (km)', 'Prix (€)', 'Prix horaire (€)', 'Prix au km (km)', \
+            'parcours %', 'CO2 (kg)', 'CO2 par km (g/km)', 'CO2 par heures (kg/h)', \
+            'Equivalent jours', 'Equivalent vitesse (km/h)',  'Heures', 'Minutes', 
         ]
 
         layout_mini = QVBoxLayout()
@@ -434,23 +429,58 @@ class TransportApp(QWidget):
         self.proxy_models[key].invalidateFilter()
 
     def update_stats_table(self, key, df):
-        """Met à jour le tableur de statistiques pour refléter les modifications dans le DataFrame."""
-        stats_table_widget = self.stats_tables[key]
-        stats_table_widget.clearContents()  # Efface les données existantes
-        stats_table_widget.setRowCount(0)  # Réinitialise le nombre de lignes
+            
+            # Met à jour les données internes puis reconstruit l'onglet "Statistiques"
+            # On copie les données fournies dans self.data
+            self.data[key] = df.copy(deep=True)
 
-        # Recalculer les statistiques
-        stats_table_widget = StatsWidget.update_statistics(self, key, df)
-        stats_table_widget.resizeRowsToContents()
-        
-        self.scene[key].clear()
-        pixmap = StatsWidget.update_stats(self, df)
-        self.scene[key].addPixmap(pixmap)
-        self.scene[key].setSceneRect(QRectF(pixmap.rect()))
-        
-        self.view[key].setFixedSize(pixmap.width(), pixmap.height())
-        self.view[key].setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.view[key].setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            # Sauvegarder l'onglet courant (par texte) pour tenter de le restaurer après reconstruction
+            current_tab_text = None
+            try:
+                current_tab_text = self.tabs.tabText(self.tabs.currentIndex())
+            except Exception:
+                current_tab_text = None
+
+            # Supprimer l'onglet Statistiques s'il existe
+            stats_index = None
+            for i in range(self.tabs.count()):
+                if self.tabs.tabText(i) == "Statistiques":
+                    stats_index = i
+                    break
+            if stats_index is not None:
+                self.tabs.removeTab(stats_index)
+
+            # Reconstruire l'onglet Statistiques en réutilisant add_stats_tab qui travaille sur self.data
+            self.add_stats_tab()
+
+            # Restaurer l'onglet courant si possible
+            if current_tab_text:
+                for i in range(self.tabs.count()):
+                    if self.tabs.tabText(i) == current_tab_text:
+                        self.tabs.setCurrentIndex(i)
+                        break
+
+
+    def update_stat_tab(self, key, df):
+        """Met à jour le tableau pour refléter les modifications dans le DataFrame."""
+        model = self.models[key]
+        model.clear()  # Efface les données existantes dans le modèle
+
+        # Réinitialiser les indices du DataFrame
+        df = df.reset_index(drop=True)
+
+        # Recharger les données dans le modèle
+        model.setColumnCount(len(df.columns))
+        model.setHorizontalHeaderLabels(df.columns)
+
+        for row in df.itertuples(index=False):
+            items = []
+            for cell in row:
+                item = QStandardItem(str(cell))
+                item.setTextAlignment(Qt.AlignCenter | Qt.AlignTop)  # Aligner le texte
+                items.append(item)
+            model.appendRow(items)
+        self.proxy_models[key].invalidateFilter()
 
     def load_data(self, file_path):
         """Charge les données depuis un fichier CSV."""

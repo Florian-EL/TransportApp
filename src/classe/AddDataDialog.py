@@ -1,6 +1,7 @@
 import pandas as pd
 from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QLabel, QDialog, QLineEdit
 
+
 class AddDataDialog(QDialog):
     """Fenêtre pour ajouter des données."""
     def __init__(self, key, donneebrut, parent=None):
@@ -32,6 +33,16 @@ class AddDataDialog(QDialog):
             if key == self.key:
                 data_to_save = self.data
                 data_to_save.to_csv(file_path, index=False, sep=";")
+    
+    def apply_transformations(self, key, data):
+        """Applique les transformations nécessaires en fonction de la clé."""
+        if key == "Fiesta":
+            self.parent().calculate_fiesta(data)
+            self.parent().convert_to_number(key, data)
+        elif key == "Marche":
+            self.parent().calculate_marche(data)
+        else:
+            self.parent().convert_to_number(key, data)
 
     def add_data(self):
         """Ajoute une nouvelle ligne au DataFrame."""
@@ -44,19 +55,12 @@ class AddDataDialog(QDialog):
                 self.data.sort_values(by='Date', ascending=False, inplace=True)
                 self.data['Date'] = self.data['Date'].dt.strftime('%d/%m/%Y')
             
-            self.save_to_file()
-            
-            if self.key == "Fiesta" :
-                self.parent().calculate_fiesta(self.data)
-                self.parent().convert_to_number(self.key, self.data)
-            elif self.key == 'Marche' :
-                self.parent().calculate_marche(self.data)
-            else :
-                self.parent().convert_to_number(self.key, self.data)
-            
+            self.save_to_file()            
+            self.apply_transformations(self.key, self.data)            
             self.parent().data[self.key] = self.data
             
             self.parent().update_table(self.key, self.parent().data[self.key])
+            self.parent().update_stats_table(self.key, self.parent().data[self.key])
             self.parent().update_stats_table(self.key, self.parent().data[self.key])
             
             self.close()
