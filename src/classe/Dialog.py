@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QPushButton, QLabel
 import pandas as pd
+from src.classe.utils import convert_to_number, calculate_fiesta, calculate_marche
 
 class AddDataDialog(QDialog):
     """Fenêtre pour ajouter des données."""
@@ -36,12 +37,13 @@ class AddDataDialog(QDialog):
     def apply_transformations(self, key, data):
         """Applique les transformations nécessaires en fonction de la clé."""
         if key == "Fiesta":
-            self.parent().calculate_fiesta(data)
-            self.parent().convert_to_number(key, data)
+            df = calculate_fiesta(data)
+            df = convert_to_number(key, data)
         elif key == "Marche":
-            self.parent().calculate_marche(data)
+            df = calculate_marche(data)
         else:
-            self.parent().convert_to_number(key, data)
+            df = convert_to_number(key, data)
+        self.data = df
 
     def add_data(self):
         """Ajoute une nouvelle ligne au DataFrame."""
@@ -60,7 +62,7 @@ class AddDataDialog(QDialog):
             
             self.parent().update_table(self.key, self.parent().data[self.key])
             self.parent().update_stats_table(self.key, self.parent().data[self.key])
-            self.parent().update_stats_table(self.key, self.parent().data[self.key])
+            self.parent().update_stats_tab(self.key, self.parent().data[self.key])
             
             self.close()
             
@@ -104,17 +106,17 @@ class DelDataDialog(QDialog):
         for key, file_path in self.parent().file_paths.items():
             if key == self.key:
                 self.data.to_csv(file_path, index=False, sep=";")
-
+    
     def apply_transformations(self, key, data):
         """Applique les transformations nécessaires en fonction de la clé."""
         if key == "Fiesta":
-            self.parent().calculate_fiesta(data)
-            self.parent().convert_to_number(key, data)
+            df = calculate_fiesta(data)
+            df = convert_to_number(key, data)
         elif key == "Marche":
-            self.parent().calculate_marche(data)
+            df = calculate_marche(data)
         else:
-            self.parent().convert_to_number(key, data)
-        
+            df = convert_to_number(key, data)
+        self.data = df
 
     def del_data(self, key):
         """Supprime une ligne du DataFrame en fonction des champs remplis."""
@@ -141,7 +143,7 @@ class DelDataDialog(QDialog):
             
             self.parent().update_table(self.key, self.data)
             self.parent().update_stats_table(self.key, self.parent().data[self.key])
-            self.parent().update_stats_table(self.key, self.parent().data[self.key])
+            self.parent().update_stats_tab(self.key, self.parent().data[self.key])
             
             self.close()
             

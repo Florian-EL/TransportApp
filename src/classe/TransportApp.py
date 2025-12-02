@@ -1,6 +1,9 @@
 import pandas as pd
 import sys
 import os
+import json
+from pathlib import Path
+
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QLabel, QScrollArea, QWidget as QW, \
     QGraphicsView, QGraphicsScene, QTableView, QTableWidget, QHeaderView, QTableWidgetItem, QSizePolicy, \
     QHBoxLayout, QVBoxLayout, QPushButton
@@ -17,8 +20,15 @@ from src.classe.Dialog import AddDataDialog, DelDataDialog
 class TransportApp(QWidget):
     def __init__(self, config_path="src/assets/file.json"):
         super().__init__()
-        #os.path.join(os.path.dirname(sys.executable), 
-        self.dm = DataManager(os.path.join(os.path.dirname(sys.executable), config_path))
+        #os.path.join(os.path.dirname(sys.executable),
+        with open(os.path.join(config_path), "r", encoding="utf-8") as f:
+            resources = json.load(f)
+        noms = ["Train", "Métro", "Bus", "Fiesta", "Avion", "Taxi", "Marche"]
+        paths = resources["data_files"]
+        self.file_paths = {nom: Path(p) for nom, p in zip(noms, paths)}
+        
+        self.dm = DataManager(self.file_paths)
+        self.data = self.dm.data
         self.models = {}
         self.proxy_models = {}
         self.stats_tables = {}
@@ -28,7 +38,7 @@ class TransportApp(QWidget):
 
     def init_ui(self):
         #os.path.join(os.path.dirname(sys.executable), 
-        with open(os.path.join(os.path.dirname(sys.executable), "src/assets/style.css"), "r") as f:
+        with open(os.path.join("src/assets/style.css"), "r") as f:
             self.setStyleSheet(f.read())
         self.setWindowTitle("Transport App")
         self.layout = QVBoxLayout(self)
@@ -52,22 +62,7 @@ class TransportApp(QWidget):
         def apply_filter(col, text):
             proxy_model.setFilterKeyColumn(col)
             proxy_model.setFilterRegularExpression(text)
-
-        # table de stats mini
-        stats_table_widget = QTableWidget()
-        stats_table_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
-        self.stats_tables[key] = stats_table_widget
-
-        # modèle principal
-        model = QStandardItemModel()
-        # localement garder model avant d'y charger les données
-        proxy_model = DateSortFilterProxyModel(self, date_column=df.columns.get_loc('Date') if 'Date' in df.columns else 0, key=key)
-        proxy_model.setSourceModel(model)
-        proxy_model.setSortRole(Qt.DisplayRole)
-        proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
-        proxy_model.setFilterKeyColumn(-1)
-        proxy_model.setDynamicSortFilter(True)
-
+        
         # charger données dans model
         def load_data_to_model(m, dataframe):
             m.clear()
@@ -86,35 +81,49 @@ class TransportApp(QWidget):
                     items.append(item)
                 m.appendRow(items)
             return m
+        
+        # table de stats mini
+        stats_table_widget = QTableWidget()
+        stats_table_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.stats_tables[key] = stats_table_widget
+
+        # modèle principal
+        model = QStandardItemModel()
+        # localement garder model avant d'y charger les données
+        proxy_model = DateSortFilterProxyModel(self, date_column=df.columns.get_loc('Date'), key=key)
+        proxy_model.setSourceModel(model)
+        proxy_model.setSortRole(Qt.DisplayRole)
+        proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
+        proxy_model.setFilterKeyColumn(-1)
+        proxy_model.setDynamicSortFilter(True)
 
         self.models[key] = load_data_to_model(model, df)
         self.proxy_models[key] = proxy_model
-
+        
         table_view = QTableView()
         table_view.setModel(proxy_model)
         table_view.setSortingEnabled(True)
-
-        # graphique miniature
+        
         self.scene[key] = QGraphicsScene()
         self.view[key] = QGraphicsView(self.scene[key])
+        
+        stats_table_widget = StatsWidget.update_statistics(self, key, df)
+        stats_table_widget.setObjectName("statsTable")
         pixmap = update_stats(df)
         self.scene[key].addPixmap(pixmap)
         self.scene[key].setSceneRect(QRectF(pixmap.rect()))
         self.view[key].setFixedSize(pixmap.width(), pixmap.height())
         self.view[key].setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.view[key].setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
-        # stats détaillées pour l'onglet mode
-        stats_table_widget = StatsWidget.update_statistics(self, key, df)
-        stats_table_widget.setObjectName("statsTable")
-
-        # Header + filtres
+        
+        # Gestion filtre et header
         header = FilterHeaderView(table_view)
         header.set_filter_callback(apply_filter)
         header.create_filter_widgets(len(df.columns))
         header.sectionClicked.connect(lambda index: header.handle_header_click(index, proxy_model))
         table_view.setHorizontalHeader(header)
         table_view.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        
 
         # layout
         split_layout = QHBoxLayout()
@@ -286,67 +295,94 @@ class TransportApp(QWidget):
         widget = QWidget()
         widget.setLayout(main_layout)
         self.tabs.insertTab(0, widget, "Statistiques")
+    
+    def update_table(self, key, df):
+        """Met à jour le tableau pour refléter les modifications dans le DataFrame."""
+        model = self.models[key]
+        model.clear()  # Efface les données existantes dans le modèle
 
-    # Exposé aux dialogues
-    def add_row(self, key, new_row: dict):
-        df = self.dm.get(key)
-        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-        # sauvegarde et recalcul
-        self.dm.set(key, df)
-        self.dm.apply_transformations(key)
-        self._refresh_tab_for_key(key)
+        # Réinitialiser les indices du DataFrame
+        df = df.reset_index(drop=True)
 
-    def delete_row_by_mask(self, key, mask):
-        df = self.dm.get(key)
-        df = df.loc[~mask].reset_index(drop=True)
-        self.dm.set(key, df)
-        self.dm.apply_transformations(key)
-        self._refresh_tab_for_key(key)
-
-    def _refresh_tab_for_key(self, key):
-        self._update_table_view(key)
-        self._rebuild_stats_tab()
-
-    def _update_table_view(self, key):
-        # recharge le modèle depuis DataManager
-        df = self.dm.get(key)
-        model = self.models.get(key)
-        if model is None:
-            return
-        model.clear()
+        # Recharger les données dans le modèle
         model.setColumnCount(len(df.columns))
-        model.setHorizontalHeaderLabels(list(df.columns))
+        model.setHorizontalHeaderLabels(df.columns)
+
         for row in df.itertuples(index=False):
             items = []
             for cell in row:
                 item = QStandardItem(str(cell))
-                item.setTextAlignment(Qt.AlignCenter | Qt.AlignTop)
+                item.setTextAlignment(Qt.AlignCenter | Qt.AlignTop)  # Aligner le texte
                 items.append(item)
             model.appendRow(items)
-        # invalider filtre
-        proxy = self.proxy_models.get(key)
-        if proxy:
-            proxy.invalidateFilter()
+        self.proxy_models[key].invalidateFilter()
 
-        # mettre à jour mini-stats et mini-graph
-        widget_index = None
+    def update_stats_table(self, key, df):
+        """Met à jour le tableur de statistiques pour refléter les modifications dans le DataFrame."""
+        stats_table_widget = self.stats_tables[key]
+        stats_table_widget.clearContents()  # Efface les données existantes
+        stats_table_widget.setRowCount(0)  # Réinitialise le nombre de lignes
+
+        # Recalculer les statistiques
+        stats_table_widget = StatsWidget.update_statistics(self, key, df)
+        stats_table_widget.resizeRowsToContents()
+        
+        self.scene[key].clear()
+        pixmap = update_stats(df)
+        self.scene[key].addPixmap(pixmap)
+        self.scene[key].setSceneRect(QRectF(pixmap.rect()))
+        
+        self.view[key].setFixedSize(pixmap.width(), pixmap.height())
+        self.view[key].setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        # On copie les données fournies dans self.data
+        self.data[key] = df.copy(deep=True)
+
+        # Sauvegarder l'onglet courant (par texte) pour tenter de le restaurer après reconstruction
+        current_tab_text = None
+        try:
+            current_tab_text = self.tabs.tabText(self.tabs.currentIndex())
+        except Exception:
+            current_tab_text = None
+
+        # Supprimer l'onglet Statistiques s'il existe
+        stats_index = None
         for i in range(self.tabs.count()):
-            if self.tabs.tabText(i) == key:
-                widget_index = i
+            if self.tabs.tabText(i) == "Statistiques":
+                stats_index = i
                 break
-        if widget_index is not None:
-            # stats table rebuild
-            stats_widget = StatsWidget.update_statistics(self, key, df)
-            self.stats_tables[key] = stats_widget
-            # graph
-            pixmap = update_stats(df)
-            self.scene[key].clear()
-            self.scene[key].addPixmap(pixmap)
-            self.scene[key].setSceneRect(QRectF(pixmap.rect()))
-            self.view[key].setFixedSize(pixmap.width(), pixmap.height())
+        if stats_index is not None:
+            self.tabs.removeTab(stats_index)
 
-    def _rebuild_stats_tab(self):
+        # Reconstruire l'onglet Statistiques en réutilisant add_stats_tab qui travaille sur self.data
         self._create_stats_tab()
+
+        # Restaurer l'onglet courant si possible
+        if current_tab_text:
+            for i in range(self.tabs.count()):
+                if self.tabs.tabText(i) == current_tab_text:
+                    self.tabs.setCurrentIndex(i)
+                    break
+    #? utile ???
+    def update_stats_tab(self, key, df):
+        """Met à jour le tableau pour refléter les modifications dans le DataFrame."""
+        model = self.models[key]
+        model.clear()  # Efface les données existantes dans le modèle
+
+        # Réinitialiser les indices du DataFrame
+        df = df.reset_index(drop=True)
+
+        # Recharger les données dans le modèle
+        model.setColumnCount(len(df.columns))
+        model.setHorizontalHeaderLabels(df.columns)
+
+        for row in df.itertuples(index=False):
+            items = []
+            for cell in row:
+                item = QStandardItem(str(cell))
+                item.setTextAlignment(Qt.AlignCenter | Qt.AlignTop)  # Aligner le texte
+                items.append(item)
+            model.appendRow(items)
+        self.proxy_models[key].invalidateFilter()
 
     def add_window(self):
         key = self.tabs.tabText(self.tabs.currentIndex())

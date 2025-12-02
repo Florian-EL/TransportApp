@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QHeaderView, QLineEdit
 from PyQt5.QtCore import Qt, QSize, QSortFilterProxyModel
+import pandas as pd
 
 class FilterHeaderView(QHeaderView):
     def __init__(self, parent=None):
