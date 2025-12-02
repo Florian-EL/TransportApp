@@ -18,11 +18,16 @@ from src.classe.Dialog import AddDataDialog, DelDataDialog
 
 
 class TransportApp(QWidget):
-    def __init__(self, config_path="src/assets/file.json"):
+    def __init__(self):
         super().__init__()
-        #os.path.join(os.path.dirname(sys.executable),
-        with open(os.path.join(config_path), "r", encoding="utf-8") as f:
-            resources = json.load(f)
+        
+        try :
+            with open(os.path.join(os.path.dirname(sys.executable), config_path), "r", encoding="utf-8") as f:
+                resources = json.load(f)
+        except :
+            with open("src/assets/file.json", "r", encoding="utf-8") as f:
+                resources = json.load(f)
+        
         noms = ["Train", "Métro", "Bus", "Fiesta", "Avion", "Taxi", "Marche"]
         paths = resources["data_files"]
         self.file_paths = {nom: Path(p) for nom, p in zip(noms, paths)}
@@ -37,9 +42,12 @@ class TransportApp(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        #os.path.join(os.path.dirname(sys.executable), 
-        with open(os.path.join("src/assets/style.css"), "r") as f:
-            self.setStyleSheet(f.read())
+        try :
+            with open(os.path.join(os.path.dirname(sys.executable), "src/assets/style.css"), "r") as f:
+                self.setStyleSheet(f.read())
+        except :
+            with open("src/assets/style.css", "r") as f:
+                self.setStyleSheet(f.read())
         self.setWindowTitle("Transport App")
         self.layout = QVBoxLayout(self)
         self.tabs = QTabWidget()
