@@ -22,7 +22,7 @@ class TransportApp(QWidget):
         super().__init__()
         
         try :
-            with open(os.path.join(os.path.dirname(sys.executable), config_path), "r", encoding="utf-8") as f:
+            with open(os.path.join(os.path.dirname(sys.executable), "src/assets/file.json"), "r", encoding="utf-8") as f:
                 resources = json.load(f)
         except :
             with open("src/assets/file.json", "r", encoding="utf-8") as f:
