@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=TransportApp
+Comment=Application de gestion de transport
+Exec=/home/florian/Documents/02_Projets/Algo/TransportApp/build/exe.linux-x86_64-3.13/TransportApp
+Icon=/home/florian/Documents/02_Projets/Algo/TransportApp/build/exe.linux-x86_64-3.13/src/assets/app_icon.ico
+Terminal=False
+Categories=Utility;
