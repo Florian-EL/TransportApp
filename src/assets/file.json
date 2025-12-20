@@ -7,5 +7,11 @@
     "/home/florian/Nextcloud/Data/avion.csv",
     "/home/florian/Nextcloud/Data/taxi.csv",
     "/home/florian/Nextcloud/Data/marche.csv"
+  ],
+  "aux_files" : [
+    "/home/florian/Nextcloud/Data/train_R.csv",
+    "/home/florian/Nextcloud/Data/metro_bus_R.csv",
+    "/home/florian/Nextcloud/Data/fiesta_R.csv",
+    "/home/florian/Nextcloud/Data/taxi_R.csv"
   ]
 }

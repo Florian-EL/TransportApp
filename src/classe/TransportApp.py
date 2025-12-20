@@ -4,7 +4,7 @@ import os
 import json
 from pathlib import Path
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QLabel, QScrollArea, QWidget as QW, \
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QLabel, QScrollArea, QWidget, \
     QGraphicsView, QGraphicsScene, QTableView, QTableWidget, QHeaderView, QTableWidgetItem, QSizePolicy, \
     QHBoxLayout, QVBoxLayout, QPushButton
 from PyQt5.QtCore import Qt, QRectF
@@ -29,11 +29,62 @@ class TransportApp(QWidget):
                 resources = json.load(f)
         
         noms = ["Train", "Métro", "Bus", "Fiesta", "Avion", "Taxi", "Marche"]
+        aux_noms = ["Train_R", "Métro_Bus_R", "Fiesta_R", "Taxi_R"]
         paths = resources["data_files"]
+        aux_paths = resources['aux_files']
         self.file_paths = {nom: Path(p) for nom, p in zip(noms, paths)}
+        self.aux_paths = {nom: Path(p) for nom,p in zip(aux_noms, aux_paths)}
         
-        self.dm = DataManager(self.file_paths)
+        self.dm = DataManager(self.file_paths, self.aux_paths)
         self.data = self.dm.data
+        
+        self.fixed_column_config = {
+            'Train': {
+                'visible': ["Départ", "Arrivée", "Train", "Société", "Classe", "Date", "Heures", "Minutes", "Distance (km)", "CO2 (kg)", "Prix appliqué (€)", "Prix horaire (€)", "Prix au km (km)", "CO2 par km (g/km)"],
+                'rename': {"Prix appliqué (€)": "Prix (€)", "Prix horaire (€)" : "Prix horaire\n(€)", "Prix au km (km)" : "Prix au km\n(km)", "CO2 par km (g/km)" : "CO2 par km\n(g/km)"}
+            },
+            'Métro': {
+                'visible': ["Départ", "Arrivée", "Société", "Date", "Heures", "Minutes", "Distance (km)", "CO2 (kg)", "Prix appliqué (€)", 'ID', "Prix horaire (€)", "Prix au km (km)", "CO2 par km (g/km)"],
+                'rename': {"Prix appliqué (€)": "Prix (€)", "Prix horaire (€)" : "Prix horaire\n(€)", "Prix au km (km)" : "Prix au km\n(km)", "CO2 par km (g/km)" : "CO2 par km\n(g/km)"}
+            },
+            'Bus': {
+                'visible': ["Départ", "Arrivée", "Société", "Energie", "Date", "Heures", "Minutes", "Distance (km)", "CO2 (kg)", "Prix appliqué (€)", 'ID', "Prix horaire (€)", "Prix au km (km)", "CO2 par km (g/km)"],
+                'rename': {"Prix appliqué (€)": "Prix (€)", "Prix horaire (€)" : "Prix horaire\n(€)", "Prix au km (km)" : "Prix au km\n(km)", "CO2 par km (g/km)" : "CO2 par km\n(g/km)"}
+            },
+            'Fiesta': {
+                'visible': ["Essence", "Date", "Kilométrage (km)", "Quantité (L)", "Prix (€)", "Distance (km)", "Litre par 100km", "Prix au litre", "km journalier moy", " Heures", "Minutes", "CO2 (lg)", "Prix horaire (€)", "Prix au km (km)", "CO2 par km (g/km)"],
+                'rename': {"Prix horaire (€)" : "Prix horaire\n(€)", "Prix au km (km)" : "Prix au km\n(km)", "CO2 par km (g/km)" : "CO2 par km\n(g/km)"}
+            },
+            'Avion': {
+                'visible': ["Départ", "Arrivée", "Société", "Date", "Heures", "Minutes", "Distance (km)", "CO2 (kg)", "Prix appliqué (€)", "Prix horaire (€)", "Prix au km (km)", "CO2 par km (g/km)"],
+                'rename': {"Prix appliqué (€)": "Prix (€)", "Prix horaire (€)" : "Prix horaire\n(€)", "Prix au km (km)" : "Prix au km\n(km)", "CO2 par km (g/km)" : "CO2 par km\n(g/km)"}
+            },
+            'Taxi': {
+                'visible': ["Départ", "Arrivée", "Société", "Date", "Heures", "Minutes", "Distance (km)", "CO2 (kg)", "Litre", "Prix appliqué (€)", "Prix horaire (€)", "Prix au km (km)", "CO2 par km (g/km)"],
+                'rename': {"Prix appliqué (€)": "Prix (€)", "Prix horaire (€)" : "Prix horaire\n(€)", "Prix au km (km)" : "Prix au km\n(km)", "CO2 par km (g/km)" : "CO2 par km\n(g/km)"}
+            },
+            'Marche': {
+                'visible': ["Numéro semaine", "Année", "Date", "Pas par jour", "Distance par jour (km / jour)", "Calorie par jour", "Pas par semaine", "Distance (km)", "Calories", "Heures", "Minutes", "Pas par kilomètre", "Distance par trajet", "Taille de pas"],
+                'rename': {"Distance par jour (km / jour)" : "Distance par jour\n(km / jour)"}
+            },
+            
+            'Train_R': {
+                'visible': ["Opération", "Date", "Prix (€)", "Retard"],
+                'rename': {}
+            },
+            'Métro_Bus_R': {
+                'visible': ["Opération", "Date", "Prix (€)", "Abonnement", "ID"],
+                'rename': {}
+            },
+            'Fiesta_R': {
+                'visible': ["Opération", "Date", "Prix (€)"],
+                'rename': {}
+            },
+            'Taxi_R': {
+                'visible': ["Opération", "Date", "Prix (€)"],
+                'rename': {}
+            },
+        }
         self.models = {}
         self.proxy_models = {}
         self.stats_tables = {}
@@ -52,26 +103,25 @@ class TransportApp(QWidget):
         self.layout = QVBoxLayout(self)
         self.tabs = QTabWidget()
         self.layout.addWidget(self.tabs)
-
-        # créer onglets par mode
-        for key in self.dm.data.keys():
-            # appliquer transformations persistantes
+        
+        for key in list(self.file_paths.keys()):
             self.dm.apply_transformations(key)
-            df = self.dm.get(key)
-            self._create_mode_tab(key, df)
-
-        # onglet stat global
+            df = self.dm.get(key) if key in self.dm.data else pd.DataFrame()
+            aux_keys = key + "_R" if key + "_R" in self.dm.aux.keys() else None
+            
+            if "Métro" in key or "Bus" in key :
+                aux_keys = "Métro_Bus_R"
+            self._create_mode_tab(key, df, aux_keys)
+        
         self._create_stats_tab()
-
         self.setLayout(self.layout)
 
-    def _create_mode_tab(self, key, df: pd.DataFrame):
-        # Stat widget (QTableWidget) + graphique miniature + table complète filtrable
-        def apply_filter(col, text):
-            proxy_model.setFilterKeyColumn(col)
-            proxy_model.setFilterRegularExpression(text)
+    def _create_mode_tab(self, key, df: pd.DataFrame, aux_key=None):
+        def apply_filter(col, text, target_proxy= None):
+            proxy = target_proxy or proxy_model
+            proxy.setFilterKeyColumn(col)
+            proxy.setFilterRegularExpression(text)
         
-        # charger données dans model
         def load_data_to_model(m, dataframe):
             m.clear()
             m.setColumnCount(len(dataframe.columns))
@@ -90,31 +140,52 @@ class TransportApp(QWidget):
                 m.appendRow(items)
             return m
         
-        # table de stats mini
+        def compute_table_width(view: QTableView):
+            total = view.verticalHeader().width()
+            for c in range(view.model().columnCount()):
+                total += view.columnWidth(c)
+            return total + view.columnWidth(c)//3
+        
         stats_table_widget = QTableWidget()
         stats_table_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.stats_tables[key] = stats_table_widget
-
-        # modèle principal
+        
+        df_to_load = df.copy()
+        cfg = self.fixed_column_config.get(key) or self.fixed_column_config.get(key + '')
+        if cfg:
+            cols = [c for c in cfg['visible'] if c in df_to_load.columns]
+            if cols:
+                df_to_load = df_to_load[cols].copy()
+                if cfg.get('rename'):
+                    df_to_load.rename(columns=cfg.get('rename', {}), inplace=True)
+        
         model = QStandardItemModel()
-        # localement garder model avant d'y charger les données
-        proxy_model = DateSortFilterProxyModel(self, date_column=df.columns.get_loc('Date'), key=key)
+        date_col = df_to_load.columns.get_loc('Date')
+        proxy_model = DateSortFilterProxyModel(self, date_column=date_col, key=key)
         proxy_model.setSourceModel(model)
         proxy_model.setSortRole(Qt.DisplayRole)
         proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
         proxy_model.setFilterKeyColumn(-1)
         proxy_model.setDynamicSortFilter(True)
-
-        self.models[key] = load_data_to_model(model, df)
+        
+        self.models[key] = load_data_to_model(model, df_to_load)
         self.proxy_models[key] = proxy_model
         
         table_view = QTableView()
         table_view.setModel(proxy_model)
         table_view.setSortingEnabled(True)
         
+        
+        header = FilterHeaderView(table_view)
+        header.set_filter_callback(apply_filter)
+        header.create_filter_widgets(len(self.fixed_column_config[key]['visible']))
+        header.sectionClicked.connect(lambda index: header.handle_header_click(index, proxy_model))
+        header.setFixedHeight(100)
+        table_view.setHorizontalHeader(header)
+        table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        
         self.scene[key] = QGraphicsScene()
         self.view[key] = QGraphicsView(self.scene[key])
-        
         stats_table_widget = StatsWidget.update_statistics(self, key, df)
         stats_table_widget.setObjectName("statsTable")
         pixmap = update_stats(df)
@@ -124,27 +195,12 @@ class TransportApp(QWidget):
         self.view[key].setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.view[key].setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         
-        # Gestion filtre et header
-        header = FilterHeaderView(table_view)
-        header.set_filter_callback(apply_filter)
-        header.create_filter_widgets(len(df.columns))
-        header.sectionClicked.connect(lambda index: header.handle_header_click(index, proxy_model))
-        table_view.setHorizontalHeader(header)
-        table_view.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-        
-
-        # layout
         split_layout = QHBoxLayout()
         split_layout.addWidget(stats_table_widget)
         split_layout.addWidget(self.view[key])
-
-        main_v = QVBoxLayout()
-        main_v.addLayout(split_layout)
-        main_v.addWidget(table_view)
-
-        # boutons add/del
+        
         add_btn = QPushButton("Ajouter des données")
-        del_btn = QPushButton("Supprimer les données")
+        del_btn = QPushButton("Supprimer des données")
         add_btn.setObjectName("addButton")
         del_btn.setObjectName("delButton")
         add_btn.clicked.connect(self.add_window)
@@ -152,31 +208,98 @@ class TransportApp(QWidget):
         btn_layout = QHBoxLayout()
         btn_layout.addWidget(add_btn)
         btn_layout.addWidget(del_btn)
-        main_v.addLayout(btn_layout)
-
+        
+        table_princ = QVBoxLayout()
+        table_princ.addWidget(table_view)
+        table_princ.addLayout(btn_layout)
+        
+        table_princ_w = QWidget()
+        table_princ_w.setLayout(table_princ)
+        table_princ_w.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Expanding)
+        
+        if aux_key :
+            aux_df = self.dm.get_R(aux_key)
+            
+            aux_model = QStandardItemModel()                
+            aux_date_col = aux_df.columns.get_loc('Date')                
+            aux_proxy = DateSortFilterProxyModel(self, date_column=aux_date_col, key=aux_key)
+            aux_proxy.setSourceModel(aux_model)
+            aux_proxy.setSortRole(Qt.DisplayRole)
+            aux_proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
+            aux_proxy.setFilterKeyColumn(-1)
+            aux_proxy.setDynamicSortFilter(True)
+            
+            aux_to_load = aux_df.copy()
+            aux_cfg = self.fixed_column_config.get(aux_key) or self.fixed_column_config.get(aux_key + '')
+            if aux_cfg:
+                acols = [c for c in aux_cfg.get('visible', []) if c in aux_to_load.columns]
+                if acols:
+                    aux_to_load = aux_to_load[acols].copy()
+                    if aux_cfg.get('rename'):
+                        aux_to_load.rename(columns=aux_cfg.get('rename', {}), inplace=True)
+            
+            self.models[aux_key] = load_data_to_model(aux_model, aux_to_load)
+            self.proxy_models[aux_key] = aux_proxy
+            
+            aux_table_view = QTableView()
+            aux_table_view.setModel(aux_proxy)
+            aux_table_view.setSortingEnabled(True)
+            aux_table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+            
+            header_aux = FilterHeaderView(aux_table_view)
+            header_aux.set_filter_callback(apply_filter)
+            header_aux.create_filter_widgets(len(aux_to_load.columns))
+            header_aux.sectionClicked.connect(lambda index: header_aux.handle_header_click(index, aux_proxy))
+            aux_table_view.setHorizontalHeader(header_aux)
+            
+            aux_add = QPushButton(f"Ajouter autres données")
+            aux_del = QPushButton(f"Supprimer autres données")
+            aux_add.clicked.connect(lambda _checked, akey=aux_key, adf=aux_to_load: AddDataDialog(akey, {akey: adf}, parent=self).exec_())
+            aux_del.clicked.connect(lambda _checked, akey=aux_key, adf=aux_to_load: DelDataDialog(akey, adf, parent=self).exec_())
+            aux_v = QVBoxLayout()
+            aux_v.addWidget(aux_table_view)
+            aux_v.addWidget(aux_add)
+            aux_v.addWidget(aux_del)
+            
+            aux_widget = QWidget()
+            aux_widget.setLayout(aux_v)
+            
+            w_aux = compute_table_width(aux_table_view)
+            aux_widget.setFixedWidth(w_aux)
+            aux_widget.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)            
+            aux_table_view.sortByColumn(aux_df.columns.get_loc('Date'), Qt.DescendingOrder)
+            
+        else :
+            aux_widget = QWidget()
+        
+        right_v = QHBoxLayout()
+        right_v.addWidget(table_princ_w)
+        right_v.addWidget(aux_widget)
+        
+        main_v = QVBoxLayout()
+        main_v.addLayout(split_layout)
+        main_v.addLayout(right_v)
+        
         widget = QWidget()
         widget.setLayout(main_v)
         self.tabs.addTab(widget, key)
-
-        # trier par date si possible
-        if 'Date' in df.columns:
-            table_view.sortByColumn(df.columns.get_loc('Date'), Qt.DescendingOrder)
-
+        
+        table_view.sortByColumn(df_to_load.columns.get_loc('Date'), Qt.DescendingOrder)
+        
     def _create_stats_tab(self):
-        # Reconstruire l'onglet "Statistiques" global à partir des données DM
-        # Supprimer si existe
         for i in range(self.tabs.count()):
             if self.tabs.tabText(i) == "Statistiques":
                 self.tabs.removeTab(i)
                 break
-
+        
         columns = [
             'Année', 'Distance (km)', 'Prix (€)', 'Prix horaire (€)', 'Prix au km (km)',
             'parcours %', 'CO2 (kg)', 'CO2 par km (g/km)', 'CO2 par heures (kg/h)',
             'Equivalent jours', 'Equivalent vitesse (km/h)', 'Heures', 'Minutes',
         ]
-
+        
         all_data = self.dm.concat_all()
+        
         if all_data.empty:
             widget = QWidget()
             layout = QVBoxLayout()
@@ -184,9 +307,7 @@ class TransportApp(QWidget):
             widget.setLayout(layout)
             self.tabs.insertTab(0, widget, "Statistiques")
             return
-
-        all_data['Année'] = all_data['Année'].astype(int)
-
+        
         stats = all_data.groupby('Année').agg({
             'Distance (km)': 'sum',
             'Heures': 'sum',
@@ -194,28 +315,27 @@ class TransportApp(QWidget):
             'Prix (€)': 'sum',
             'CO2 (kg)': 'sum'
         }).reset_index()
-
+        
         stats['Année'] = stats['Année'].astype(int)
         stats['Prix horaire (€)'] = round(stats['Prix (€)'] / (stats['Heures'] + stats['Minutes'] / 60), 2)
         stats['Prix au km (km)'] = round(stats['Prix (€)'] / stats['Distance (km)'], 2)
         stats['CO2 par km (g/km)'] = round(stats['CO2 (kg)'] / stats['Distance (km)'] * 1000, 2)
         stats['Distance (km)'] = round(stats['Distance (km)'], 2)
         stats['Prix (€)'] = round(stats['Prix (€)'], 2)
-        stats['CO2 (kg)'] = round(stats['CO2 (kg)'], 2)
+        stats['CO2 (kg)'] = round(stats['CO2 (kg)'], 4)
         stats['Heures'] = stats['Heures'] + stats['Minutes'] // 60
         stats['Minutes'] = stats['Minutes'] % 60
         stats['Equivalent jours'] = round((stats['Heures'] + stats['Minutes']/60) / 24, 2)
         stats['Equivalent vitesse (km/h)'] = round(stats['Distance (km)'] / (stats['Heures'] + stats['Minutes']/60), 2)
         stats['parcours %'] = round(stats['Distance (km)'] / stats['Distance (km)'].sum() * 100, 2)
         stats['CO2 par heures (kg/h)'] = round(stats['CO2 (kg)'] / (stats['Heures'] + stats['Minutes']/60), 2)
-
-        # Table générale
+        
         stats_table_widget = QTableWidget()
         stats_table_widget.setColumnCount(len(columns))
         stats_table_widget.setRowCount(len(stats))
         stats_table_widget.setHorizontalHeaderLabels(columns)
         stats_table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-
+        
         for i, row in stats.iterrows():
             for j, col in enumerate(columns):
                 value = row[col]
@@ -223,46 +343,76 @@ class TransportApp(QWidget):
                     value = int(value)
                 stats_table_widget.setItem(i, j, QTableWidgetItem(str(value)))
         stats_table_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
-
+        # Ajuster la hauteur en fonction du nombre de lignes (header + lignes)
+        try:
+            stats_table_widget.resizeRowsToContents()
+            header_h = stats_table_widget.horizontalHeader().height()
+            rows_h = sum(stats_table_widget.rowHeight(r) for r in range(stats_table_widget.rowCount()))
+            total_h = header_h + rows_h + 12
+            # limiter une hauteur raisonnable
+            max_h = 800
+            stats_table_widget.setFixedHeight(min(total_h, max_h))
+        except Exception:
+            pass
+        
         layout = QVBoxLayout()
         layout.addWidget(QLabel("Statistiques générales"))
         layout.addWidget(stats_table_widget)
-
-        # Détails par année (table + camembert)
-        all_data['Année'] = all_data['Année'].astype(int)
+        
+        
         annees = sorted(stats['Année'].unique(), reverse=True)
-
+        
         detail_columns = [
             'Transport', 'Distance (km)', 'Prix (€)', 'Prix horaire (€)', 'Prix au km (km)',
             'parcours %', 'CO2 (kg)', 'CO2 par km (g/km)', 'CO2 par heures (kg/h)',
-            'Equivalent jours', 'Equivalent vitesse (km/h)', 'Heures', 'Minutes',
+            'Jours', 'Vitesse (km/h)', 'Heures', 'Minutes',
         ]
-
+        
         layout_mini = QVBoxLayout()
         for annee in annees:
+            if annee == 0 : continue
             layout_mini.addWidget(QLabel(f"Détail {annee}"))
             detail_stats = []
-            for mode, df_mode in self.dm.data.items():
+            
+            for mode in self.file_paths.keys():
+                df_mode = self.dm.data[mode]
                 df_annee_mode = df_mode[df_mode['Année'] == annee] if not df_mode.empty and 'Année' in df_mode.columns else pd.DataFrame()
-                if not df_annee_mode.empty:
+                if not df_annee_mode.empty or True:
+                    # valeurs issues des données principales
+                    distance = round(df_annee_mode['Distance (km)'].sum(), 2) if ('Distance (km)' in df_annee_mode.columns and not df_annee_mode.empty) else 0
+                    heures = int(df_annee_mode['Heures'].sum() + df_annee_mode['Minutes'].sum() // 60) if ('Heures' in df_annee_mode.columns and 'Minutes' in df_annee_mode.columns and not df_annee_mode.empty) else 0
+                    minutes = int(df_annee_mode['Minutes'].sum() % 60) if ('Minutes' in df_annee_mode.columns and not df_annee_mode.empty) else 0
+                    prix_main = float(df_annee_mode['Prix (€)'].sum()) if ('Prix (€)' in df_annee_mode.columns and not df_annee_mode.empty) else 0.0
+                    
+                    # additionner les prix des annexes liées à ce mode
+                    prix_aux = 0.0
+                    for aux_key in self.dm.aux.keys():
+                        if mode in aux_key:
+                            aux_df = self.dm.data.get(aux_key, pd.DataFrame())
+                            if not aux_df.empty and 'Année' in aux_df.columns and 'Prix (€)' in aux_df.columns:
+                                prix_aux += float(aux_df[aux_df['Année'] == annee]['Prix (€)'].sum())
+                    
+                    prix_total = round(prix_main + prix_aux, 2)
+                    
                     d = {
                         'Transport': mode,
-                        'Distance (km)': round(df_annee_mode['Distance (km)'].sum(), 2),
-                        'Heures': int(df_annee_mode['Heures'].sum() + df_annee_mode['Minutes'].sum() // 60),
-                        'Minutes': int(df_annee_mode['Minutes'].sum() % 60),
-                        'Prix (€)': round(df_annee_mode['Prix (€)'].sum(), 2),
-                        'CO2 (kg)': round(df_annee_mode['CO2 (kg)'].sum(), 2),
+                        'Distance (km)': distance,
+                        'Heures': heures,
+                        'Minutes': minutes,
+                        'Prix (€)': prix_total,
+                        'CO2 (kg)': round(df_annee_mode['CO2 (kg)'].sum(), 2) if ('CO2 (kg)' in df_annee_mode.columns and not df_annee_mode.empty) else 0,
                     }
+                    #print(d['Distance (km)'],stats[stats['Année'] == annee]['Distance (km)'].sum())
                     total_heures = d['Heures'] + d['Minutes'] / 60
                     d['Prix horaire (€)'] = round(d['Prix (€)'] / total_heures, 2) if total_heures else 0
                     d['Prix au km (km)'] = round(d['Prix (€)'] / d['Distance (km)'], 2) if d['Distance (km)'] else 0
                     d['CO2 par km (g/km)'] = round(d['CO2 (kg)'] / d['Distance (km)'] * 1000, 2) if d['Distance (km)'] else 0
-                    d['Equivalent jours'] = round((d['Heures'] + d['Minutes']/60) / 24, 2)
-                    d['Equivalent vitesse (km/h)'] = round(d['Distance (km)'] / (d['Heures'] + d['Minutes']/60), 2) if (d['Heures'] + d['Minutes']/60) else 0
-                    d['parcours %'] = round(d['Distance (km)'] / all_data[all_data['Année'] == annee]['Distance (km)'].sum() * 100, 2)
+                    d['Jours'] = round((d['Heures'] + d['Minutes']/60) / 24, 2)
+                    d['Vitesse (km/h)'] = round(d['Distance (km)'] / (d['Heures'] + d['Minutes']/60), 2) if (d['Heures'] + d['Minutes']/60) else 0
+                    d['parcours %'] = round(d['Distance (km)'] / stats[stats['Année'] == annee]['Distance (km)'].sum() * 100, 2) if stats[stats['Année'] == annee]['Distance (km)'].sum() else 0
                     d['CO2 par heures (kg/h)'] = round(d['CO2 (kg)'] / (d['Heures'] + d['Minutes']/60), 2) if (d['Heures'] + d['Minutes']/60) else 0
                     detail_stats.append(d)
-
+            
             detail_table = QTableWidget()
             detail_table.setColumnCount(len(detail_columns))
             detail_table.setRowCount(len(detail_stats))
@@ -273,86 +423,82 @@ class TransportApp(QWidget):
                     item.setTextAlignment(Qt.AlignCenter | Qt.AlignTop)
                     detail_table.setItem(i, j, item)
             detail_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-            detail_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+            
+            # Let the detail table expand to fill available vertical space on the left
+            detail_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             detail_table.resizeRowsToContents()
-
+            # set a small minimum height based on content but allow expansion
+            header_h = detail_table.horizontalHeader().height()
+            rows_h = sum(detail_table.rowHeight(r) for r in range(detail_table.rowCount()))
+            min_h = header_h + rows_h + 12
+            detail_table.setMinimumHeight(min_h)
+            
             pixmap = graph_stats(detail_stats)
             pix_scene = QGraphicsScene()
             pix_view = QGraphicsView(pix_scene)
             pix_scene.addPixmap(pixmap)
             pix_scene.setSceneRect(QRectF(pixmap.rect()))
-            pix_view.setFixedSize(550, pixmap.height() + 10)
+            pix_view.setFixedSize(600, pixmap.height() + 10)
             pix_view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
             pix_view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
+            
             h = QHBoxLayout()
             h.addWidget(detail_table)
             h.addWidget(pix_view)
             layout_mini.addLayout(h)
-
+        
         mini_widget = QWidget()
         mini_widget.setLayout(layout_mini)
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setWidget(mini_widget)
-
+        
         main_layout = QVBoxLayout()
         main_layout.addLayout(layout)
         main_layout.addWidget(scroll)
-
+        
         widget = QWidget()
         widget.setLayout(main_layout)
         self.tabs.insertTab(0, widget, "Statistiques")
     
     def update_table(self, key, df):
-        """Met à jour le tableau pour refléter les modifications dans le DataFrame."""
         model = self.models[key]
-        model.clear()  # Efface les données existantes dans le modèle
-
-        # Réinitialiser les indices du DataFrame
+        model.clear()
         df = df.reset_index(drop=True)
-
-        # Recharger les données dans le modèle
+        
         model.setColumnCount(len(df.columns))
-        model.setHorizontalHeaderLabels(df.columns)
-
+        model.setHorizontalHeaderLabels(list(df.columns))
         for row in df.itertuples(index=False):
             items = []
             for cell in row:
                 item = QStandardItem(str(cell))
-                item.setTextAlignment(Qt.AlignCenter | Qt.AlignTop)  # Aligner le texte
+                item.setTextAlignment(Qt.AlignCenter | Qt.AlignTop)
                 items.append(item)
             model.appendRow(items)
+        self.models[key] = model
         self.proxy_models[key].invalidateFilter()
-
+    
     def update_stats_table(self, key, df):
-        """Met à jour le tableur de statistiques pour refléter les modifications dans le DataFrame."""
         stats_table_widget = self.stats_tables[key]
-        stats_table_widget.clearContents()  # Efface les données existantes
-        stats_table_widget.setRowCount(0)  # Réinitialise le nombre de lignes
-
-        # Recalculer les statistiques
+        stats_table_widget.clearContents()
+        stats_table_widget.setRowCount(0)
         stats_table_widget = StatsWidget.update_statistics(self, key, df)
         stats_table_widget.resizeRowsToContents()
-        
         self.scene[key].clear()
-        pixmap = update_stats(df)
-        self.scene[key].addPixmap(pixmap)
-        self.scene[key].setSceneRect(QRectF(pixmap.rect()))
-        
-        self.view[key].setFixedSize(pixmap.width(), pixmap.height())
+        try:
+            pixmap = update_stats(df)
+            self.scene[key].addPixmap(pixmap)
+            self.scene[key].setSceneRect(QRectF(pixmap.rect()))
+            self.view[key].setFixedSize(pixmap.width(), pixmap.height())
+        except Exception:
+            pass
         self.view[key].setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        # On copie les données fournies dans self.data
         self.data[key] = df.copy(deep=True)
-
-        # Sauvegarder l'onglet courant (par texte) pour tenter de le restaurer après reconstruction
         current_tab_text = None
         try:
             current_tab_text = self.tabs.tabText(self.tabs.currentIndex())
         except Exception:
             current_tab_text = None
-
-        # Supprimer l'onglet Statistiques s'il existe
         stats_index = None
         for i in range(self.tabs.count()):
             if self.tabs.tabText(i) == "Statistiques":
@@ -360,56 +506,41 @@ class TransportApp(QWidget):
                 break
         if stats_index is not None:
             self.tabs.removeTab(stats_index)
-
-        # Reconstruire l'onglet Statistiques en réutilisant add_stats_tab qui travaille sur self.data
         self._create_stats_tab()
-
-        # Restaurer l'onglet courant si possible
         if current_tab_text:
             for i in range(self.tabs.count()):
                 if self.tabs.tabText(i) == current_tab_text:
                     self.tabs.setCurrentIndex(i)
                     break
-    #? utile ???
+    
     def update_stats_tab(self, key, df):
-        """Met à jour le tableau pour refléter les modifications dans le DataFrame."""
         model = self.models[key]
-        model.clear()  # Efface les données existantes dans le modèle
-
-        # Réinitialiser les indices du DataFrame
+        model.clear()
         df = df.reset_index(drop=True)
-
-        # Recharger les données dans le modèle
         model.setColumnCount(len(df.columns))
         model.setHorizontalHeaderLabels(df.columns)
-
         for row in df.itertuples(index=False):
             items = []
             for cell in row:
                 item = QStandardItem(str(cell))
-                item.setTextAlignment(Qt.AlignCenter | Qt.AlignTop)  # Aligner le texte
+                item.setTextAlignment(Qt.AlignCenter | Qt.AlignTop)
                 items.append(item)
             model.appendRow(items)
         self.proxy_models[key].invalidateFilter()
-
+    
     def add_window(self):
         key = self.tabs.tabText(self.tabs.currentIndex())
         if key in self.dm.data:
             df = self.dm.get(key)
-            # Récupère l'entête (colonnes) du fichier CSV d'origine via DataManager.file_paths
-            try:
-                header_cols = list(pd.read_csv(str(self.dm.file_paths[key]), sep=';', nrows=0).columns)
-            except Exception:
-                # fallback: utilise les colonnes présentes dans le DataFrame chargé
-                header_cols = list(df.columns)
-            # ne garder que les colonnes à la fois dans l'entête d'origine et dans le df actuel
+            header_cols = list(pd.read_csv(str(self.dm.file_paths[key]), sep=';', nrows=0).columns)
+            
             useful_cols = [c for c in header_cols if c in df.columns]
             if not useful_cols:
                 useful_cols = list(df.columns)
             donneebrut = {key: df[useful_cols].copy(deep=True)}
             dlg = AddDataDialog(key, donneebrut, parent=self)
             dlg.exec_()
-
+    
     def del_window(self):
         key = self.tabs.tabText(self.tabs.currentIndex())
         if key in self.dm.data:
@@ -418,8 +549,12 @@ class TransportApp(QWidget):
                 header_cols = list(pd.read_csv(str(self.dm.file_paths[key]), sep=';', nrows=0).columns)
             except Exception:
                 header_cols = list(df.columns)
+            
             useful_cols = [c for c in header_cols if c in df.columns]
+            
             if not useful_cols:
                 useful_cols = list(df.columns)
-            dlg = DelDataDialog(key, df[useful_cols].copy(deep=True), parent=self)
+
+            donneebrut = {key: df.copy(deep=True)}
+            dlg = DelDataDialog(key, donneebrut, parent=self)
             dlg.exec_()
