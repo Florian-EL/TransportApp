@@ -5,3 +5,4 @@ venv/
 src/classe/__pycache__/
 *.csv
 src_old/
+Obsidian/

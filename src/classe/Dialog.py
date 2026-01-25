@@ -103,8 +103,9 @@ class AddDataDialog(QDialog):
             self.parent().dm.apply_transformations(self.key[:-2] if isinstance(self.key, str) and self.key.endswith("_R") else self.key)
             self.data = self.parent().dm.get(self.key)
             
+
             self.data.rename(columns=lambda x: x.replace('Prix (€)', 'Prix appliqué (€)'), inplace=False)
-                    
+            
             aux_to_load = self.data.copy()
             aux_cfg = self.parent().fixed_column_config.get(self.key) or self.parent().fixed_column_config.get(self.key + '')
             if aux_cfg:
@@ -113,7 +114,6 @@ class AddDataDialog(QDialog):
                     aux_to_load = aux_to_load[acols].copy()
                     if aux_cfg.get('rename'):
                         aux_to_load.rename(columns=aux_cfg.get('rename', {}), inplace=True)
-            
             
             self.parent().data[self.key] = aux_to_load
             
@@ -126,6 +126,7 @@ class AddDataDialog(QDialog):
         except Exception as e:
             error_msg = QLabel(f"Erreur: {str(e)}")
             self.layout.addWidget(error_msg)
+            raise ValueError(e)
 
 
 
@@ -193,7 +194,10 @@ class DelDataDialog(QDialog):
 
             self.data = self.parent().dm.get(self.key)
             
-            self.data.rename(columns=lambda x: x.replace('Prix (€)', 'Prix appliqué (€)'), inplace=False)
+            try :
+                self.data.rename(columns=lambda x: x.replace('Prix (€)', 'Prix appliqué (€)'), inplace=False)
+            except :
+                pass
             
             aux_to_load = self.data.copy()
             aux_cfg = self.parent().fixed_column_config.get(self.key) or self.parent().fixed_column_config.get(self.key + '')
@@ -215,5 +219,7 @@ class DelDataDialog(QDialog):
             
         except ValueError as ve:
             self.error_label.setText(f"Erreur : {str(ve)}")
+            print(ve)
         except Exception as e:
             self.error_label.setText(f"Erreur inattendue : {str(e)}")
+            print(e)

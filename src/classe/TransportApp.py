@@ -52,7 +52,7 @@ class TransportApp(QWidget):
                 'rename': {"Prix appliqué (€)": "Prix (€)", "Prix horaire (€)" : "Prix horaire\n(€)", "Prix au km (km)" : "Prix au km\n(km)", "CO2 par km (g/km)" : "CO2 par km\n(g/km)"}
             },
             'Fiesta': {
-                'visible': ["Essence", "Date", "Kilométrage (km)", "Quantité (L)", "Prix (€)", "Distance (km)", "Litre par 100km", "Prix au litre", "km journalier moy", " Heures", "Minutes", "CO2 (lg)", "Prix horaire (€)", "Prix au km (km)", "CO2 par km (g/km)"],
+                'visible': ["Essence", "Date", "Kilométrage (km)", "Quantité (L)", "Prix (€)", "Distance (km)", "Litre par 100km", "Prix au litre", "km journalier moy", "Heures", "Minutes", "CO2 (kg)", "Prix horaire (€)", "Prix au km (km)", "CO2 par km (g/km)"],
                 'rename': {"Prix horaire (€)" : "Prix horaire\n(€)", "Prix au km (km)" : "Prix au km\n(km)", "CO2 par km (g/km)" : "CO2 par km\n(g/km)"}
             },
             'Avion': {
@@ -64,8 +64,8 @@ class TransportApp(QWidget):
                 'rename': {"Prix appliqué (€)": "Prix (€)", "Prix horaire (€)" : "Prix horaire\n(€)", "Prix au km (km)" : "Prix au km\n(km)", "CO2 par km (g/km)" : "CO2 par km\n(g/km)"}
             },
             'Marche': {
-                'visible': ["Numéro semaine", "Année", "Date", "Pas par jour", "Distance par jour (km / jour)", "Calorie par jour", "Pas par semaine", "Distance (km)", "Calories", "Heures", "Minutes", "Pas par kilomètre", "Distance par trajet", "Taille de pas"],
-                'rename': {"Distance par jour (km / jour)" : "Distance par jour\n(km / jour)"}
+                'visible': ["Numéro semaine", "Année", "Date", "Pas par jour", "Distance par jour (km / jour)", "Calorie par jour", "Pas par semaine", "Distance (km)", "Calories", "Heures", "Minutes", "Pas par kilomètre", "Distance par trajet", "Taille de pas", "CO2 (kg)", "Prix appliqué (€)"],
+                'rename': {"Distance par jour (km / jour)" : "Distance par jour\n(km / jour)", "Prix appliqué (€)": "Prix (€)"}
             },
             
             'Train_R': {
@@ -106,11 +106,12 @@ class TransportApp(QWidget):
         
         for key in list(self.file_paths.keys()):
             self.dm.apply_transformations(key)
-            df = self.dm.get(key) if key in self.dm.data else pd.DataFrame()
-            aux_keys = key + "_R" if key + "_R" in self.dm.aux.keys() else None
             
-            if "Métro" in key or "Bus" in key :
-                aux_keys = "Métro_Bus_R"
+            df = self.dm.get(key) if key in self.dm.data else pd.DataFrame()
+            
+            aux_keys = key + "_R" if key + "_R" in self.dm.aux.keys() else None
+            aux_keys = "Métro_Bus_R" if "Métro" in key or "Bus" in key else aux_keys
+            
             self._create_mode_tab(key, df, aux_keys)
         
         self._create_stats_tab()
@@ -146,6 +147,15 @@ class TransportApp(QWidget):
                 total += view.columnWidth(c)
             return total + view.columnWidth(c)//3
         
+        def create_proxy_model(self, key, model, date_col):
+            proxy_model = DateSortFilterProxyModel(self, date_column=date_col, key=key)
+            proxy_model.setSourceModel(model)
+            proxy_model.setSortRole(Qt.DisplayRole)
+            proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
+            proxy_model.setFilterKeyColumn(-1)
+            proxy_model.setDynamicSortFilter(True)
+            return proxy_model
+        
         stats_table_widget = QTableWidget()
         stats_table_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.stats_tables[key] = stats_table_widget
@@ -161,12 +171,8 @@ class TransportApp(QWidget):
         
         model = QStandardItemModel()
         date_col = df_to_load.columns.get_loc('Date')
-        proxy_model = DateSortFilterProxyModel(self, date_column=date_col, key=key)
-        proxy_model.setSourceModel(model)
-        proxy_model.setSortRole(Qt.DisplayRole)
-        proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
-        proxy_model.setFilterKeyColumn(-1)
-        proxy_model.setDynamicSortFilter(True)
+        
+        proxy_model = create_proxy_model(self, key, model, date_col)
         
         self.models[key] = load_data_to_model(model, df_to_load)
         self.proxy_models[key] = proxy_model
@@ -174,8 +180,6 @@ class TransportApp(QWidget):
         table_view = QTableView()
         table_view.setModel(proxy_model)
         table_view.setSortingEnabled(True)
-        
-        
         header = FilterHeaderView(table_view)
         header.set_filter_callback(apply_filter)
         header.create_filter_widgets(len(self.fixed_column_config[key]['visible']))
@@ -185,12 +189,15 @@ class TransportApp(QWidget):
         table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         
         self.scene[key] = QGraphicsScene()
-        self.view[key] = QGraphicsView(self.scene[key])
+        
         stats_table_widget = StatsWidget.update_statistics(self, key, df)
         stats_table_widget.setObjectName("statsTable")
+        
         pixmap = update_stats(df)
         self.scene[key].addPixmap(pixmap)
         self.scene[key].setSceneRect(QRectF(pixmap.rect()))
+        
+        self.view[key] = QGraphicsView(self.scene[key])
         self.view[key].setFixedSize(pixmap.width(), pixmap.height())
         self.view[key].setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.view[key].setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -220,14 +227,10 @@ class TransportApp(QWidget):
         if aux_key :
             aux_df = self.dm.get_R(aux_key)
             
-            aux_model = QStandardItemModel()                
-            aux_date_col = aux_df.columns.get_loc('Date')                
-            aux_proxy = DateSortFilterProxyModel(self, date_column=aux_date_col, key=aux_key)
-            aux_proxy.setSourceModel(aux_model)
-            aux_proxy.setSortRole(Qt.DisplayRole)
-            aux_proxy.setFilterCaseSensitivity(Qt.CaseInsensitive)
-            aux_proxy.setFilterKeyColumn(-1)
-            aux_proxy.setDynamicSortFilter(True)
+            aux_model = QStandardItemModel()
+            aux_date_col = aux_df.columns.get_loc('Date')
+            
+            aux_proxy = create_proxy_model(self, aux_key, aux_model, aux_date_col)
             
             aux_to_load = aux_df.copy()
             aux_cfg = self.fixed_column_config.get(aux_key) or self.fixed_column_config.get(aux_key + '')
@@ -352,8 +355,8 @@ class TransportApp(QWidget):
             # limiter une hauteur raisonnable
             max_h = 800
             stats_table_widget.setFixedHeight(min(total_h, max_h))
-        except Exception:
-            pass
+        except Exception as e :
+            print(e)
         
         layout = QVBoxLayout()
         layout.addWidget(QLabel("Statistiques générales"))
@@ -485,13 +488,15 @@ class TransportApp(QWidget):
         stats_table_widget = StatsWidget.update_statistics(self, key, df)
         stats_table_widget.resizeRowsToContents()
         self.scene[key].clear()
+        
         try:
             pixmap = update_stats(df)
             self.scene[key].addPixmap(pixmap)
             self.scene[key].setSceneRect(QRectF(pixmap.rect()))
             self.view[key].setFixedSize(pixmap.width(), pixmap.height())
-        except Exception:
-            pass
+        except Exception as e :
+            raise Exception(e)
+        
         self.view[key].setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.data[key] = df.copy(deep=True)
         current_tab_text = None

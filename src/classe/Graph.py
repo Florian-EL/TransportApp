@@ -9,23 +9,22 @@ def update_stats(data):
     fig, ax1 = plt.subplots(figsize=(3, 2), facecolor='black') #largeur x hauteur
     
     data = data.copy()
+    
+    try :
+        annee = pd.to_numeric(
+            data["Année"],
+            errors="coerce"
+        )
+    except Exception :
+        annee = pd.to_datetime(
+            data["Date"],
+            dayfirst=True,
+            errors="coerce"
+        ).dt.year
         
-    annee = pd.to_datetime(
-        data["Date"],
-        dayfirst=True,
-        errors="coerce"
-    ).dt.year
-    
-    mask = annee.isna()
-    
-    annee[mask] = pd.to_numeric(
-        data.loc[mask, "Date"],
-        errors="coerce"
-    )
-    data["Année"] = annee.fillna(0).astype(int)
 
-    data['Heures_tot'] = data['Heures'] + data['Minutes'] / 60
-    
+    data["Année"] = annee.astype(int)
+    data['Heures_tot'] = data['Heures'] + data['Minutes'] / 60    
     data['count'] = 1
     
     grouped = data.groupby('Année').agg({

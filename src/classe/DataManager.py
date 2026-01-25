@@ -13,16 +13,11 @@ class DataManager():
         
         self.data: Dict[str, pd.DataFrame] = {k: self._load(p) for k, p in self.file_paths.items()}
         
-        self.aux: Dict[str, pd.DataFrame] = {}
-        for k, p in self.aux_file_paths.items():
-            self.aux[k] = self._load(p)
-            self.aux[k] = self._normalize_aux_df(self.aux[k])
-            self.data[k] = self.aux[k].copy(deep=True)
+        self.aux: Dict[str, pd.DataFrame] = {k : self._normalize_aux_df(self._load(p)) for k, p in self.aux_file_paths.items()}
 
     def _normalize_aux_df(self, df: pd.DataFrame) -> pd.DataFrame:
         df = df.copy(deep=True)
-        df['Année'] = pd.to_datetime(df['Date'], dayfirst=True, errors='coerce').dt.year
-        
+        df['Année'] = pd.to_datetime(df['Date'], dayfirst=True, errors='coerce').dt.year        
         df['Prix (€)'] = pd.to_numeric(df['Prix (€)'], errors='coerce').fillna(0)
         return df
 

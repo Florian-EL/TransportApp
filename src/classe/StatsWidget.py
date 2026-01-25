@@ -49,7 +49,10 @@ class StatsWidget:
         # Utiliser une copie et, si présente, prioriser la colonne 'Prix appliqué (€)'
         local = df.copy()
         
-        local['Année'] = to_datetime(local['Date'], dayfirst=True, errors='coerce').dt.year
+        if key != "Marche" :
+            local['Année'] = to_datetime(local['Date'], dayfirst=True, errors='coerce').dt.year
+        else :
+            local['Année'] = df['Année']
         
         if 'Prix appliqué (€)' in local.columns:
             # remplacer localement la colonne utilisée pour les calculs
