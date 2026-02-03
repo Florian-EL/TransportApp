@@ -96,7 +96,13 @@ class AddDataDialog(QDialog):
                 self.data['Date'] = pd.to_datetime(self.data['Date'], format='%d/%m/%Y')
                 self.data.sort_values(by='Date', ascending=False, inplace=True)
                 self.data['Date'] = self.data['Date'].dt.strftime('%d/%m/%Y')
-                
+            
+            for d in self.data :
+                if 'Prix (€)' in str(d).lower() and 'Abonnement' in self.data.columns:
+                    mask = (self.data['Abonnement'] == True) | (self.data['Abonnement'].astype(str).str.lower().isin(['true', '1', 'yes', 'y']))
+                    self.data.loc[mask, d] = 0
+
+            
             self.parent().dm.set(self.key, self.data)
             self.parent().dm.save(self.key)
             
@@ -104,8 +110,6 @@ class AddDataDialog(QDialog):
             self.data = self.parent().dm.get(self.key)
             
 
-            self.data.rename(columns=lambda x: x.replace('Prix (€)', 'Prix appliqué (€)'), inplace=False)
-            
             aux_to_load = self.data.copy()
             aux_cfg = self.parent().fixed_column_config.get(self.key) or self.parent().fixed_column_config.get(self.key + '')
             if aux_cfg:

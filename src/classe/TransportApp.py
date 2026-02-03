@@ -28,7 +28,7 @@ class TransportApp(QWidget):
             with open("src/assets/file.json", "r", encoding="utf-8") as f:
                 resources = json.load(f)
         
-        noms = ["Train", "Métro", "Bus", "Fiesta", "Avion", "Taxi", "Marche"]
+        noms = ["Train", "Métro", "Bus", "Fiesta", "Avion", "Taxi", "Marche", "Vélo"]
         aux_noms = ["Train_R", "Métro_Bus_R", "Fiesta_R", "Taxi_R"]
         paths = resources["data_files"]
         aux_paths = resources['aux_files']
@@ -44,11 +44,11 @@ class TransportApp(QWidget):
                 'rename': {"Prix appliqué (€)": "Prix (€)", "Prix horaire (€)" : "Prix horaire\n(€)", "Prix au km (km)" : "Prix au km\n(km)", "CO2 par km (g/km)" : "CO2 par km\n(g/km)"}
             },
             'Métro': {
-                'visible': ["Départ", "Arrivée", "Société", "Date", "Heures", "Minutes", "Distance (km)", "CO2 (kg)", "Prix appliqué (€)", 'ID', "Prix horaire (€)", "Prix au km (km)", "CO2 par km (g/km)"],
+                'visible': ["Départ", "Arrivée", "Société", "Date", "Heures", "Minutes", "Distance (km)", "CO2 (kg)", "Prix appliqué (€)", 'Abonnement', 'ID', "Prix horaire (€)", "Prix au km (km)", "CO2 par km (g/km)"],
                 'rename': {"Prix appliqué (€)": "Prix (€)", "Prix horaire (€)" : "Prix horaire\n(€)", "Prix au km (km)" : "Prix au km\n(km)", "CO2 par km (g/km)" : "CO2 par km\n(g/km)"}
             },
             'Bus': {
-                'visible': ["Départ", "Arrivée", "Société", "Energie", "Date", "Heures", "Minutes", "Distance (km)", "CO2 (kg)", "Prix appliqué (€)", 'ID', "Prix horaire (€)", "Prix au km (km)", "CO2 par km (g/km)"],
+                'visible': ["Départ", "Arrivée", "Société", "Energie", "Date", "Heures", "Minutes", "Distance (km)", "CO2 (kg)", "Prix appliqué (€)", 'Abonnement', 'ID', "Prix horaire (€)", "Prix au km (km)", "CO2 par km (g/km)"],
                 'rename': {"Prix appliqué (€)": "Prix (€)", "Prix horaire (€)" : "Prix horaire\n(€)", "Prix au km (km)" : "Prix au km\n(km)", "CO2 par km (g/km)" : "CO2 par km\n(g/km)"}
             },
             'Fiesta': {
@@ -65,9 +65,12 @@ class TransportApp(QWidget):
             },
             'Marche': {
                 'visible': ["Numéro semaine", "Année", "Date", "Pas par jour", "Distance par jour (km / jour)", "Calorie par jour", "Pas par semaine", "Distance (km)", "Calories", "Heures", "Minutes", "Pas par kilomètre", "Distance par trajet", "Taille de pas", "CO2 (kg)", "Prix appliqué (€)"],
-                'rename': {"Distance par jour (km / jour)" : "Distance par jour\n(km / jour)", "Prix appliqué (€)": "Prix (€)"}
+                'rename': {"Prix appliqué (€)": "Prix (€)"}
             },
-            
+            'Vélo': {
+                'visible': ["Date", "Distance (km)", "Heures", "Minutes", "CO2 (kg)", "Prix appliqué (€)"],
+                'rename': {"Prix appliqué (€)": "Prix (€)"}
+            },
             'Train_R': {
                 'visible': ["Opération", "Date", "Prix (€)", "Retard"],
                 'rename': {}
