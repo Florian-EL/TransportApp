@@ -6,7 +6,8 @@
     "/home/florian/Nextcloud/Data/fiesta.csv",
     "/home/florian/Nextcloud/Data/avion.csv",
     "/home/florian/Nextcloud/Data/taxi.csv",
-    "/home/florian/Nextcloud/Data/marche.csv"
+    "/home/florian/Nextcloud/Data/marche.csv",
+    "/home/florian/Nextcloud/Data/velo.csv"
   ],
   "aux_files" : [
     "/home/florian/Nextcloud/Data/train_R.csv",
