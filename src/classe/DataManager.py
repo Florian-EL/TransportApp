@@ -30,6 +30,13 @@ class DataManager():
 
     def save(self, key: str):
         path = self.file_paths[key]
+        df = self.data.get(key)
+        if df is not None and 'Abonnement' in df.columns:
+            mask = df['Abonnement'].astype(str).str.lower().isin(["true", "1", "yes"])
+            if 'Prix (€)' not in df.columns:
+                df['Prix (€)'] = 0
+            df.loc[mask, 'Prix (€)'] = 0
+            self.data[key] = df
         self.data[key].to_csv(path, sep=';', index=False)
 
     def save_R(self, key: str):

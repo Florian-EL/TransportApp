@@ -439,6 +439,7 @@ class TransportApp(QWidget):
             min_h = header_h + rows_h + 12
             detail_table.setMinimumHeight(min_h)
             
+            
             pixmap = graph_stats(detail_stats)
             pix_scene = QGraphicsScene()
             pix_view = QGraphicsView(pix_scene)
@@ -485,23 +486,26 @@ class TransportApp(QWidget):
         self.proxy_models[key].invalidateFilter()
     
     def update_stats_table(self, key, df):
-        stats_table_widget = self.stats_tables[key]
-        stats_table_widget.clearContents()
-        stats_table_widget.setRowCount(0)
-        stats_table_widget = StatsWidget.update_statistics(self, key, df)
-        stats_table_widget.resizeRowsToContents()
-        self.scene[key].clear()
+        if not key.endswith("_R") :
+            
+            stats_table_widget = self.stats_tables[key]
+            stats_table_widget.clearContents()
+            stats_table_widget.setRowCount(0)
+            stats_table_widget = StatsWidget.update_statistics(self, key, df)
+            stats_table_widget.resizeRowsToContents()
+            self.scene[key].clear()
+            
+            try:
+                pixmap = update_stats(df)
+                self.scene[key].addPixmap(pixmap)
+                self.scene[key].setSceneRect(QRectF(pixmap.rect()))
+                #self.view[key].setFixedSize(pixmap.width(), pixmap.height())
+            except Exception as e :
+                raise Exception(e)
+
+            self.view[key].setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            self.data[key] = df.copy(deep=True)
         
-        try:
-            pixmap = update_stats(df)
-            self.scene[key].addPixmap(pixmap)
-            self.scene[key].setSceneRect(QRectF(pixmap.rect()))
-            self.view[key].setFixedSize(pixmap.width(), pixmap.height())
-        except Exception as e :
-            raise Exception(e)
-        
-        self.view[key].setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.data[key] = df.copy(deep=True)
         current_tab_text = None
         try:
             current_tab_text = self.tabs.tabText(self.tabs.currentIndex())

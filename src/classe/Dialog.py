@@ -23,7 +23,16 @@ class AddDataDialog(QDialog):
                 continue
 
             # ID -> combobox pré-remplie avec les 5 derniers ID référencés dans la table annexe correspondante
+            # sauf pour les clés auxiliaires se terminant par "_R" : dans ce cas, utiliser un champ texte simple
             if col == 'ID':
+                if isinstance(self.key, str) and self.key.endswith('_R'):
+                    # champ texte simple pour les données auxiliaires
+                    input_field = QLineEdit()
+                    input_field.setPlaceholderText(col)
+                    self.inputs[col] = input_field
+                    self.layout.addWidget(input_field)
+                    continue
+
                 combo = QComboBox()
                 combo.setEditable(True)
                 try:
@@ -102,28 +111,39 @@ class AddDataDialog(QDialog):
                     mask = (self.data['Abonnement'] == True) | (self.data['Abonnement'].astype(str).str.lower().isin(['true', '1', 'yes', 'y']))
                     self.data.loc[mask, d] = 0
 
+            if self.key.endswith('_R') :
+                self.parent().dm.set_R(self.key, self.data)
+                self.parent().dm.save_R(self.key)
+                
+                #self.parent().dm.apply_transformations(self.key[:-2] if isinstance(self.key, str) and self.key.endswith("_R") else self.key)
+                self.data = self.parent().dm.get_R(self.key)
+                
+                self.parent().update_table(self.key, self.data)
+                self.parent().update_stats_table(self.key, self.data)
+                self.parent().update_stats_tab(self.key, self.data)
+            else :
+                self.parent().dm.set(self.key, self.data)
+                self.parent().dm.save(self.key)
+                
+                self.parent().dm.apply_transformations(self.key[:-2] if isinstance(self.key, str) and self.key.endswith("_R") else self.key)
             
-            self.parent().dm.set(self.key, self.data)
-            self.parent().dm.save(self.key)
-            
-            self.parent().dm.apply_transformations(self.key[:-2] if isinstance(self.key, str) and self.key.endswith("_R") else self.key)
-            self.data = self.parent().dm.get(self.key)
+                self.data = self.parent().dm.get(self.key)
             
 
-            aux_to_load = self.data.copy()
-            aux_cfg = self.parent().fixed_column_config.get(self.key) or self.parent().fixed_column_config.get(self.key + '')
-            if aux_cfg:
-                acols = [c for c in aux_cfg.get('visible', []) if c in aux_to_load.columns]
-                if acols:
-                    aux_to_load = aux_to_load[acols].copy()
-                    if aux_cfg.get('rename'):
-                        aux_to_load.rename(columns=aux_cfg.get('rename', {}), inplace=True)
-            
-            self.parent().data[self.key] = aux_to_load
-            
-            self.parent().update_table(self.key, self.parent().data[self.key])
-            self.parent().update_stats_table(self.key, self.parent().data[self.key])
-            self.parent().update_stats_tab(self.key, self.parent().data[self.key])
+                aux_to_load = self.data.copy()
+                aux_cfg = self.parent().fixed_column_config.get(self.key) or self.parent().fixed_column_config.get(self.key + '')
+                if aux_cfg:
+                    acols = [c for c in aux_cfg.get('visible', []) if c in aux_to_load.columns]
+                    if acols:
+                        aux_to_load = aux_to_load[acols].copy()
+                        if aux_cfg.get('rename'):
+                            aux_to_load.rename(columns=aux_cfg.get('rename', {}), inplace=True)
+                
+                self.parent().data[self.key] = aux_to_load
+                
+                self.parent().update_table(self.key, self.parent().data[self.key])
+                self.parent().update_stats_table(self.key, self.parent().data[self.key])
+                self.parent().update_stats_tab(self.key, self.parent().data[self.key])
             
             self.close()
             
