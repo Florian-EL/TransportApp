@@ -2,7 +2,7 @@ src/data/
 src/data copy/
 build/
 venv/
-src/classe/__pycache__/
+*.pyc
 *.csv
 src_old/
 Obsidian/

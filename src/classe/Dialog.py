@@ -36,7 +36,7 @@ class AddDataDialog(QDialog):
                 combo = QComboBox()
                 combo.setEditable(True)
                 try:
-                    ids = []
+                    ids = ["0"]
                     base_key = self.key
                     # parcourir les annexes et récupérer les IDs récents
                     for aux_key, aux_df in getattr(self.parent(), 'dm').aux.items():
@@ -49,7 +49,6 @@ class AddDataDialog(QDialog):
                                     ids.append(val)
                     # limiter aux 5 derniers
                     ids = ids[:5]
-                    combo.addItems(0)
                     if ids:
                         combo.addItems(ids)
                 except Exception:
