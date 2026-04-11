@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import (QApplication)
 from PyQt5.QtGui import QIcon
 
-from src.classe.TransportApp import TransportApp
+from QT_Transport import TransportApp
 
 import warnings
 warnings.filterwarnings("ignore")

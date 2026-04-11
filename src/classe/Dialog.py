@@ -6,7 +6,7 @@ class AddDataDialog(QDialog):
     def __init__(self, key, donneebrut, parent=None):
         super().__init__(parent)
         self.key = key
-        self.donneebrut = donneebrut[key]
+        self.donneebrut = donneebrut
         self.data = pd.DataFrame()
         self.setWindowTitle(f"Ajouter des données ({key})")
         self.layout = QVBoxLayout()
@@ -25,7 +25,7 @@ class AddDataDialog(QDialog):
             # ID -> combobox pré-remplie avec les 5 derniers ID référencés dans la table annexe correspondante
             # sauf pour les clés auxiliaires se terminant par "_R" : dans ce cas, utiliser un champ texte simple
             if col == 'ID':
-                if isinstance(self.key, str) and self.key.endswith('_R'):
+                if self.key.endswith('_R'):
                     # champ texte simple pour les données auxiliaires
                     input_field = QLineEdit()
                     input_field.setPlaceholderText(col)
@@ -49,6 +49,7 @@ class AddDataDialog(QDialog):
                                     ids.append(val)
                     # limiter aux 5 derniers
                     ids = ids[:5]
+                    combo.addItems(0)
                     if ids:
                         combo.addItems(ids)
                 except Exception:
@@ -112,38 +113,12 @@ class AddDataDialog(QDialog):
                     self.data.loc[mask, d] = 0
 
             if self.key.endswith('_R') :
-                self.parent().dm.set_R(self.key, self.data)
+                self.parent().dm.set_file_R(self.key, self.data)
                 self.parent().dm.save_R(self.key)
-                
-                #self.parent().dm.apply_transformations(self.key[:-2] if isinstance(self.key, str) and self.key.endswith("_R") else self.key)
-                self.data = self.parent().dm.get_R(self.key)
-                
-                self.parent().update_table(self.key, self.data)
-                self.parent().update_stats_table(self.key, self.data)
-                self.parent().update_stats_tab(self.key, self.data)
             else :
-                self.parent().dm.set(self.key, self.data)
+                self.parent().dm.set_file(self.key, self.data)
                 self.parent().dm.save(self.key)
                 
-                self.parent().dm.apply_transformations(self.key[:-2] if isinstance(self.key, str) and self.key.endswith("_R") else self.key)
-            
-                self.data = self.parent().dm.get(self.key)
-            
-
-                aux_to_load = self.data.copy()
-                aux_cfg = self.parent().fixed_column_config.get(self.key) or self.parent().fixed_column_config.get(self.key + '')
-                if aux_cfg:
-                    acols = [c for c in aux_cfg.get('visible', []) if c in aux_to_load.columns]
-                    if acols:
-                        aux_to_load = aux_to_load[acols].copy()
-                        if aux_cfg.get('rename'):
-                            aux_to_load.rename(columns=aux_cfg.get('rename', {}), inplace=True)
-                
-                self.parent().data[self.key] = aux_to_load
-                
-                self.parent().update_table(self.key, self.parent().data[self.key])
-                self.parent().update_stats_table(self.key, self.parent().data[self.key])
-                self.parent().update_stats_tab(self.key, self.parent().data[self.key])
             
             self.close()
             
@@ -159,7 +134,7 @@ class DelDataDialog(QDialog):
     def __init__(self, key, df, parent=None):
         super().__init__(parent)
         self.key = key
-        self.df = df[key]
+        self.df = df
         self.data = pd.DataFrame()
         self.setWindowTitle(f"Supprimer une ligne ({key})")
         self.layout = QVBoxLayout()
@@ -201,44 +176,25 @@ class DelDataDialog(QDialog):
             elif len(matching_rows) > 1:
                 raise ValueError("Plusieurs lignes correspondent aux critères. Veuillez préciser davantage.")
 
-            self.data = self.df.drop(index=matching_rows.index[0]).reset_index(drop=True)
+            data = self.df.drop(index=matching_rows.index[0]).reset_index(drop=True)
 
-            # récupérer le CSV brut
-            raw = pd.read_csv(self.parent().dm.file_paths[self.key], sep=';')
+            if self.key.endswith('_R') :
+                raw = self.parent().dm.get_R(self.key)
+            else :
+                raw = self.parent().dm.get(self.key)
 
             # appliquer la suppression sur le RAW
             raw = raw.drop(index=matching_rows.index[0]).reset_index(drop=True)
-
-            # écrire UNIQUEMENT le RAW
-            raw.to_csv(self.parent().dm.file_paths[self.key], sep=';', index=False)
-
-            # recharger proprement
-            self.parent().dm.data[self.key] = raw
-            self.parent().dm.apply_transformations(self.key)
-
-            self.data = self.parent().dm.get(self.key)
-            
-            try :
-                self.data.rename(columns=lambda x: x.replace('Prix (€)', 'Prix appliqué (€)'), inplace=False)
-            except :
-                pass
-            
-            aux_to_load = self.data.copy()
-            aux_cfg = self.parent().fixed_column_config.get(self.key) or self.parent().fixed_column_config.get(self.key + '')
-            if aux_cfg:
-                acols = [c for c in aux_cfg.get('visible', []) if c in aux_to_load.columns]
-                if acols:
-                    aux_to_load = aux_to_load[acols].copy()
-                    if aux_cfg.get('rename'):
-                        aux_to_load.rename(columns=aux_cfg.get('rename', {}), inplace=True)
             
             
-            self.parent().data[self.key] = aux_to_load
+            if self.key.endswith('_R') :
+                self.parent().dm.set_file_R(self.key, data)
+                self.parent().dm.save_R(self.key)
+            else :
+                self.parent().dm.set_file(self.key, data)
+                self.parent().dm.save(self.key)
+                
             
-            self.parent().update_table(self.key, self.parent().data[self.key])
-            self.parent().update_stats_table(self.key, self.parent().data[self.key])
-            self.parent().update_stats_tab(self.key, self.parent().data[self.key])
-
             self.close()
             
         except ValueError as ve:

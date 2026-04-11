@@ -4,7 +4,7 @@ set -e
 
 # === CONFIG ===
 APP_NAME="TransportApp"
-PROJECT_DIR="/home/florian/Documents/02_Projets/Algo/TransportApp"
+PROJECT_DIR="/home/florian/Documents/Projets/Algo/TransportApp"
 BUILD_DIR="$PROJECT_DIR/build/exe.linux-x86_64-3.13"
 ICON_SRC="$PROJECT_DIR/src/assets/app_icon.ico"
 DESKTOP_FILE="$PROJECT_DIR/$APP_NAME.desktop"

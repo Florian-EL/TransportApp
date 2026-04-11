@@ -11,17 +11,11 @@ class DataManager():
         self.file_paths = file_paths
         self.aux_file_paths = aux_paths or {}
         
-        self.data: Dict[str, pd.DataFrame] = {k: self._load(p) for k, p in self.file_paths.items()}
+        self.data: Dict[str, pd.DataFrame] = {k: self.load(p) for k, p in self.file_paths.items()}
+        self.aux: Dict[str, pd.DataFrame] = {k : self.normalize_aux_df(self.load(p)) for k, p in self.aux_file_paths.items()}
         
-        self.aux: Dict[str, pd.DataFrame] = {k : self._normalize_aux_df(self._load(p)) for k, p in self.aux_file_paths.items()}
 
-    def _normalize_aux_df(self, df: pd.DataFrame) -> pd.DataFrame:
-        df = df.copy(deep=True)
-        df['Année'] = pd.to_datetime(df['Date'], dayfirst=True, errors='coerce').dt.year        
-        df['Prix (€)'] = pd.to_numeric(df['Prix (€)'], errors='coerce').fillna(0)
-        return df
-
-    def _load(self, path: Path) -> pd.DataFrame:
+    def load(self, path: Path) -> pd.DataFrame :
         try:
             return pd.read_csv(path, delimiter=";")
         except FileNotFoundError:
@@ -46,25 +40,27 @@ class DataManager():
             self.aux[key].to_csv(path, sep=';', index=False)
 
     def get(self, key: str) -> pd.DataFrame:
-        # retourne une copie pour éviter mutation directe
+        self.apply_transformations(key)
         return self.data[key].copy(deep=True)
 
     def get_R(self, key: str) -> pd.DataFrame:
-        return self.aux.get(key, pd.DataFrame()).copy(deep=True)
+        return self.aux[key].copy(deep=True)
 
-    def set(self, key: str, df: pd.DataFrame):
+    def set_file(self, key: str, df: pd.DataFrame):
         self.data[key] = df.copy(deep=True)
 
-    def set_R(self, key: str, df: pd.DataFrame):
+    def set_file_R(self, key: str, df: pd.DataFrame):
         self.aux[key] = df.copy(deep=True)
         # exposer aussi dans data
-        self.data[key] = self._normalize_aux_df(self.aux[key])
+        self.data[key] = self.normalize_aux_df(self.aux[key])
 
     def apply_transformations(self, key: str):
-        # appliquer transformations uniquement aux données principales
+        """apply correct transformation for main data"""
+        
         if key in self.aux : return
         
-        df = self.data[key]
+        df = self.data[key].copy()
+        
         if key == "Fiesta":
             df = calculate_fiesta(df)
             df = convert_to_number(key, df)
@@ -155,9 +151,15 @@ class DataManager():
         df['Prix au km (km)'] = round((df['Prix appliqué (€)'] / df['Distance (km)']).replace([pd.NA, float('inf'), float('-inf')], 0).fillna(0).astype(float), 2)
 
         self.data[key] = df
+    
+    def normalize_aux_df(self, df) :
+        df = df.copy(deep=True)
+        df['Année'] = pd.to_datetime(df['Date'], dayfirst=True, errors='coerce').dt.year        
+        df['Prix (€)'] = pd.to_numeric(df['Prix (€)'], errors='coerce').fillna(0)
+        return df
 
     # API utilitaire : concat de toutes les données pour stats
-    def concat_all(self) -> pd.DataFrame:
+    def concat_all(self) :
         # On concatène toutes les dataframes exposées dans self.data.
         # Les annexes ont été normalisées pour fournir au moins 'Année' et 'Prix (€)'.
         if not self.data:
