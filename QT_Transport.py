@@ -539,22 +539,26 @@ class TransportApp(QWidget) :
 
     def update_tab(self, key):
         self.update_table(key)
-        index = self.tabs.currentIndex()
-        self.tabs.removeTab(index)
         if key.endswith('_R') :
             if key == "Métro_Bus_R" :
+                self.tabs.removeTab(self.index["Métro"])
+                self.tabs.removeTab(self.index["Bus"])
                 self.create_mode_tab("Métro", "Métro_Bus_R")
                 self.create_mode_tab("Bus", "Métro_Bus_R")
             else :
+                self.tabs.removeTab(self.index(key))
                 self.create_mode_tab(key[:-2], key)
         else :
             if key == "Métro" or key == "Bus" :
+                self.tabs.removeTab(self.index["Métro"])
+                self.tabs.removeTab(self.index["Bus"])
                 self.create_mode_tab("Métro", "Métro_Bus_R")
                 self.create_mode_tab("Bus", "Métro_Bus_R")
             else :
+                self.tabs.removeTab(self.index(key))
                 self.create_mode_tab(key, key + "_R")
         
-        self.tabs.setCurrentIndex(index)
+        self.tabs.setCurrentIndex(self.tabs.currentIndex())
         self.tabs.removeTab(0)
         self.create_statistiques_tab()
     

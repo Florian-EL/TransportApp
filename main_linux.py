@@ -4,6 +4,9 @@ build_exe_options = {
     "include_files": [
         ("src", "src")
     ],
+    "excludes" :[
+        "Pyside6", "cx_Freeze"
+    ]
 }
 
 setup(
