@@ -1,18 +1,18 @@
 {
   "data_files": [
-    "/home/florian/Nextcloud/Data/train.csv",
-    "/home/florian/Nextcloud/Data/metro.csv",
-    "/home/florian/Nextcloud/Data/bus.csv",
-    "/home/florian/Nextcloud/Data/fiesta.csv",
-    "/home/florian/Nextcloud/Data/avion.csv",
-    "/home/florian/Nextcloud/Data/taxi.csv",
-    "/home/florian/Nextcloud/Data/marche.csv",
-    "/home/florian/Nextcloud/Data/velo.csv"
+    "/home/florian/Documents/Data/train.csv",
+    "/home/florian/Documents/Data/metro.csv",
+    "/home/florian/Documents/Data/bus.csv",
+    "/home/florian/Documents/Data/fiesta.csv",
+    "/home/florian/Documents/Data/avion.csv",
+    "/home/florian/Documents/Data/taxi.csv",
+    "/home/florian/Documents/Data/marche.csv",
+    "/home/florian/Documents/Data/velo.csv"
   ],
   "aux_files" : [
-    "/home/florian/Nextcloud/Data/train_R.csv",
-    "/home/florian/Nextcloud/Data/metro_bus_R.csv",
-    "/home/florian/Nextcloud/Data/fiesta_R.csv",
-    "/home/florian/Nextcloud/Data/taxi_R.csv"
+    "/home/florian/Documents/Data/train_R.csv",
+    "/home/florian/Documents/Data/metro_bus_R.csv",
+    "/home/florian/Documents/Data/fiesta_R.csv",
+    "/home/florian/Documents/Data/taxi_R.csv"
   ]
 }

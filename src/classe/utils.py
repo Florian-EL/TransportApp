@@ -23,9 +23,6 @@ def convert_to_number(key, df):
 
 def calculate_fiesta(df) :
     v_moy = 35.0 #km/h
-    nb_h_tot = 23280 #h
-    temps_th_volant = 445 #h
-    temps_vol_pourcent = 1.912 #%
     co2 = 0.105 #kg/km
     
     df['Date'] = pd.to_datetime(df['Date'], errors='coerce', format='%d/%m/%Y')
