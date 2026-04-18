@@ -11,7 +11,7 @@ build_exe_options = {
 
 setup(
     name="TransportApp",
-    version="2.0",
+    version="2.1",
     description="Application de gestion de transport",
     options={"build_exe": build_exe_options},
     executables=[
