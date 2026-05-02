@@ -546,7 +546,7 @@ class TransportApp(QWidget) :
                 self.create_mode_tab("Métro", "Métro_Bus_R")
                 self.create_mode_tab("Bus", "Métro_Bus_R")
             else :
-                self.tabs.removeTab(self.index[key])
+                self.tabs.removeTab(self.index[key[:-2]])
                 self.create_mode_tab(key[:-2], key)
         else :
             if key == "Métro" or key == "Bus" :
@@ -558,7 +558,7 @@ class TransportApp(QWidget) :
                 self.tabs.removeTab(self.index[key])
                 self.create_mode_tab(key, key + "_R" if key + "_R" in self.dm.aux.keys() else None)
         
-        self.tabs.setCurrentIndex(self.index[key])
+        self.tabs.setCurrentIndex(self.index[key if not key.endswith('_R') else key[:-2]])
         
         self.tabs.removeTab(0)
         self.create_statistiques_tab()

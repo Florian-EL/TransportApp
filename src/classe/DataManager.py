@@ -156,6 +156,10 @@ class DataManager():
         df = df.copy(deep=True)
         df['Année'] = pd.to_datetime(df['Date'], dayfirst=True, errors='coerce').dt.year        
         df['Prix (€)'] = pd.to_numeric(df['Prix (€)'], errors='coerce').fillna(0)
+        try : 
+            df['Retard'] = pd.to_timedelta(df['Retard'], errors='coerce').fillna(pd.Timedelta(0))
+        except Exception as e :
+            pass
         return df
 
     # API utilitaire : concat de toutes les données pour stats
