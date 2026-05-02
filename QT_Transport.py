@@ -266,7 +266,7 @@ class TransportApp(QWidget) :
                         'Prix (€)': prix_total,
                         'CO2 (kg)': round(df_annee_mode['CO2 (kg)'].sum(), 2) if ('CO2 (kg)' in df_annee_mode.columns and not df_annee_mode.empty) else 0,
                     }
-                    #print(d['Distance (km)'],stats[stats['Année'] == annee]['Distance (km)'].sum())
+                    
                     total_heures = d['Heures'] + d['Minutes'] / 60
                     d['Prix horaire (€)'] = round(d['Prix (€)'] / total_heures, 2) if total_heures else 0
                     d['Prix au km (km)'] = round(d['Prix (€)'] / d['Distance (km)'], 2) if d['Distance (km)'] else 0

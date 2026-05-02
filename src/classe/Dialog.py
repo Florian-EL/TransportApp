@@ -62,6 +62,11 @@ class AddDataDialog(QDialog):
             input_field.setPlaceholderText(col)
             self.inputs[col] = input_field
             self.layout.addWidget(input_field)
+        
+        # Auto completion
+        if 'Départ' in self.inputs and 'Arrivée' in self.inputs:
+            self.inputs['Départ'].editingFinished.connect(self.prefill_fields)
+            self.inputs['Arrivée'].editingFinished.connect(self.prefill_fields)
 
         # Bouton pour valider
         self.add_button = QPushButton("Ajouter")
@@ -70,6 +75,53 @@ class AddDataDialog(QDialog):
 
         self.setLayout(self.layout)
     
+    def find_last_similar(self):
+        
+        df = self.donneebrut
+        if df.empty:
+            return None
+        
+        mask = pd.Series(True, index=df.index)
+        for col, val in zip(['Départ', 'Arrivée'], [depart, Arrivée]):
+            mask &= df[col].astype(str).str.lower() == str(val).lower()
+        
+        filtered = df[mask]
+        
+        if filtered.empty:
+            return None
+        
+        # Trier par date si dispo
+        if 'Date' in df.columns:
+            filtered = filtered.copy()
+            filtered['__dt'] = pd.to_datetime(filtered['Date'], dayfirst=True, errors='coerce')
+            filtered = filtered.sort_values('__dt', ascending=False)
+        
+        return filtered.iloc[0]
+    
+    def prefill_fields(self):
+        depart = self.inputs.get('Départ').text()
+        Arrivée = self.inputs.get('Arrivée').text()
+        
+        if not depart or not Arrivée:
+            return
+        
+        last = self.find_last_similar()
+        
+        if last is None:
+            return
+        
+        for col, widget in self.inputs.items():
+            if col in ['Classe', 'Date', 'Prix (€)', 'Abonnement', 'ID']:
+                continue  # champs à remplir manuellement
+            
+            if col in last:
+                val = str(last[col])
+                
+                from PyQt5.QtWidgets import QLineEdit, QComboBox
+                if isinstance(widget, QLineEdit):
+                    widget.setText(val)
+                elif isinstance(widget, QComboBox):
+                    widget.setCurrentText(val)
     
     def add_data(self):
         """Ajoute une nouvelle ligne au DataFrame."""
