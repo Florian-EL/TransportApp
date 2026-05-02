@@ -12,7 +12,7 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem, QColor
 
 
 from src.classe.DataManager import DataManager
-from src.classe.Graph import update_stats, graph_stats
+from src.classe.Graph import update_stats, graph_stats, global_stats
 from src.classe.FilterHeaderView import FilterHeaderView, DateSortFilterProxyModel
 from src.classe.Dialog import AddDataDialog, DelDataDialog
 
@@ -136,11 +136,11 @@ class TransportApp(QWidget) :
                 self.tabs.removeTab(i)
                 break
         
-        stats_table_widget = self.create_global_stat_table()
+        stats_table_layout = self.create_global_stat_table()
         
         layout = QVBoxLayout()
         layout.addWidget(QLabel("Statistiques générales"))
-        layout.addWidget(stats_table_widget)
+        layout.addLayout(stats_table_layout)
         
         layout_mini = self.create_yearly_stat_table()
         
@@ -211,7 +211,20 @@ class TransportApp(QWidget) :
         stats_table_widget.setFixedHeight(min(total_h, max_h))
         stats_table_widget.sortByColumn(stats.columns.get_loc('Année'), Qt.DescendingOrder)
         
-        return stats_table_widget
+        pixmap = global_stats(stats)
+        pix_scene = QGraphicsScene()
+        pix_view = QGraphicsView(pix_scene)
+        pix_scene.addPixmap(pixmap)
+        pix_scene.setSceneRect(QRectF(pixmap.rect()))
+        pix_view.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        pix_view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        pix_view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        
+        layout_mini = QHBoxLayout()
+        layout_mini.addWidget(stats_table_widget)
+        layout_mini.addWidget(pix_view)
+        
+        return layout_mini
     
     def create_yearly_stat_table(self) :
         all_data = self.dm.concat_all()

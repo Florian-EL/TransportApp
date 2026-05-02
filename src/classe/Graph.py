@@ -135,3 +135,35 @@ def graph_stats(data):
     qimage = QImage(data, img.width, img.height, QImage.Format_RGBA8888)
     
     return QPixmap.fromImage(qimage)
+
+
+def global_stats(data) :
+    stats = data.sort_values('Année')
+
+    fig, ax = plt.subplots(figsize=(3, 2), facecolor='black')
+
+    ax.set_xlabel('Année')
+    ax.set_xticks(stats['Année'])
+    
+    ax.plot(stats['Année'], stats['Prix (€)']/100, marker='+')
+    ax.plot(stats['Année'], stats['Distance (km)']/1000, marker='+')
+    ax.plot(stats['Année'], stats['CO2 (kg)']/100, marker='+')
+    ax.plot(stats['Année'], stats['Equivalent jours'], marker='+')
+    
+    ax.set_ylabel('Valeurs')
+    ax.legend(['Prix (€) (x100)', 'Distance (km) (x1000)', 'CO2 (kg) (x100)', 'Equivalent jours'],
+              loc='center left', bbox_to_anchor=(1, 0.5))
+
+    plt.grid()
+
+    ax.set_facecolor('black')
+    
+    buf = BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight', facecolor='black')
+    plt.close()
+    buf.seek(0)
+    img = Image.open(buf).convert("RGBA")
+    data = img.tobytes("raw", "RGBA")
+    qimage = QImage(data, img.width, img.height, QImage.Format_RGBA8888)
+    
+    return QPixmap.fromImage(qimage)
