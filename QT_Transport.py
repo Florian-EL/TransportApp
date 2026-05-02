@@ -611,6 +611,7 @@ class TransportApp(QWidget) :
         donneebrut = df[useful_cols].copy(deep=True)
         
         dlg = AddDataDialog(key, donneebrut, parent=self)
+        dlg.setFixedWidth(400)
         dlg.exec_()
         
         self.update_tab(key)
@@ -630,6 +631,7 @@ class TransportApp(QWidget) :
 
         donneebrut = df.copy(deep=True)
         dlg = DelDataDialog(key, donneebrut, parent=self)
+        dlg.setFixedWidth(400)
         dlg.exec_()
         
         self.update_tab(key)
