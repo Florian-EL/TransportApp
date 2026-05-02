@@ -370,10 +370,9 @@ class TransportApp(QWidget) :
                 m.appendRow(items)
             return m
 
-        def apply_filter(col, text, target_proxy=None):
-            proxy = target_proxy or proxy_model
-            proxy.setFilterKeyColumn(col)
-            proxy.setFilterRegularExpression(text)
+        def apply_filter(col, text):
+            self.proxy_models[key].setFilterKeyColumn(col)
+            self.proxy_models[key].setFilterRegularExpression(text)
         
         def compute_table_width(view: QTableView):
             total = view.verticalHeader().width()
