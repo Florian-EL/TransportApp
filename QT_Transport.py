@@ -239,7 +239,7 @@ class TransportApp(QWidget) :
             detail_stats = []
             
             for mode in self.file_paths.keys():
-                df_mode = self.dm.data[mode]
+                df_mode = self.dm.get(mode)
                 df_annee_mode = df_mode[df_mode['Année'] == annee] if not df_mode.empty and 'Année' in df_mode.columns else pd.DataFrame()
                 if not df_annee_mode.empty or True:
                     # valeurs issues des données principales
@@ -250,11 +250,11 @@ class TransportApp(QWidget) :
                     
                     # additionner les prix des annexes liées à ce mode
                     prix_aux = 0.0
-                    for aux_key in self.dm.aux.keys():
-                        if mode in aux_key:
-                            aux_df = self.dm.data.get(aux_key, pd.DataFrame())
-                            if not aux_df.empty and 'Année' in aux_df.columns and 'Prix (€)' in aux_df.columns:
-                                prix_aux += float(aux_df[aux_df['Année'] == annee]['Prix (€)'].sum())
+                    mode_r = mode + "_R" if mode not in ["Bus", "Métro"] else "Métro_Bus_R"
+                    if mode_r in self.dm.aux.keys() :
+                        aux_df = self.dm.get_R(mode_r)
+                        if not aux_df.empty and 'Année' in aux_df.columns and 'Prix (€)' in aux_df.columns:
+                            prix_aux += float(aux_df[aux_df['Année'] == annee]['Prix (€)'].sum())
                     
                     prix_total = round(prix_main + prix_aux, 2)
                     
