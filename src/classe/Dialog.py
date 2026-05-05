@@ -75,14 +75,14 @@ class AddDataDialog(QDialog):
 
         self.setLayout(self.layout)
     
-    def find_last_similar(self):
+    def find_last_similar(self, depart, arrivee):
         
         df = self.donneebrut
         if df.empty:
             return None
         
         mask = pd.Series(True, index=df.index)
-        for col, val in zip(['Départ', 'Arrivée'], [depart, Arrivée]):
+        for col, val in zip(['Départ', 'Arrivée'], [depart, arrivee]):
             mask &= df[col].astype(str).str.lower() == str(val).lower()
         
         filtered = df[mask]
@@ -100,12 +100,12 @@ class AddDataDialog(QDialog):
     
     def prefill_fields(self):
         depart = self.inputs.get('Départ').text()
-        Arrivée = self.inputs.get('Arrivée').text()
+        arrivee = self.inputs.get('Arrivée').text()
         
-        if not depart or not Arrivée:
+        if not depart or not arrivee:
             return
         
-        last = self.find_last_similar()
+        last = self.find_last_similar(depart, arrivee)
         
         if last is None:
             return
