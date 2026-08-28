@@ -162,9 +162,9 @@ class TransportApp(QWidget) :
         all_data = self.dm.concat_all()
         
         columns = [
-        'Année', 'Distance\n(km)', 'Prix\n(€)', 'Prix horaire\n(€)', 'Prix au km\n(km)',
-        'parcours\n%', 'CO2\n(kg)', 'CO2 par km\n(g/km)', 'CO2 par heures\n(kg/h)',
-        'Equivalent jours', 'Equivalent vitesse\n(km/h)', 'Heures', 'Minutes',
+        'Année', 'Distance (km)', 'Prix (€)', 'Prix horaire (€)', 'Prix au km (km)',
+        'parcours %', 'CO2 (kg)', 'CO2 par km (g/km)', 'CO2 par heures (kg/h)',
+        'Equivalent jours', 'Equivalent vitesse (km/h)', 'Heures', 'Minutes',
         ]
         
         stats = all_data.groupby('Année').agg({
@@ -197,7 +197,7 @@ class TransportApp(QWidget) :
         stats_table_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         
         for i, row in stats.iterrows():
-            for j, col in enumerate(stats.columns):
+            for j, col in enumerate(columns):
                 value = row[col]
                 if col == "Année":
                     value = int(value)
